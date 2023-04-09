@@ -15,16 +15,16 @@ class permissionsSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('roles')->delete();
-        $roles = [];
+        DB::table('permissions')->delete();
+        $permissions = [];
         foreach (Permission::PERMISSIONS as $permission) {
-            $roles[] = [
+            $permissions[] = [
                 'id' => Str::uuid()->toString(),
                 'permission' => $permission,
                 'created_at' => now(),
                 'updated_at' => now()
             ];
         }
-        Permission::insert($roles);
+        Permission::insert($permissions);
     }
 }

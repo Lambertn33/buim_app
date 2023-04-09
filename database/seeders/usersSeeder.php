@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 
@@ -22,6 +23,7 @@ class usersSeeder extends Seeder
             [
                 'id' => Str::uuid()->toString(),
                 'name' => 'administrator',
+                'role_id' => Role::where('role', Role::ADMIN_ROLE)->value('id'),
                 'email' => 'admin@gmail.com',
                 'password' => Hash::make('admin12345'),
                 'created_at' => now(),
@@ -30,6 +32,7 @@ class usersSeeder extends Seeder
             [
                 'id' => Str::uuid()->toString(),
                 'name' => 'district manager',
+                'role_id' => Role::where('role', Role::DISTRICT_MANAGER_ROLE)->value('id'),
                 'email' => 'manager@gmail.com',
                 'password' => Hash::make('manager12345'),
                 'created_at' => now(),
@@ -39,6 +42,7 @@ class usersSeeder extends Seeder
                 'id' => Str::uuid()->toString(),
                 'name' => 'sector leader',
                 'email' => 'leader@gmail.com',
+                'role_id' => Role::where('role', Role::SECTOR_LEADER_ROLE)->value('id'),
                 'password' => Hash::make('leader12345'),
                 'created_at' => now(),
                 'updated_at' => now()

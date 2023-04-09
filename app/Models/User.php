@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 
 class User extends Authenticatable
@@ -21,6 +22,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'id',
+        'role_id',
         'name',
         'email',
         'password',
@@ -43,8 +45,19 @@ class User extends Authenticatable
      */
     protected $casts = [
         'id' => 'string',
+        'role_id' => 'string',
         'email_verified_at' => 'datetime'
     ];
+
+    /**
+     * The permissions that belong to the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function permissions(): BelongsToMany
+    {
+        return $this->belongsToMany(Permission::class, 'user_permissions', 'user_id', 'permission_id');
+    }
 
     /**
      * Get the role that owns the User
