@@ -13,7 +13,7 @@ class EditUser extends EditRecord
     protected function getActions(): array
     {
         return [
-            // Actions\DeleteAction::make(),
+             Actions\ViewAction::make(),
         ];
     }
 
@@ -22,8 +22,4 @@ class EditUser extends EditRecord
         return $this->getResource()::getUrl('index');
     }
 
-    protected function mutateFormDataBeforeCreate(array $data): array
-    {
-        return $data;
-    }
 }
