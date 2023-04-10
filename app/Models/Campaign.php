@@ -10,6 +10,8 @@ class Campaign extends Model
 {
     use HasFactory;
 
+    public $incrementing = false;
+
     const PROVINCES = [
         'KIGALI', 'NORTHERN', 'SOUTHERN', 'EASTERN', 'WESTERN'
     ];
