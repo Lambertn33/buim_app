@@ -15,7 +15,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('roles', function (Blueprint $table) {
-            $table->uuid('id')->primary()->default(Str::uuid()->toString());
+            $table->uuid('id')->primary();
             $table->enum('role', Role::ROLES);
             $table->timestamps();
         });

@@ -14,7 +14,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('permissions', function (Blueprint $table) {
-            $table->uuid('id')->primary()->default(Str::uuid()->toString());
+            $table->uuid('id')->primary();
             $table->enum('permission', Permission::PERMISSIONS);
             $table->timestamps();
         });
