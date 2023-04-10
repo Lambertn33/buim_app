@@ -10,6 +10,8 @@ class Permission extends Model
 {
     use HasFactory;
 
+    public $incrementing = false;
+
     const PERMISSIONS = [
         'campaign_create',
         'campaign_access',

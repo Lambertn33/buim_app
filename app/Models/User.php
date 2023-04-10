@@ -15,6 +15,8 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    public $incrementing = false;
+
     const ACCOUNT_STATUS = ['ACTIVE', 'CLOSED'];
 
     const ACTIVE = self::ACCOUNT_STATUS[0];
