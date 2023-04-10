@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Campaign;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,6 +18,7 @@ return new class extends Migration
             $table->string('title');
             $table->enum('province', \App\Models\Campaign::PROVINCES);
             $table->string('district');
+            $table->enum('status', Campaign::CAMPAIGN_STATUS)->default(Campaign::CREATED);
             $table->string('description');
             $table->date('from');
             $table->date('to');

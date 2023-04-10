@@ -16,8 +16,20 @@ class Campaign extends Model
         'KIGALI', 'NORTHERN', 'SOUTHERN', 'EASTERN', 'WESTERN'
     ];
 
+    const CAMPAIGN_STATUS = [
+        'CREATED',
+        'ONGOING',
+        'FINISHED',
+        'STOPPED',
+    ];
+
+    const CREATED = self::CAMPAIGN_STATUS[0];
+    const ONGOING = self::CAMPAIGN_STATUS[1];
+    const FINISHED = self::CAMPAIGN_STATUS[2];
+    const STOPPED = self::CAMPAIGN_STATUS[3];
+
     protected $fillable = [
-        'id', 'title', 'description','province','district', 'from', 'to', 'manager_id'
+        'id', 'title', 'description','province','district', 'from', 'to', 'manager_id', 'status'
     ];
 
     protected $casts = [
