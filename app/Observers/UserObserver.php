@@ -2,9 +2,12 @@
 
 namespace App\Observers;
 
+use App\Models\Leader;
+use App\Models\Manager;
 use App\Models\User;
 use App\Models\Permission;
 use App\Models\Role;
+use Illuminate\Support\Str;
 
 class UserObserver
 {
@@ -44,12 +47,22 @@ class UserObserver
             'screening_delete'
         ])->get();
 
-        if ($user->role->name == Role::ADMIN_ROLE) {
+        // After user is created in dashboard, Add respective permissions
+        
+        if ($user->role->role == Role::ADMIN_ROLE) {
             $user->permissions()->sync($adminPermissions);
-        } elseif ($user->role->name == Role::DISTRICT_MANAGER_ROLE) {
-            $user->permissions()->sync($managerPermissions);   
         } else {
-            $user->permissions()->sync($leaderPermissions);
+            $newManagerOrLeader = [
+                'id' => Str::uuid()->toString(),
+                'user_id' => $user->id
+            ];
+            if ($user->role->role == Role::DISTRICT_MANAGER_ROLE) {
+                $user->permissions()->sync($managerPermissions);
+                Manager::insert($newManagerOrLeader);
+            } else {
+                $user->permissions()->sync($leaderPermissions);
+                Leader::insert($newManagerOrLeader);
+            }
         }
     }
 
