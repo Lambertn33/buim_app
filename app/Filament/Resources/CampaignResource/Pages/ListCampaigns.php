@@ -5,6 +5,9 @@ namespace App\Filament\Resources\CampaignResource\Pages;
 use App\Filament\Resources\CampaignResource;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Role;
 
 class ListCampaigns extends ListRecords
 {
@@ -15,5 +18,12 @@ class ListCampaigns extends ListRecords
         return [
             Actions\CreateAction::make(),
         ];
+    }
+    
+    protected function getTableQuery(): Builder
+    {
+        return Auth::user()->role->role === Role::ADMIN_ROLE
+        ? parent::getTableQuery() 
+        : parent::getTableQuery()->where('manager_id', Auth::user()->manager->id);
     }
 }

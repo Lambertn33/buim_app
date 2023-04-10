@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CampaignResource\Pages;
 use App\Models\Campaign;
+use App\Models\Role;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Textarea;
@@ -12,6 +13,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Closure;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\SelectColumn;
@@ -102,6 +104,11 @@ class CampaignResource extends Resource
                         'success' => static fn ($state): bool => $state === self::$model::FINISHED,
                         'danger' => static fn ($state): bool => $state === self::$model::STOPPED,
                     ]),
+                TextColumn::make('manager.user.name')
+                    ->label('campaign manager')
+                    ->visible(auth()->user()->role->role === Role::ADMIN_ROLE)
+                    ->sortable()
+                    ->searchable()
             ])
             ->filters([
                 //
