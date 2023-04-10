@@ -26,6 +26,7 @@ class usersSeeder extends Seeder
                 'role_id' => Role::where('role', Role::ADMIN_ROLE)->value('id'),
                 'email' => 'admin@gmail.com',
                 'password' => Hash::make('admin12345'),
+                'telephone' => '250788000000',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -35,6 +36,7 @@ class usersSeeder extends Seeder
                 'role_id' => Role::where('role', Role::DISTRICT_MANAGER_ROLE)->value('id'),
                 'email' => 'manager@gmail.com',
                 'password' => Hash::make('manager12345'),
+                'telephone' => '250788000011',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -44,6 +46,7 @@ class usersSeeder extends Seeder
                 'email' => 'leader@gmail.com',
                 'role_id' => Role::where('role', Role::SECTOR_LEADER_ROLE)->value('id'),
                 'password' => Hash::make('leader12345'),
+                'telephone' => '250788000022',
                 'created_at' => now(),
                 'updated_at' => now()
             ]

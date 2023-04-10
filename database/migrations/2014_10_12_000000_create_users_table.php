@@ -14,12 +14,12 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(Str::uuid()->toString());
-            $table->uuid('role_id');
             $table->string('name');
+            $table->string('telephone')->unique();
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->enum('account_status', \App\Models\User::ACCOUNT_STATUS)->default(\App\Models\User::ACTIVE);
+            $table->uuid('role_id');
             $table->string('password');
-            $table->rememberToken();
             $table->timestamps();
         });
     }

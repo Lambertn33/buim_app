@@ -15,6 +15,11 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    const ACCOUNT_STATUS = ['ACTIVE', 'CLOSED'];
+
+    const ACTIVE = self::ACCOUNT_STATUS[0];
+    const CLOSED = self::ACCOUNT_STATUS[1];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -22,9 +27,11 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'id',
-        'role_id',
-        'name',
+        'names',
         'email',
+        'telephone',
+        'account_status',
+        'role_id',
         'password',
     ];
 
