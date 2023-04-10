@@ -37,6 +37,12 @@ class Permission extends Model
         'user_edit',
         'user_delete',
 
+        'role_create',
+        'role_access',
+        'role_show',
+        'role_edit',
+        'role_delete',
+
         'stock_create',
         'stock_access',
         'stock_show',

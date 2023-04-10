@@ -77,4 +77,13 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Role::class, 'role_id', 'id');
     }
+
+    public function hasPermission(string $permission): bool
+    {
+        $permissionsArray = [];
+        foreach($this->permissions as $singlePermission) {
+            $permissionsArray[] = $singlePermission->permission;
+        }
+        return collect($permissionsArray)->unique()->contains($permission);
+    }
 }
