@@ -2,11 +2,12 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Manager;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Leader;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 
@@ -53,5 +54,26 @@ class usersSeeder extends Seeder
         ];
 
         User::insert($users);
+
+        foreach (User::with('role')->get() as $user) {
+            if ($user->role->role == Role::DISTRICT_MANAGER_ROLE) {
+                $newManager = [
+                    'id' => Str::uuid()->toString(),
+                    'user_id' => $user->id,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ];
+                Manager::insert($newManager);
+            }
+            if ($user->role->role == Role::SECTOR_LEADER_ROLE) {
+                $newLeader = [
+                    'id' => Str::uuid()->toString(),
+                    'user_id' => $user->id,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ];
+                Leader::insert($newLeader);
+            }
+        }
     }
 }
