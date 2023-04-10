@@ -13,6 +13,9 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Forms\Components\Select;
+use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Columns\SelectColumn;
+use Filament\Tables\Columns\TextColumn;
 use stdClass;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -41,6 +44,10 @@ class CampaignResource extends Resource
                     ->placeholder('select district')
                     ->required()
                     ->reactive(),
+                Select::make('status')
+                    ->disablePlaceholderSelection()
+                    ->hiddenOn('create')
+                    ->options(self::$model::CAMPAIGN_STATUS),
                 // TODO make District Selectable
                 // Select::make('district')
                 //     ->options(self::$model::PROVINCES)
@@ -81,7 +88,20 @@ class CampaignResource extends Resource
     {
         return $table
             ->columns([
-                
+                TextColumn::make('title')
+                    ->sortable()
+                    ->searchable()
+                    ->description(fn (Campaign $record): string => $record->description),
+                TextColumn::make('from')
+                    ->label('starting date')
+                    ->sortable(),
+                BadgeColumn::make('status')
+                    ->colors([
+                        'primary' => static fn ($state): bool => $state === self::$model::CREATED,
+                        'warning' => static fn ($state): bool => $state === self::$model::ONGOING,
+                        'success' => static fn ($state): bool => $state === self::$model::FINISHED,
+                        'danger' => static fn ($state): bool => $state === self::$model::STOPPED,
+                    ]),
             ])
             ->filters([
                 //
