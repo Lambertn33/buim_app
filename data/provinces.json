@@ -1,0 +1,42 @@
+{
+"NORTHERN": [
+    "BURERA",
+    "GAKENKE",
+    "GICUMBI",
+    "MUSANZE",
+    "RULINDO"
+  ],
+  "SOUTHERN" :[
+    "GISAGARA",
+    "HUYE",
+    "KAMONYI",
+    "MUHANGA",
+    "NYAMAGABE",
+    "NYANZA",
+    "NYARUGURU",
+    "RUHANGO"
+  ],
+  "KIGALI" :[
+    "GASABO",
+    "KICUKIRO",
+    "NYARUGENGE"
+  ],
+  "EASTERN" :[
+    "BUGESERA",
+    "GATSIBO",
+    "KAYONZA",
+    "KIREHE",
+    "NGOMA",
+    "NYAGATARE",
+    "RWAMAGANA"
+  ],
+  "WESTERN" :[
+    "KARONGI",
+    "NGORORERO",
+    "NYABIHU",
+    "NYAMASHEKE",
+    "RUBAVU",
+    "RUSIZI",
+    "RUTSIRO"
+  ]
+}
