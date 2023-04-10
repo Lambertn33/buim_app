@@ -31,6 +31,12 @@ class Permission extends Model
         'permission_edit',
         'permission_delete',
 
+        'payment_plan_create',
+        'payment_plan_access',
+        'payment_plan_show',
+        'payment_plan_edit',
+        'payment_plan_delete',
+
         'user_create',
         'user_access',
         'user_show',
