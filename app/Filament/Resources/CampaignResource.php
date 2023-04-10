@@ -104,6 +104,12 @@ class CampaignResource extends Resource
                         'success' => static fn ($state): bool => $state === self::$model::FINISHED,
                         'danger' => static fn ($state): bool => $state === self::$model::STOPPED,
                     ]),
+                TextColumn::make('province')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('district')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('manager.user.name')
                     ->label('campaign manager')
                     ->visible(auth()->user()->role->role === Role::ADMIN_ROLE)
