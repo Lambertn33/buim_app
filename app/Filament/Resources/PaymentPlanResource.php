@@ -33,6 +33,11 @@ class PaymentPlanResource extends Resource
     {
         return $form
             ->schema([
+                TextInput::make('title')
+                    ->label('payment title')
+                    ->unique(ignoreRecord: true)
+                    ->maxLength(20)
+                    ->required(),
                 TextInput::make('amount')
                     ->label('amount to pay')
                     ->numeric()
@@ -50,6 +55,10 @@ class PaymentPlanResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('title')
+                    ->label('payment title')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('amount')
                     ->label('amount')
                     ->suffix(' FRWS')
