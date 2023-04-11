@@ -74,7 +74,7 @@ class ScreeningResource extends Resource
                     ->required()
                     ->placeholder('select eligibility')
                     ->label('Eligibility status')
-                    ->options(Screening::ELIGIBILITY_STATUS)
+                    ->options(Screening::ELIGIBILITY_STATUS),
                 
             ]);
     }

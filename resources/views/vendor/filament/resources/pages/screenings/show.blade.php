@@ -51,48 +51,50 @@
 
                 </div>
                 <div class="divide-y divide-gray-500">
-                    <div class="flex flex-col p-6 mt-4">
+                    <div class="flex justify-center flex-col p-6">
                         <div class="flex justify-between">
-                            <h5>National ID</h5>
-                            <p>{{$record->prospect_national_id}}</p>
+                            <h5 style="font-size: 14px;">national id</h5>
+                            <p style="font-weight:800">{{$record->prospect_national_id}}</p>
                         </div>
                     </div>
-                    <div class="flex flex-col p-6">
+                    <div class="flex justify-center flex-col p-6">
                         <div class="flex justify-between">
-                            <h5>Code</h5>
-                            <p>{{$record->prospect_code}}</p>
+                            <h5 style="font-size: 14px;">Code</h5>
+                            <p style="font-weight:800">{{$record->prospect_code}}</p>
                         </div>
                     </div>
-                    <div class="flex flex-col p-6">
+                    <div class="flex justify-center flex-col p-6">
                         <div class="flex justify-between">
-                            <h5>Campaign</h5>
-                            <p>{{$record->campaign->title}}</p>
+                            <h5 style="font-size: 14px;">Campaign</h5>
+                            <p style="font-weight:800">{{$record->campaign->title}}</p>
                         </div>
                     </div>
-                    <div class="flex flex-col p-6">
+                    <div class="flex justify-center flex-col p-6">
                         <div class="flex justify-between">
-                            <h5>District</h5>
-                            <p>{{$record->district}}</p>
+                            <h5 style="font-size: 14px;">District</h5>
+                            <p style="font-weight:800">{{$record->district}}</p>
                         </div>
                     </div>
-                    <div class="flex flex-col p-6">
+                    <div class="flex justify-center flex-col p-6">
                         <div class="flex justify-between">
-                            <h5>Sector</h5>
-                            <p>{{$record->sector}}</p>
+                            <h5 style="font-size: 14px;">Sector</h5>
+                            <p style="font-weight:800">{{$record->sector}}</p>
                         </div>
                     </div>
-                    <div class="flex flex-col p-6">
+                    <div class="flex justify-center flex-col p-6">
                         <div class="flex justify-between">
-                            <h5>District</h5>
-                            <p>{{$record->cell}}</p>
+                            <h5 style="font-size: 14px;">Cell</h5>
+                            <p style="font-weight:800">{{$record->cell}}</p>
                         </div>
                     </div>
-                    <div class="flex flex-col p-6">
+                    @if (Auth::user()->role->role !== \App\Models\Role::SECTOR_LEADER_ROLE)
+                    <div class="flex justify-center flex-col p-6">
                         <div class="flex justify-between">
-                            <h5>Village</h5>
-                            <p>{{$record->village}}</p>
+                            <h5 style="font-size: 14px;">Screened by</h5>
+                            <p style="font-weight:800">{{$record->leader->user->name}}</p>
                         </div>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>
