@@ -65,4 +65,9 @@ class Screening extends Model
     {
         return $this->belongsTo(Leader::class, 'leader_id', 'id');
     }
+
+    public function getScreeningProvince()
+    {
+        return $this->campaign->province;
+    }
 }
