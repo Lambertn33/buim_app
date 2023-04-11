@@ -7,6 +7,7 @@ use App\Filament\Resources\ScreeningResource\RelationManagers;
 use App\Models\Campaign;
 use App\Models\PaymentPlan;
 use App\Models\Screening;
+use App\Services\NavigationBadgesServices;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -24,6 +25,11 @@ class ScreeningResource extends Resource
     protected static ?string $model = Screening::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
+
+    protected static function getNavigationBadge(): ?string
+    {
+        return (new NavigationBadgesServices)->getTotalNumberOfScreenings();
+    }
 
     public static function form(Form $form): Form
     {

@@ -6,6 +6,7 @@ use App\Models\Campaign;
 use App\Models\PaymentPlan;
 use App\Models\Permission;
 use App\Models\Role;
+use App\Models\Screening;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
@@ -37,6 +38,17 @@ class NavigationBadgesServices
             return Campaign::count();
         } else {
             return Campaign::where('manager_id', Auth::user()->manager->id)->count();
+        }
+    }
+
+    public function getTotalNumberOfScreenings()
+    {
+        if (Auth::user()->role->role === Role::ADMIN_ROLE) {
+            return Screening::count();
+        } elseif (Auth::user()->role->role === Role::DISTRICT_MANAGER_ROLE) {
+            return Screening::where('manager_id', Auth::user()->manager->id)->count();
+        } else {
+            return Screening::where('leader_id', Auth::user()->leader->id)->count();
         }
     }
 }
