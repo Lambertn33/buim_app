@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\PaymentPlanResource\Pages;
 use App\Filament\Resources\PaymentPlanResource\RelationManagers;
 use App\Models\PaymentPlan;
+use App\Services\NavigationBadgesServices;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
@@ -22,6 +23,11 @@ class PaymentPlanResource extends Resource
     protected static ?string $navigationGroup = 'Access control';
 
     protected static ?string $navigationIcon = 'heroicon-o-credit-card';
+
+    protected static function getNavigationBadge(): ?string
+    {
+        return (new NavigationBadgesServices)->getTotalNumberOfPaymentPlans();
+    }
 
     public static function form(Form $form): Form
     {

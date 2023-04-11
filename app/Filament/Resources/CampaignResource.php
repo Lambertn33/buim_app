@@ -7,6 +7,7 @@ use App\Models\Campaign;
 use App\Models\District;
 use App\Models\Province;
 use App\Models\Role;
+use App\Services\NavigationBadgesServices;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Textarea;
@@ -29,6 +30,11 @@ class CampaignResource extends Resource
     protected static ?string $model = Campaign::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-speakerphone';
+
+    protected static function getNavigationBadge(): ?string
+    {
+        return (new NavigationBadgesServices)->getTotalNumberOfCampaigns();
+    }
 
     public static function form(Form $form): Form
     {
@@ -53,7 +59,7 @@ class CampaignResource extends Resource
                     ->placeholder('select district')
                     ->required()
                     ->visibleOn('create')
-                    ->options(function(callable $get){
+                    ->options(function (callable $get) {
                         $province = $get('province');
                         if ($province) {
                             return District::where('province_id', $province)->pluck('district', 'district')->toArray();

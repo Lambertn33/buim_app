@@ -6,7 +6,7 @@
     use App\Models\Leader;
     use App\Models\Manager;
 
-    class UsersServices {
+    class UsersServices { 
         public function createUser($user) {
             $adminPermissions = Permission::whereNotIn('permission', [
                 'campaign_create',
