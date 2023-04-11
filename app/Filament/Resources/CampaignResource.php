@@ -21,6 +21,7 @@ use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use stdClass;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -120,7 +121,10 @@ class CampaignResource extends Resource
                     ->searchable()
             ])
             ->filters([
-                //
+                SelectFilter::make('status')
+                    ->label('Filter by status')
+                    ->options(self::$model::CAMPAIGN_STATUS)              
+
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
