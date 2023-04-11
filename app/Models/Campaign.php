@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Campaign extends Model
 {
@@ -45,5 +46,15 @@ class Campaign extends Model
     public function manager(): BelongsTo
     {
         return $this->belongsTo(Manager::class, 'manager_id', 'id');
+    }
+
+    /**
+     * Get all of the screenings for the Campaign
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function screenings(): HasMany
+    {
+        return $this->hasMany(Screening::class, 'campaign_id', 'id');
     }
 }

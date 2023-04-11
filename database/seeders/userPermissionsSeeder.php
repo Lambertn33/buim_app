@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Permission;
+use App\Models\Role;
 use Illuminate\Support\Facades\DB;
 
 class userPermissionsSeeder extends Seeder
@@ -17,9 +18,15 @@ class userPermissionsSeeder extends Seeder
     {
         DB::table('user_permissions')->delete();
 
-        $defaultAdmin = User::where('email', 'admin@gmail.com')->first();
-        $defaultManager = User::where('email', 'manager@gmail.com')->first();
-        $defaultLeader = User::where('email', 'leader@gmail.com')->first();
+        $admins = User::whereHas('role', function($query){
+            $query->where('role', Role::ADMIN_ROLE);
+        })->get();
+        $managers = User::whereHas('role', function($query){
+            $query->where('role', Role::DISTRICT_MANAGER_ROLE);
+        })->get();
+        $leaders = User::whereHas('role', function($query){
+            $query->where('role', Role::SECTOR_LEADER_ROLE);
+        })->get();
 
         $adminPermissions = Permission::whereNotIn('permission', [
             'campaign_create',
@@ -52,8 +59,14 @@ class userPermissionsSeeder extends Seeder
             'screening_delete'
         ])->get();
 
-        $defaultAdmin->permissions()->sync($adminPermissions);
-        $defaultManager->permissions()->sync($managerPermissions);
-        $defaultLeader->permissions()->sync($leaderPermissions);
+        foreach( $admins as $admin) {
+            $admin->permissions()->sync($adminPermissions);
+        }
+        foreach( $leaders as $leader) {
+            $leader->permissions()->sync($leaderPermissions);
+        }
+        foreach( $managers as $manager) {
+            $manager->permissions()->sync($managerPermissions);
+        }
     }
 }

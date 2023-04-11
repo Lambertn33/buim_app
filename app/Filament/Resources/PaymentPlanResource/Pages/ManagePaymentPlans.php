@@ -26,7 +26,14 @@ class ManagePaymentPlans extends ManageRecords
                         ->success()
                         ->title('Payment plan registered')
                         ->body('The payment plan has been successfully created.'),
-                )
+                ),
+            Actions\EditAction::make()
+                ->successNotification(
+                    Notification::make()
+                        ->success()
+                        ->title('Payment plan updated')
+                        ->body('The payment plan has been successfully updated.'),
+                ),
         ];
     }
 }
