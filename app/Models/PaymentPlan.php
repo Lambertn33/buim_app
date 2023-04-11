@@ -12,7 +12,7 @@ class PaymentPlan extends Model
     public $incrementing = false;
     
     protected $fillable = [
-        'id', 'amount', 'duration'
+        'id','title', 'amount', 'duration'
     ];
 
     protected $casts = [
