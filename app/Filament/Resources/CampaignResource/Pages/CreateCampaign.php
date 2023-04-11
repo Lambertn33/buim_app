@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\CampaignResource\Pages;
 
 use App\Filament\Resources\CampaignResource;
+use App\Models\Province;
 use Filament\Notifications\Notification;
 use Filament\Pages\Actions;
 use Illuminate\Support\Facades\Auth;
@@ -22,6 +23,7 @@ class CreateCampaign extends CreateRecord
     {
         $data['id'] = Str::uuid()->toString();
         $data['manager_id'] = Auth::user()->manager->id;
+        $data['province'] = Province::where('id', $data['province'])->value('province');
         return $data;
     }
 

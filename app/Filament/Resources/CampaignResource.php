@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CampaignResource\Pages;
 use App\Models\Campaign;
+use App\Models\District;
+use App\Models\Province;
 use App\Models\Role;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -42,30 +44,25 @@ class CampaignResource extends Resource
                     ->label('campaign description')
                     ->columnSpanFull(),
                 Select::make('province')
-                    ->options(self::$model::PROVINCES)
+                    ->options(Province::get()->pluck('province', 'id')->toArray())
+                    ->placeholder('select province')
+                    ->required()
+                    ->visibleOn('create')
+                    ->reactive(),
+                Select::make('district')
                     ->placeholder('select district')
                     ->required()
-                    ->reactive(),
+                    ->visibleOn('create')
+                    ->options(function(callable $get){
+                        $province = $get('province');
+                        if ($province) {
+                            return District::where('province_id', $province)->pluck('district', 'district')->toArray();
+                        }
+                    }),
                 Select::make('status')
                     ->disablePlaceholderSelection()
                     ->hiddenOn('create')
                     ->options(self::$model::CAMPAIGN_STATUS),
-                // TODO make District Selectable
-                // Select::make('district')
-                //     ->options(self::$model::PROVINCES)
-                //     ->placeholder('select district')
-                //     ->required()
-                //     ->options(function (callable $get) {
-                //         $province = $get('province');
-                //         $districts =  json_decode(file_get_contents(base_path() . "/data/provinces.json"), true);
-                //         if ($province) {
-                //             return $districts[$province];
-                //         }
-                //     }),
-                TextInput::make('district')
-                    ->required()
-                    ->label('Campaign district')
-                    ->placeholder('enter district'),
                 DatePicker::make('from')
                     ->label('starting date')
                     ->minDate(now())
