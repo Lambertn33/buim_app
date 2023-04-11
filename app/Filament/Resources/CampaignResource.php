@@ -101,6 +101,9 @@ class CampaignResource extends Resource
                 TextColumn::make('from')
                     ->label('starting date')
                     ->sortable(),
+                TextColumn::make('to')
+                    ->label('ending date')
+                    ->sortable(),
                 BadgeColumn::make('status')
                     ->colors([
                         'primary' => static fn ($state): bool => $state === self::$model::CREATED,
@@ -114,6 +117,9 @@ class CampaignResource extends Resource
                 TextColumn::make('district')
                     ->sortable()
                     ->searchable(),
+                TextColumn::make('screenings_count')
+                    ->label('number of screenings')
+                    ->counts('screenings'),
                 TextColumn::make('manager.user.name')
                     ->label('campaign manager')
                     ->visible(auth()->user()->role->role === Role::ADMIN_ROLE)
@@ -123,7 +129,7 @@ class CampaignResource extends Resource
             ->filters([
                 SelectFilter::make('status')
                     ->label('Filter by status')
-                    ->options(self::$model::CAMPAIGN_STATUS)              
+                    ->options(self::$model::CAMPAIGN_STATUS)
 
             ])
             ->actions([
