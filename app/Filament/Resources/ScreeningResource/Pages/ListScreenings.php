@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ScreeningResource\Pages;
 
 use App\Filament\Resources\ScreeningResource;
+use App\Filament\Resources\ScreeningResource\Widgets\ScreeningsOverviewWidget;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Facades\Auth;
@@ -17,6 +18,13 @@ class ListScreenings extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
+        ];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            ScreeningsOverviewWidget::class
         ];
     }
 
