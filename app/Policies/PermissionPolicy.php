@@ -43,7 +43,7 @@ class PermissionPolicy
     /**
      * Determine whether the user can bulk delete the model.
      */
-    public function deleteAny(User $user, Permission $permission): bool
+    public function deleteAny(User $user): bool
     {
         return $user->hasPermission('user_delete');
     }
