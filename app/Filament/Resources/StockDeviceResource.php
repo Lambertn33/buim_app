@@ -63,7 +63,7 @@ class StockDeviceResource extends Resource
                     ->searchable()
                     ->label('serial Number'),
                 IconColumn::make('screener_id')
-                    ->label('is linked to cusomer')
+                    ->label('is linked to customer')
                     ->options([
                         'heroicon-o-x-circle' => fn ($state, $record): bool => $record->screener_id == null,
                         'heroicon-o-check-circle' => fn ($state, $record): bool => $record->screener_id != null

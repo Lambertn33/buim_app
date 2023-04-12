@@ -6,14 +6,11 @@ use App\Filament\Resources\StockDeviceResource;
 use App\Models\StockDevice;
 use App\Models\StockModel;
 use App\Services\StockServices;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Select;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ManageRecords;
 use Illuminate\Support\Str;
 use Filament\Notifications\Notification;
 use Filament\Pages\Actions\Action;
-use Illuminate\Support\Facades\Response;
 use Konnco\FilamentImport\Actions\ImportAction;
 use Konnco\FilamentImport\Actions\ImportField;
 
