@@ -4,6 +4,8 @@ namespace App\Filament\Resources\ScreeningResource\Pages;
 
 use App\Filament\Resources\ScreeningResource;
 use App\Filament\Resources\ScreeningResource\Widgets\ScreeningsOverviewWidget;
+use App\Models\Campaign;
+use App\Models\PaymentPlan;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +19,8 @@ class ListScreenings extends ListRecords
     protected function getActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->disabled(Campaign::count() < 1 || PaymentPlan::count() < 1),
         ];
     }
 
