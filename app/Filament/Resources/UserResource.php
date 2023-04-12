@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Filament\Resources\UserResource\RelationManagers\PermissionsRelationManager;
+use App\Models\Role;
 use App\Models\User;
 use App\Services\NavigationBadgesServices;
 use Filament\Forms;
@@ -100,7 +101,8 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->hidden(fn($record) => $record->role->role === Role::ADMIN_ROLE)
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
