@@ -7,6 +7,7 @@ use Filament\Pages\Actions;
 use Filament\Resources\Pages\ManageRecords;
 use Illuminate\Support\Str;
 use Filament\Notifications\Notification;
+use Filament\Pages\Actions\Action;
 
 class ManageStockDevices extends ManageRecords
 {
@@ -16,7 +17,7 @@ class ManageStockDevices extends ManageRecords
     {
         return [
             Actions\CreateAction::make()
-                ->label('Create Device')
+                ->label('Create device')
                 ->mutateFormDataUsing(function (array $data): array {
                     $data['id'] = Str::uuid()->toString();
              
@@ -28,6 +29,7 @@ class ManageStockDevices extends ManageRecords
                         ->title('Device registered')
                         ->body('New device has been successfully created.'),
                 ),
+                Action::make('import stock'),
         ];
     }
 }
