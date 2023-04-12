@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class StockModel extends Model
 {
@@ -14,4 +15,18 @@ class StockModel extends Model
     protected $fillable = [
         'id', 'name', 'quantity'
     ];
+
+    protected $casts = [
+        'id' => 'string'
+    ];
+
+    /**
+     * Get all of the devices for the StockModel
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function devices(): HasMany
+    {
+        return $this->hasMany(StockDevice::class, 'model_id', 'id');
+    }
 }
