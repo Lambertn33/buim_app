@@ -84,9 +84,11 @@ class UserResource extends Resource
                     ->label('email')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('role.role'),
+                TextColumn::make('role.role')
+                    ->sortable(),
                 BadgeColumn::make('account_status')
                     ->label('account status')
+                    ->sortable()
                     ->colors([
                         'success' => static fn ($state): bool => $state === User::ACTIVE,
                         'danger' => static fn ($state): bool => $state === User::CLOSED,
