@@ -6,10 +6,12 @@ use App\Filament\Resources\StockModelResource\Pages;
 use App\Filament\Resources\StockModelResource\RelationManagers;
 use App\Models\StockModel;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -25,7 +27,10 @@ class StockModelResource extends Resource
     {
         return $form
             ->schema([
-                //
+                TextInput::make('name')
+                    ->required()
+                    ->unique(ignoreRecord: true)
+                    ->columnSpanFull()
             ]);
     }
 
@@ -33,7 +38,12 @@ class StockModelResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('name')
+                    ->sortable()
+                    ->label('model name')
+                    ->searchable(),
+                TextColumn::make('quantity')
+                    ->label('number of devices')
             ])
             ->filters([
                 //
