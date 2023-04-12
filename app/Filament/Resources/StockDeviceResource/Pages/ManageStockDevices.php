@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\StockDeviceResource\Pages;
 
 use App\Filament\Resources\StockDeviceResource;
+use App\Models\StockDevice;
+use App\Models\StockModel;
 use App\Services\StockServices;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
@@ -12,6 +14,8 @@ use Illuminate\Support\Str;
 use Filament\Notifications\Notification;
 use Filament\Pages\Actions\Action;
 use Illuminate\Support\Facades\Response;
+use Konnco\FilamentImport\Actions\ImportAction;
+use Konnco\FilamentImport\Actions\ImportField;
 
 class ManageStockDevices extends ManageRecords
 {
@@ -39,18 +43,23 @@ class ManageStockDevices extends ManageRecords
                 ->modalSubheading('please fill this downloaded file and upload it')
                 ->color('danger')
                 ->modalButton('download sample'),
-            Action::make('import stock')
-                ->action(fn () => null)
-                ->color('success')
-                ->requiresConfirmation()
-                ->modalSubheading('please download the first sample to check')
-                ->modalButton('Upload')
-                ->form([
-                    FileUpload::make('attachment')
-                        ->label('upload excel file')
-                        ->required()
-                        ->acceptedFileTypes(["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"])
-                ]),
+            ImportAction::make()
+                ->handleBlankRows(true)
+                ->fields([
+                    ImportField::make('name')
+                        ->label('name'),
+                    ImportField::make('serial_number')
+                        ->label('serial number'),
+                    ImportField::make('model')
+                        ->mutateBeforeCreate(fn ($value) => StockModel::where('name', 'LIKE', "%{$value}%")->value('id'))
+                        ->label('model')
+                ])->handleRecordCreation(function ($data) {
+                    $data['id'] = Str::uuid()->toString();
+                    $data['model_id'] = $data['model'];
+                    $data['created_at'] = now();
+                    $data['updated_at'] = now();
+                    return StockDevice::create($data);
+                })
         ];
     }
 
