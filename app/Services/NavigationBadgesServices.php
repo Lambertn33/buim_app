@@ -7,6 +7,8 @@ use App\Models\PaymentPlan;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\Screening;
+use App\Models\StockDevice;
+use App\Models\StockModel;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
@@ -50,5 +52,15 @@ class NavigationBadgesServices
         } else {
             return Screening::where('leader_id', Auth::user()->leader->id)->count();
         }
+    }
+
+    public function getTotalNumberOfDeviceModels()
+    {
+        return StockModel::count();
+    }
+
+    public function getTotalNumberOfDevices()
+    {
+        return StockDevice::count();
     }
 }

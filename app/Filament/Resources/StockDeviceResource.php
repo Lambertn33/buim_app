@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\StockDeviceResource\Pages;
 use App\Filament\Resources\StockDeviceResource\RelationManagers;
 use App\Models\StockDevice;
+use App\Services\NavigationBadgesServices;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -26,6 +27,11 @@ class StockDeviceResource extends Resource
     protected static ?string $navigationGroup = 'overall stock';
 
     protected static ?string $navigationLabel = 'Devices';
+
+    protected static function getNavigationBadge(): ?string
+    {
+        return (new NavigationBadgesServices)->getTotalNumberOfDevices();
+    }
 
     public static function form(Form $form): Form
     {
