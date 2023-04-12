@@ -45,7 +45,8 @@ class RoleResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('role')
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('users_count')
                     ->label('number of users')
                     ->counts('users')
