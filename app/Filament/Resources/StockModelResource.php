@@ -23,6 +23,8 @@ class StockModelResource extends Resource
 
     protected static ?string $navigationGroup = 'overall stock';
 
+    protected static ?string $navigationLabel = 'Device models';
+
     public static function form(Form $form): Form
     {
         return $form
