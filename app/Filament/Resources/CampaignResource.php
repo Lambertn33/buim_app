@@ -32,6 +32,8 @@ class CampaignResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-speakerphone';
 
+    protected static ?string $navigationGroup = 'activities';
+
     protected static function getNavigationBadge(): ?string
     {
         return (new NavigationBadgesServices)->getTotalNumberOfCampaigns();
