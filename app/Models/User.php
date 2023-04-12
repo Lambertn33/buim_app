@@ -99,6 +99,16 @@ class User extends Authenticatable
         return $this->hasOne(Leader::class, 'user_id', 'id');
     }
 
+    /**
+     * Get the stockManager associated with the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function stockManager(): HasOne
+    {
+        return $this->hasOne(StockManager::class, 'user_id', 'id');
+    }
+
     public function hasPermission(string $permission): bool
     {
         $permissionsArray = [];

@@ -28,6 +28,10 @@ class userPermissionsSeeder extends Seeder
             $query->where('role', Role::SECTOR_LEADER_ROLE);
         })->get();
 
+        $stockManagers = User::whereHas('role', function($query){
+            $query->where('role', Role::STOCK_MANAGER_ROLE);
+        })->get();
+
         $adminPermissions = Permission::whereNotIn('permission', [
             'campaign_create',
             'campaign_edit',
@@ -35,6 +39,9 @@ class userPermissionsSeeder extends Seeder
             'screening_create',
             'screening_edit',
             'screening_delete',
+            'sub_stock_create',
+            'sub_stock_edit',
+            'sub_stock_delete',
         ])->get();
 
         $managerPermissions = Permission::whereIn('permission', [
@@ -43,11 +50,11 @@ class userPermissionsSeeder extends Seeder
             'campaign_show',
             'campaign_edit',
             'campaign_delete',
-            'stock_create',
-            'stock_access',
-            'stock_show',
-            'stock_edit',
-            'stock_delete',
+            'sub_stock_create',
+            'sub_stock_access',
+            'sub_stock_show',
+            'sub_stock_edit',
+            'sub_stock_delete',
             'screening_access',
         ])->get();
 
@@ -59,6 +66,18 @@ class userPermissionsSeeder extends Seeder
             'screening_delete'
         ])->get();
 
+        $stockManagerPermissions = Permission::whereIn('permission', [
+            'sub_stock_access',
+            'sub_stock_show',
+            'stock_create',
+            'stock_access',
+            'stock_show',
+            'stock_edit',
+            'stock_delete',
+        ])->get();
+
+
+
         foreach( $admins as $admin) {
             $admin->permissions()->sync($adminPermissions);
         }
@@ -67,6 +86,10 @@ class userPermissionsSeeder extends Seeder
         }
         foreach( $managers as $manager) {
             $manager->permissions()->sync($managerPermissions);
+        }
+
+        foreach ($stockManagers as $stockManager) {
+            $stockManager->permissions()->sync($stockManagerPermissions);
         }
     }
 }

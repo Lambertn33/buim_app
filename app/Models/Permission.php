@@ -54,6 +54,13 @@ class Permission extends Model
         'stock_show',
         'stock_edit',
         'stock_delete',
+
+        'sub_stock_create',
+        'sub_stock_access',
+        'sub_stock_show',
+        'sub_stock_edit',
+        'sub_stock_delete',
+        
     ];
 
     protected $fillable = [

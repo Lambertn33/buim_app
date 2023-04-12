@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Filament\Resources\PermissionResource\Pages;
+namespace App\Filament\Resources\StockModelResource\Pages;
 
-use App\Filament\Resources\PermissionResource;
+use App\Filament\Resources\StockModelResource;
 use Filament\Pages\Actions;
-use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ManageRecords;
 use Illuminate\Support\Str;
+use Filament\Notifications\Notification;
 
-class ManagePermissions extends ManageRecords
+class ManageStockModels extends ManageRecords
 {
-    protected static string $resource = PermissionResource::class;
+    protected static string $resource = StockModelResource::class;
 
     protected function getActions(): array
     {
@@ -24,8 +24,8 @@ class ManagePermissions extends ManageRecords
             ->successNotification(
                 Notification::make()
                     ->success()
-                    ->title('Permission registered')
-                    ->body('The permission has been successfully created.'),
+                    ->title('Device model registered')
+                    ->body('The model has been successfully created.'),
             ),
         ];
     }

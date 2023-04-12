@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Leader;
+use App\Models\StockManager;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 
@@ -71,6 +72,16 @@ class usersSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now()
             ],
+            [
+                'id' => Str::uuid()->toString(),
+                'name' => 'stock manager',
+                'email' => 'stockManager@gmail.com',
+                'role_id' => Role::where('role', Role::STOCK_MANAGER_ROLE)->value('id'),
+                'password' => Hash::make('stockManager12345'),
+                'telephone' => '250788000029',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
         ];
 
         User::insert($users);
@@ -94,6 +105,16 @@ class usersSeeder extends Seeder
                 ];
                 Leader::insert($newLeader);
             }
+            if ($user->role->role == Role::STOCK_MANAGER_ROLE) {
+                $newStockManager = [
+                    'id' => Str::uuid()->toString(),
+                    'user_id' => $user->id,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ];
+                StockManager::insert($newStockManager);
+            }
+            
         }
     }
 }
