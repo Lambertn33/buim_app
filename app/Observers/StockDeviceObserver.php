@@ -28,7 +28,7 @@ class StockDeviceObserver
      */
     public function deleted(StockDevice $stockDevice): void
     {
-        //
+        (new StockServices)->updateModelQuantityOnDeviceDeleted($stockDevice);
     }
 
     /**

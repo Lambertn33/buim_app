@@ -20,4 +20,11 @@ class StockServices
             'quantity' => $deviceQuantity + 1
         ]);
     }
+    public function updateModelQuantityOnDeviceDeleted($device)
+    {
+        $deviceQuantity = StockModel::where('id', $device->model_id)->value('quantity');
+        StockModel::where('id', $device->model_id)->update([
+            'quantity' => $deviceQuantity - 1
+        ]);
+    }
 }
