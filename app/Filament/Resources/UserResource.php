@@ -17,6 +17,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\Card;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -37,39 +38,43 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')
-                    ->label('user names')
-                    ->required()
-                    ->disableAutocomplete()
-                    ->placeholder('enter user names'),
-                TextInput::make('email')
-                    ->email()
-                    ->label('user email')
-                    ->required()
-                    ->unique(ignoreRecord: true)
-                    ->disableAutocomplete()
-                    ->placeholder('enter user email'),
-                TextInput::make('telephone')
-                    ->tel()
-                    ->label('user telephone (250...)')
-                    ->required()
-                    ->unique(ignoreRecord: true)
-                    ->placeholder('enter user telephone'),
-                Select::make('role_id')
-                    ->label('user role')
-                    ->required()
-                    ->placeholder('select user role')
-                    ->relationship('role', 'role'),
-                Select::make('account_status')
-                    ->hiddenOn('create')
-                    ->options(self::$model::ACCOUNT_STATUS)
-                    ->disablePlaceholderSelection()
-                    ->label('account status'),
-                TextInput::make('password')
-                    ->password()
-                    ->minLength(8)
-                    ->disableAutocomplete()
-                    ->visibleOn('create'),
+                Card::make()
+                    ->columns(2)
+                    ->schema([
+                        TextInput::make('name')
+                            ->label('user names')
+                            ->required()
+                            ->disableAutocomplete()
+                            ->placeholder('enter user names'),
+                        TextInput::make('email')
+                            ->email()
+                            ->label('user email')
+                            ->required()
+                            ->unique(ignoreRecord: true)
+                            ->disableAutocomplete()
+                            ->placeholder('enter user email'),
+                        TextInput::make('telephone')
+                            ->tel()
+                            ->label('user telephone (250...)')
+                            ->required()
+                            ->unique(ignoreRecord: true)
+                            ->placeholder('enter user telephone'),
+                        Select::make('role_id')
+                            ->label('user role')
+                            ->required()
+                            ->placeholder('select user role')
+                            ->relationship('role', 'role'),
+                        Select::make('account_status')
+                            ->hiddenOn('create')
+                            ->options(self::$model::ACCOUNT_STATUS)
+                            ->disablePlaceholderSelection()
+                            ->label('account status'),
+                        TextInput::make('password')
+                            ->password()
+                            ->minLength(8)
+                            ->disableAutocomplete()
+                            ->visibleOn('create'),
+                    ])
             ]);
     }
 
