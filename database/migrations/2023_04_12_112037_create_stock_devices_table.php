@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuid('screener_id')->nullable();
             $table->uuid('model_id');
-            $table->string('name');
+            $table->string('device_name');
             $table->string('serial_number')->unique();
             $table->timestamps();
         });

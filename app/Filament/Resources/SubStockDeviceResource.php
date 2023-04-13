@@ -17,7 +17,11 @@ class SubStockDeviceResource extends Resource
 {
     protected static ?string $model = SubStockDevice::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
+
+    protected static ?string $navigationGroup = 'overall stock';
+
+    protected static ?string $navigationLabel = 'District devices';
 
     public static function form(Form $form): Form
     {

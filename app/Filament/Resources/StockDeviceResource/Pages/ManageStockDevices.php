@@ -43,8 +43,8 @@ class ManageStockDevices extends ManageRecords
             ImportAction::make()
                 ->handleBlankRows(true)
                 ->fields([
-                    ImportField::make('name')
-                        ->label('name'),
+                    ImportField::make('device_name')
+                        ->label('device name'),
                     ImportField::make('serial_number')
                         ->label('serial number'),
                     ImportField::make('model')
