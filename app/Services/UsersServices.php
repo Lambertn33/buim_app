@@ -20,6 +20,8 @@ class UsersServices
             'screening_create',
             'screening_edit',
             'screening_delete',
+            'sub_stock_show',
+            'sub_stock_create',
             'sub_stock_create',
             'sub_stock_edit',
             'sub_stock_delete',
