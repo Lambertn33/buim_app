@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\StockModelResource\Pages;
 use App\Filament\Resources\StockModelResource\RelationManagers;
+use App\Models\Role;
 use App\Models\StockModel;
 use App\Services\NavigationBadgesServices;
 use Filament\Forms;
@@ -15,6 +16,7 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class StockModelResource extends Resource
 {
@@ -52,6 +54,7 @@ class StockModelResource extends Resource
                     ->searchable(),
                 TextColumn::make('quantity')
                     ->label('number of devices')
+                    ->visible(Auth::user()->role->role === Role::ADMIN_ROLE)
             ])
             ->filters([
                 //
