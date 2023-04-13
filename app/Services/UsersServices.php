@@ -32,7 +32,6 @@ class UsersServices
             'campaign_edit',
             'campaign_delete',
             'stock_model_access',
-            'sub_stock_create',
             'sub_stock_access',
             'sub_stock_show',
             'sub_stock_edit',

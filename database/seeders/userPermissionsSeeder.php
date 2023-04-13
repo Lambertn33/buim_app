@@ -51,7 +51,6 @@ class userPermissionsSeeder extends Seeder
             'campaign_edit',
             'campaign_delete',
             'stock_model_access',
-            'sub_stock_create',
             'sub_stock_access',
             'sub_stock_show',
             'sub_stock_edit',
@@ -68,6 +67,7 @@ class userPermissionsSeeder extends Seeder
         ])->get();
 
         $stockManagerPermissions = Permission::whereIn('permission', [
+            'sub_stock_create',
             'sub_stock_access',
             'sub_stock_show',
             'stock_create',
