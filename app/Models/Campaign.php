@@ -57,4 +57,14 @@ class Campaign extends Model
     {
         return $this->hasMany(Screening::class, 'campaign_id', 'id');
     }
+
+    /**
+     * Get all of the devices for the Campaign
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function devices(): HasMany
+    {
+        return $this->hasMany(SubStockDevice::class, 'campaign_id', 'id');
+    }
 }
