@@ -25,6 +25,8 @@ class UsersServices
             'sub_stock_create',
             'sub_stock_edit',
             'sub_stock_delete',
+            'sub_stock_request_create',
+            'sub_stock_request_delete'
         ])->get();
 
         $managerPermissions = Permission::whereIn('permission', [
@@ -39,6 +41,10 @@ class UsersServices
             'sub_stock_edit',
             'sub_stock_delete',
             'screening_access',
+            'sub_stock_request_create',
+            'sub_stock_request_access',
+            'sub_stock_request_show',
+            'sub_stock_request_delete',
         ])->get();
 
         $leaderPermissions = Permission::whereIn('permission', [

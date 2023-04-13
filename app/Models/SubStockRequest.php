@@ -6,14 +6,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class StockRequest extends Model
+class SubStockRequest extends Model
 {
     use HasFactory;
 
     public $incrementing = false;
 
+    const STOCKREQUESTSTATUS = ['PENDING', 'PROCESSED', 'DENIED', 'COMPLETED'];
+
+    const PENDING = self::STOCKREQUESTSTATUS[0];
+    const PROCESSED = self::STOCKREQUESTSTATUS[1];
+    const COMPLETED = self::STOCKREQUESTSTATUS[2];
+
     protected $fillable = [
-        'id', 'model_id', 'campaign_id', 'quantity'
+        'id', 'model_id', 'campaign_id', 'quantity', 'status', 'denied_note'
     ];
 
     protected $casts = [

@@ -18,17 +18,17 @@ class userPermissionsSeeder extends Seeder
     {
         DB::table('user_permissions')->delete();
 
-        $admins = User::whereHas('role', function($query){
+        $admins = User::whereHas('role', function ($query) {
             $query->where('role', Role::ADMIN_ROLE);
         })->get();
-        $managers = User::whereHas('role', function($query){
+        $managers = User::whereHas('role', function ($query) {
             $query->where('role', Role::DISTRICT_MANAGER_ROLE);
         })->get();
-        $leaders = User::whereHas('role', function($query){
+        $leaders = User::whereHas('role', function ($query) {
             $query->where('role', Role::SECTOR_LEADER_ROLE);
         })->get();
 
-        $stockManagers = User::whereHas('role', function($query){
+        $stockManagers = User::whereHas('role', function ($query) {
             $query->where('role', Role::STOCK_MANAGER_ROLE);
         })->get();
 
@@ -44,6 +44,8 @@ class userPermissionsSeeder extends Seeder
             'sub_stock_create',
             'sub_stock_edit',
             'sub_stock_delete',
+            'sub_stock_request_create',
+            'sub_stock_request_delete'
         ])->get();
 
         $managerPermissions = Permission::whereIn('permission', [
@@ -58,6 +60,10 @@ class userPermissionsSeeder extends Seeder
             'sub_stock_edit',
             'sub_stock_delete',
             'screening_access',
+            'sub_stock_request_create',
+            'sub_stock_request_access',
+            'sub_stock_request_show',
+            'sub_stock_request_delete',
         ])->get();
 
         $leaderPermissions = Permission::whereIn('permission', [
@@ -81,13 +87,13 @@ class userPermissionsSeeder extends Seeder
 
 
 
-        foreach( $admins as $admin) {
+        foreach ($admins as $admin) {
             $admin->permissions()->sync($adminPermissions);
         }
-        foreach( $leaders as $leader) {
+        foreach ($leaders as $leader) {
             $leader->permissions()->sync($leaderPermissions);
         }
-        foreach( $managers as $manager) {
+        foreach ($managers as $manager) {
             $manager->permissions()->sync($managerPermissions);
         }
 
