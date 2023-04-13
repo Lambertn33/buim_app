@@ -17,7 +17,11 @@ class SubStockRequestResource extends Resource
 {
     protected static ?string $model = SubStockRequest::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-question-mark-circle';
+
+    protected static ?string $navigationGroup = 'overall stock';
+
+    protected static ?string $navigationLabel = 'Stock Requests';
 
     public static function form(Form $form): Form
     {
