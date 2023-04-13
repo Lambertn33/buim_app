@@ -67,4 +67,14 @@ class Campaign extends Model
     {
         return $this->hasMany(SubStockDevice::class, 'campaign_id', 'id');
     }
+
+    /**
+     * Get all of the stockRequests for the Campaign
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function stockRequests(): HasMany
+    {
+        return $this->hasMany(StockRequest::class, 'campaign_id', 'id');
+    }
 }
