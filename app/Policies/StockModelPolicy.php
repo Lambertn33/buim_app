@@ -13,7 +13,7 @@ class StockModelPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermission('stock_access');
+        return $user->hasPermission('stock_model_access');
     }
 
     /**
@@ -21,7 +21,7 @@ class StockModelPolicy
      */
     public function view(User $user, StockModel $stockModel): bool
     {
-        return $user->hasPermission('stock_show');
+        return $user->hasPermission('stock_model_show');
     }
 
     /**
@@ -29,7 +29,7 @@ class StockModelPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermission('stock_show');
+        return $user->hasPermission('stock_model_create');
     }
 
     /**
@@ -37,7 +37,7 @@ class StockModelPolicy
      */
     public function update(User $user, StockModel $stockModel): bool
     {
-        return $user->hasPermission('stock_edit');
+        return $user->hasPermission('stock_model_edit');
     }
 
     /**
@@ -45,7 +45,7 @@ class StockModelPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->hasPermission('stock_delete');
+        return $user->hasPermission('stock_model_delete');
     }
 
     /**
@@ -53,7 +53,7 @@ class StockModelPolicy
      */
     public function delete(User $user, StockModel $stockModel): bool
     {
-        return $user->hasPermission('stock_delete');
+        return $user->hasPermission('stock_model_delete');
     }
 
     /**
