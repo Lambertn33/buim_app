@@ -87,7 +87,7 @@ class usersSeeder extends Seeder
                 'id' => Str::uuid()->toString(),
                 'name' => 'manufacturer',
                 'email' => 'manufacturer@gmail.com',
-                'role_id' => Role::where('role', Role::MANUFACTURER)->value('id'),
+                'role_id' => Role::where('role', Role::MANUFACTURER_ROLE)->value('id'),
                 'password' => Hash::make('manufacturer12345'),
                 'telephone' => '250788000058',
                 'created_at' => now(),
@@ -125,7 +125,7 @@ class usersSeeder extends Seeder
                 ];
                 StockManager::insert($newStockManager);
             }
-            if ($user->role->role == Role::MANUFACTURER) {
+            if ($user->role->role == Role::MANUFACTURER_ROLE) {
                 $newManufacturer = [
                     'id' => Str::uuid()->toString(),
                     'user_id' => $user->id,

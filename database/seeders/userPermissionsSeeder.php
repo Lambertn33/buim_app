@@ -33,7 +33,7 @@ class userPermissionsSeeder extends Seeder
         })->get();
 
         $manufacturers = User::whereHas('role', function ($query) {
-            $query->where('role', Role::MANUFACTURER);
+            $query->where('role', Role::MANUFACTURER_ROLE);
         })->get();
 
         $adminPermissions = Permission::whereNotIn('permission', [

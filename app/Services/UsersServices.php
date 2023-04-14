@@ -95,7 +95,7 @@ class UsersServices
             } elseif ($user->role->role == Role::STOCK_MANAGER_ROLE) {
                 $user->permissions()->sync($stockManagerPermissions);
                 StockManager::insert($newNonAdmin);
-            } elseif($user->role->role == Role::MANUFACTURER) {
+            } elseif($user->role->role == Role::MANUFACTURER_ROLE) {
                 $user->permissions()->sync($manufacturerPermissions);
                 Manufacturer::insert($newNonAdmin);
             }
