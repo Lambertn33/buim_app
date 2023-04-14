@@ -6,6 +6,7 @@ use App\Filament\Resources\StockDeviceResource;
 use App\Models\Role;
 use App\Models\StockDevice;
 use App\Models\StockModel;
+use App\Models\User;
 use App\Services\StockServices;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ManageRecords;
@@ -13,6 +14,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Filament\Notifications\Notification;
 use Filament\Pages\Actions\Action;
+use Illuminate\Database\Eloquent\Builder;
 use Konnco\FilamentImport\Actions\ImportAction;
 use Konnco\FilamentImport\Actions\ImportField;
 
@@ -91,6 +93,11 @@ class ManageStockDevices extends ManageRecords
                     return StockDevice::create($data);
                 })
         ];
+    }
+
+    public function getTableQuery(): Builder
+    {
+        return parent::getTableQuery()->where('is_approved', true);
     }
 
     public function downloadStockExcelFormat()

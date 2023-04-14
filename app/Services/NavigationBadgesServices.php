@@ -61,6 +61,6 @@ class NavigationBadgesServices
 
     public function getTotalNumberOfDevices()
     {
-        return StockDevice::count();
+        return StockDevice::where('is_approved', true)->count();
     }
 }
