@@ -17,7 +17,7 @@ return new class extends Migration
             $table->uuid('campaign_id');
             $table->bigInteger('quantity');
             $table->string('status');
-            $table->string('denied_note');
+            $table->string('denied_note')->nullable();
             $table->timestamps();
         });
     }

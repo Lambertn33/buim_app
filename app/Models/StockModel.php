@@ -39,4 +39,5 @@ class StockModel extends Model
     {
         return $this->hasMany(SubStockDevice::class, 'model_id', 'id');
     }
+    
 }

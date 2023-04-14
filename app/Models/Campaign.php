@@ -75,6 +75,6 @@ class Campaign extends Model
      */
     public function stockRequests(): HasMany
     {
-        return $this->hasMany(StockRequest::class, 'campaign_id', 'id');
+        return $this->hasMany(SubStockRequest::class, 'campaign_id', 'id');
     }
 }

@@ -58,6 +58,9 @@ class UsersServices
         $stockManagerPermissions = Permission::whereIn('permission', [
             'sub_stock_access',
             'sub_stock_show',
+            'sub_stock_request_access',
+            'sub_stock_request_show',
+            'sub_stock_request_edit',
             'stock_create',
             'stock_access',
             'stock_show',
@@ -79,10 +82,10 @@ class UsersServices
             if ($user->role->role == Role::DISTRICT_MANAGER_ROLE) {
                 $user->permissions()->sync($managerPermissions);
                 Manager::insert($newNonAdmin);
-            } elseif($user->role->role == Role::SECTOR_LEADER_ROLE) {
+            } elseif ($user->role->role == Role::SECTOR_LEADER_ROLE) {
                 $user->permissions()->sync($leaderPermissions);
                 Leader::insert($newNonAdmin);
-            } elseif($user->role->role == Role::STOCK_MANAGER_ROLE) {
+            } elseif ($user->role->role == Role::STOCK_MANAGER_ROLE) {
                 $user->permissions()->sync($stockManagerPermissions);
                 StockManager::insert($newNonAdmin);
             }

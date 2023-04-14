@@ -12,11 +12,13 @@ class SubStockRequest extends Model
 
     public $incrementing = false;
 
-    const STOCKREQUESTSTATUS = ['PENDING', 'PROCESSED', 'DENIED', 'COMPLETED'];
+    const STOCKREQUESTSTATUS = ['REQUESTED', 'VERIFIED', 'CONTRACT_PRINTING', 'READY_FOR_LOADING', 'DELIVERED'];
 
-    const PENDING = self::STOCKREQUESTSTATUS[0];
-    const PROCESSED = self::STOCKREQUESTSTATUS[1];
-    const COMPLETED = self::STOCKREQUESTSTATUS[2];
+    const REQUESTED = self::STOCKREQUESTSTATUS[0];
+    const VERIFIED = self::STOCKREQUESTSTATUS[1];
+    const CONTRACT_PRINTING = self::STOCKREQUESTSTATUS[2];
+    const READY_FOR_LOADING = self::STOCKREQUESTSTATUS[3];
+    const DELIVERED = self::STOCKREQUESTSTATUS[3];
 
     protected $fillable = [
         'id', 'model_id', 'campaign_id', 'quantity', 'status', 'denied_note'
@@ -36,5 +38,15 @@ class SubStockRequest extends Model
     public function campaign(): BelongsTo
     {
         return $this->belongsTo(Campaign::class, 'campaign_id', 'id');
+    }
+
+    /**
+     * Get the model that owns the SubStockRequest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function model(): BelongsTo
+    {
+        return $this->belongsTo(StockModel::class, 'model_id', 'id');
     }
 }

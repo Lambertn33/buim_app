@@ -83,6 +83,9 @@ class userPermissionsSeeder extends Seeder
             'stock_show',
             'stock_edit',
             'stock_delete',
+            'sub_stock_request_access',
+            'sub_stock_request_show',
+            'sub_stock_request_edit',
         ])->get();
 
 
