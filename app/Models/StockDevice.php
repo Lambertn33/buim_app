@@ -13,7 +13,7 @@ class StockDevice extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'id', 'model_id', 'device_name', 'serial_number', 'screener_id'
+        'id', 'model_id', 'device_name', 'serial_number', 'screener_id', 'initialization_code', 'is_approved'
     ];
 
     protected $casts = [

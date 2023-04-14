@@ -16,6 +16,8 @@ return new class extends Migration
             $table->uuid('screener_id')->nullable();
             $table->uuid('model_id');
             $table->string('device_name');
+            $table->string('initialization_code');
+            $table->boolean('is_approved');
             $table->string('serial_number')->unique();
             $table->timestamps();
         });
