@@ -2,26 +2,26 @@
 
 namespace App\Policies;
 
-use App\Models\StockModel;
+use App\Models\SubStockDevice;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class StockModelPolicy
+class SubStockDevicePolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermission('stock_model_access');
+        return $user->hasPermission('sub_stock_access');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, StockModel $stockModel): bool
+    public function view(User $user, SubStockDevice $subStockDevice): bool
     {
-        return $user->hasPermission('stock_model_show');
+        return $user->hasPermission('sub_stock_show');
     }
 
     /**
@@ -29,15 +29,15 @@ class StockModelPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermission('stock_model_create');
+        return $user->hasPermission('sub_stock_create');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, StockModel $stockModel): bool
+    public function update(User $user, SubStockDevice $subStockDevice): bool
     {
-        return $user->hasPermission('stock_model_edit');
+        return $user->hasPermission('sub_stock_edit');
     }
 
     /**
@@ -45,21 +45,21 @@ class StockModelPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->hasPermission('stock_model_delete');
+        return $user->hasPermission('sub_stock_delete');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, StockModel $stockModel): bool
+    public function delete(User $user, SubStockDevice $subStockDevice): bool
     {
-        return $user->hasPermission('stock_model_delete');
+        return $user->hasPermission('sub_stock_delete');
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, StockModel $stockModel): bool
+    public function restore(User $user, SubStockDevice $subStockDevice): bool
     {
         //
     }
@@ -67,7 +67,7 @@ class StockModelPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, StockModel $stockModel): bool
+    public function forceDelete(User $user, SubStockDevice $subStockDevice): bool
     {
         //
     }

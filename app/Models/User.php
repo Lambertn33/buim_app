@@ -109,6 +109,16 @@ class User extends Authenticatable
         return $this->hasOne(StockManager::class, 'user_id', 'id');
     }
 
+    /**
+     * Get the manufacturer associated with the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function manufacturer(): HasOne
+    {
+        return $this->hasOne(Manufacturer::class, 'user_id', 'id');
+    }
+
     public function hasPermission(string $permission): bool
     {
         $permissionsArray = [];

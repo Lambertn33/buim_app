@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('sector');
             $table->string('cell');
             $table->string('village');
+            $table->string('proposed_device_name');
             $table->enum('eligibility_status', \App\Models\Screening::ELIGIBILITY_STATUS);
             $table->enum('confirmation_status', \App\Models\Screening::CONFIRMATION_STATUS);
             $table->timestamps();

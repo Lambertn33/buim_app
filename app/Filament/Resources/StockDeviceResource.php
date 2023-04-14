@@ -37,7 +37,7 @@ class StockDeviceResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')
+                TextInput::make('device_name')
                     ->required()
                     ->label('device name'),
                 Select::make('model_id')
@@ -56,7 +56,7 @@ class StockDeviceResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')
+                TextColumn::make('device_name')
                     ->sortable()
                     ->searchable()
                     ->label('device name'),

@@ -29,4 +29,15 @@ class StockModel extends Model
     {
         return $this->hasMany(StockDevice::class, 'model_id', 'id');
     }
+
+    /**
+     * Get all of the subDevices for the StockModel
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function subDevices(): HasMany
+    {
+        return $this->hasMany(SubStockDevice::class, 'model_id', 'id');
+    }
+    
 }

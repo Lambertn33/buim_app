@@ -16,13 +16,15 @@ class Role extends Model
         'ADMINISTRATOR',
         'DISTRICT_MANAGER',
         'SECTOR_LEADER',
-        'STOCK_MANAGER'
+        'STOCK_MANAGER',
+        'MANUFACTURER',
     ];
 
     const ADMIN_ROLE = self::ROLES[0];
     const DISTRICT_MANAGER_ROLE = self::ROLES[1];
     const SECTOR_LEADER_ROLE = self::ROLES[2];
     const STOCK_MANAGER_ROLE = self::ROLES[3];
+    const MANUFACTURER_ROLE = self::ROLES[4];
 
     protected $fillable = [
         'id', 'role'

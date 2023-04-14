@@ -25,7 +25,7 @@ class Screening extends Model
 
     protected $fillable = [
         'id', 'campaign_id','manager_id','leader_id', 'screening_date', 'prospect_names','prospect_telephone', 'prospect_national_id',
-        'prospect_code', 'district','sector','village','cell', 'eligibility_status', 'payment_id', 'confirmation_status'
+        'prospect_code', 'district','sector','village','cell', 'eligibility_status', 'payment_id', 'confirmation_status', 'proposed_device_name'
     ];
 
     protected $casts = [
@@ -74,6 +74,16 @@ class Screening extends Model
     public function device(): HasOne
     {
         return $this->hasOne(StockDevice::class, 'screener_id', 'id');
+    }
+
+    /**
+     * Get the subDevice associated with the Screening
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function subDevice(): HasOne
+    {
+        return $this->hasOne(SubStockDevice::class, 'screener_id', 'id');
     }
 
     public function getScreeningProvince()

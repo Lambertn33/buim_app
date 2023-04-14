@@ -6,23 +6,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class StockDevice extends Model
+class SubStockDevice extends Model
 {
     use HasFactory;
 
     public $incrementing = false;
 
     protected $fillable = [
-        'id', 'model_id', 'device_name', 'serial_number', 'screener_id', 'initialization_code', 'is_approved',
-        'initialized_by', 'approved_by'
+        'id', 'campaign_id', 'model_id', 'name', 'serial_number', 'screener_id'
     ];
 
     protected $casts = [
         'id' => 'string',
         'model_id' => 'string',
         'screener_id' => 'string',
-        'initialized_by' => 'string',
-        'approved_by' => 'string'
+        'campaign_id' => 'string'
     ];
 
     /**
@@ -45,10 +43,13 @@ class StockDevice extends Model
         return $this->belongsTo(Screening::class, 'screener_id', 'id');
     }
 
-    public function initializedBy()
+    /**
+     * Get the campaign that owns the SubStockDevice
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function campaign(): BelongsTo
     {
-        return 123;
-        $initializedById = $this->initialized_by;
-        return $initializedById;
+        return $this->belongsTo(Campaign::class, 'campaign_id', 'id');
     }
 }
