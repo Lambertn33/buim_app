@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Leader;
+use App\Models\Manufacturer;
 use App\Models\StockManager;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
@@ -82,6 +83,16 @@ class usersSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now()
             ],
+            [
+                'id' => Str::uuid()->toString(),
+                'name' => 'manufacturer',
+                'email' => 'manufacturer@gmail.com',
+                'role_id' => Role::where('role', Role::MANUFACTURER)->value('id'),
+                'password' => Hash::make('manufacturer12345'),
+                'telephone' => '250788000058',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
         ];
 
         User::insert($users);
@@ -113,6 +124,15 @@ class usersSeeder extends Seeder
                     'updated_at' => now()
                 ];
                 StockManager::insert($newStockManager);
+            }
+            if ($user->role->role == Role::MANUFACTURER) {
+                $newManufacturer = [
+                    'id' => Str::uuid()->toString(),
+                    'user_id' => $user->id,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ];
+                Manufacturer::insert($newManufacturer);
             }
             
         }

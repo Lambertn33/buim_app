@@ -32,6 +32,10 @@ class userPermissionsSeeder extends Seeder
             $query->where('role', Role::STOCK_MANAGER_ROLE);
         })->get();
 
+        $manufacturers = User::whereHas('role', function ($query) {
+            $query->where('role', Role::MANUFACTURER);
+        })->get();
+
         $adminPermissions = Permission::whereNotIn('permission', [
             'campaign_create',
             'campaign_edit',
@@ -88,6 +92,12 @@ class userPermissionsSeeder extends Seeder
             'sub_stock_request_edit',
         ])->get();
 
+        $manufacturerPermissions = Permission::whereIn('permission', [
+            'stock_create',
+            'stock_access',
+            'stock_show',
+        ])->get();
+
 
 
         foreach ($admins as $admin) {
@@ -102,6 +112,10 @@ class userPermissionsSeeder extends Seeder
 
         foreach ($stockManagers as $stockManager) {
             $stockManager->permissions()->sync($stockManagerPermissions);
+        }
+
+        foreach ($manufacturers as $manufacturer) {
+            $manufacturer->permissions()->sync($manufacturerPermissions);
         }
     }
 }

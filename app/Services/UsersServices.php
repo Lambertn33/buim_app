@@ -7,6 +7,7 @@ use App\Models\Permission;
 use Illuminate\Support\Str;
 use App\Models\Leader;
 use App\Models\Manager;
+use App\Models\Manufacturer;
 use App\Models\StockManager;
 
 class UsersServices
@@ -68,6 +69,12 @@ class UsersServices
             'stock_delete',
         ])->get();
 
+        $manufacturerPermissions = Permission::whereIn('permission', [
+            'stock_create',
+            'stock_access',
+            'stock_show',
+        ])->get();
+
         // After user is created in dashboard, Add respective permissions
 
         if ($user->role->role == Role::ADMIN_ROLE) {
@@ -88,6 +95,9 @@ class UsersServices
             } elseif ($user->role->role == Role::STOCK_MANAGER_ROLE) {
                 $user->permissions()->sync($stockManagerPermissions);
                 StockManager::insert($newNonAdmin);
+            } elseif($user->role->role == Role::MANUFACTURER) {
+                $user->permissions()->sync($manufacturerPermissions);
+                Manufacturer::insert($newNonAdmin);
             }
         }
     }
