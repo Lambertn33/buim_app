@@ -6,7 +6,6 @@ use App\Filament\Resources\StockDeviceResource;
 use App\Models\Role;
 use App\Models\StockDevice;
 use App\Models\StockModel;
-use App\Models\User;
 use App\Services\StockServices;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ManageRecords;
