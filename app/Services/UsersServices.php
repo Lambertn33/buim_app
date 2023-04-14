@@ -70,9 +70,11 @@ class UsersServices
         ])->get();
 
         $manufacturerPermissions = Permission::whereIn('permission', [
-            'stock_create',
-            'stock_access',
-            'stock_show',
+            'stock_pending_create',
+            'stock_pending_access',
+            'stock_pending_show',
+            'stock_pending_edit',
+            'stock_pending_delete',
             'stock_model_access',
         ])->get();
 
