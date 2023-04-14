@@ -81,13 +81,14 @@ class ScreeningResource extends Resource
                             ->required()
                             ->placeholder('select eligibility')
                             ->label('Eligibility status')
+                            ->searchable()
                             ->options(Screening::ELIGIBILITY_STATUS),
-                        Select::make('device_name')
+                        Select::make('proposed_device_name')
                             ->label('proposed device')
                             ->searchable()
                             ->required()
                             ->placeholder('select device')
-                            ->options(StockDevice::distinct()->pluck('device_name'))
+                            ->options(StockDevice::distinct()->pluck('device_name', 'device_name')->toArray())
 
                     ])
             ]);
