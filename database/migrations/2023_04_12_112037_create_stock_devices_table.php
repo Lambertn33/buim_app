@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('device_name');
             $table->string('initialization_code');
             $table->boolean('is_approved');
+            $table->uuid('initialized_by');
+            $table->uuid('approved_by');
             $table->string('serial_number')->unique();
             $table->timestamps();
         });
