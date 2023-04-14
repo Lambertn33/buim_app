@@ -65,7 +65,7 @@ class usersSeeder extends Seeder
             ],
             [
                 'id' => Str::uuid()->toString(),
-                'name' => 'sector leader',
+                'name' => 'sector leader 2',
                 'email' => 'leader2@gmail.com',
                 'role_id' => Role::where('role', Role::SECTOR_LEADER_ROLE)->value('id'),
                 'password' => Hash::make('leader12345'),
@@ -90,6 +90,16 @@ class usersSeeder extends Seeder
                 'role_id' => Role::where('role', Role::MANUFACTURER_ROLE)->value('id'),
                 'password' => Hash::make('manufacturer12345'),
                 'telephone' => '250788000058',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'id' => Str::uuid()->toString(),
+                'name' => 'manufacturer 2',
+                'email' => 'manufacturer2@gmail.com',
+                'role_id' => Role::where('role', Role::MANUFACTURER_ROLE)->value('id'),
+                'password' => Hash::make('manufacturer12345'),
+                'telephone' => '250788000051',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
