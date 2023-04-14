@@ -44,4 +44,11 @@ class StockDevice extends Model
     {
         return $this->belongsTo(Screening::class, 'screener_id', 'id');
     }
+
+    public function initializedBy()
+    {
+        return 123;
+        $initializedById = $this->initialized_by;
+        return $initializedById;
+    }
 }
