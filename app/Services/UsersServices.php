@@ -73,6 +73,7 @@ class UsersServices
             'stock_create',
             'stock_access',
             'stock_show',
+            'stock_model_access',
         ])->get();
 
         // After user is created in dashboard, Add respective permissions

@@ -96,6 +96,7 @@ class userPermissionsSeeder extends Seeder
             'stock_create',
             'stock_access',
             'stock_show',
+            'stock_model_access',
         ])->get();
 
 
