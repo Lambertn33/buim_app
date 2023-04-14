@@ -17,6 +17,7 @@ use Filament\Pages\Actions\Action;
 use Konnco\FilamentImport\Actions\ImportAction;
 use Konnco\FilamentImport\Actions\ImportField;
 use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Model;
 
 class ManagePendingStockDevices extends ManageRecords
 {
@@ -71,7 +72,7 @@ class ManagePendingStockDevices extends ManageRecords
                         ->placeholder('Select initialization code')
                         ->options(StockDevice::where('is_approved', false)->distinct()->pluck('initialization_code', 'initialization_code')->toArray())
                 ])
-                ->action(function(array $data): void {
+                ->action(function (array $data): void {
                     $initializationCode = $data['initialization_code'];
                     (new StockServices)->updateStockDeviceInitialization($initializationCode);
                 })->successNotification(

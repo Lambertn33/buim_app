@@ -16,7 +16,7 @@ class StockServices
         return Response::download($filepath); 
     }
 
-    public function updateModelQuantityOnDeviceCreated($device)
+    public function updateModelQuantityOnDeviceCreatedOrApproved($device)
     {
         $deviceQuantity = StockModel::where('id', $device->model_id)->value('quantity');
         StockModel::where('id', $device->model_id)->update([
