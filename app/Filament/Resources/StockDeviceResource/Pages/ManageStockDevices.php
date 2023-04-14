@@ -34,6 +34,14 @@ class ManageStockDevices extends ManageRecords
                     $data['id'] = Str::uuid()->toString();
                     $data['initialization_code'] = $initializationCode;
                     $data['is_approved'] = true;
+                    // use elseif not else for in the future there might be another role which will have acess
+                    if (Auth::user()->role->role == Role::ADMIN_ROLE) {
+                        $data['initialized_by'] = Auth::user()->id;
+                        $data['approved_by'] = Auth::user()->id;
+                    } elseif (Auth::user()->role->role == Role::STOCK_MANAGER_ROLE) {
+                        $data['initialized_by'] = Auth::user()->stockManager->id;
+                        $data['approved_by'] = Auth::user()->stockManager->id;   
+                    }
                     return $data;
                 })
                 ->successNotification(
@@ -70,8 +78,15 @@ class ManageStockDevices extends ManageRecords
                     $data['updated_at'] = now();
                     if (Auth::user()->role->role === Role::ADMIN_ROLE || Auth::user()->role->role === Role::STOCK_MANAGER_ROLE) {
                         $data['is_approved'] = true;
+                        $data['initialized_by'] = Auth::user()->role->role === Role::ADMIN_ROLE ?
+                            Auth::user()->id 
+                            : Auth::user()->stockManager->id;
+                        $data['approved_by'] = Auth::user()->role->role === Role::ADMIN_ROLE ?
+                            Auth::user()->id 
+                            : Auth::user()->stockManager->id;
                     } else {
                         $data['is_approved'] = false;
+                        $data['initialized_by'] = Auth::user()->manufacturer->id; 
                     }
                     return StockDevice::create($data);
                 })
