@@ -61,6 +61,12 @@ class Permission extends Model
         'stock_model_edit',
         'stock_model_delete',
 
+        'stock_pending_create',
+        'stock_pending_access',
+        'stock_pending_show',
+        'stock_pending_edit',
+        'stock_pending_delete',
+
         'sub_stock_create',
         'sub_stock_access',
         'sub_stock_show',

@@ -13,13 +13,16 @@ class StockDevice extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'id', 'model_id', 'device_name', 'serial_number', 'screener_id', 'initialization_code', 'is_approved'
+        'id', 'model_id', 'device_name', 'serial_number', 'screener_id', 'initialization_code', 'is_approved',
+        'initialized_by', 'approved_by'
     ];
 
     protected $casts = [
         'id' => 'string',
         'model_id' => 'string',
-        'screener_id' => 'string'
+        'screener_id' => 'string',
+        'initialized_by' => 'string',
+        'approved_by' => 'string'
     ];
 
     /**
@@ -40,5 +43,12 @@ class StockDevice extends Model
     public function screener(): BelongsTo
     {
         return $this->belongsTo(Screening::class, 'screener_id', 'id');
+    }
+
+    public function initializedBy()
+    {
+        return 123;
+        $initializedById = $this->initialized_by;
+        return $initializedById;
     }
 }

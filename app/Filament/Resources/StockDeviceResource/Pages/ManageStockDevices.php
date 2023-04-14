@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Filament\Notifications\Notification;
 use Filament\Pages\Actions\Action;
+use Illuminate\Database\Eloquent\Builder;
 use Konnco\FilamentImport\Actions\ImportAction;
 use Konnco\FilamentImport\Actions\ImportField;
 
@@ -25,6 +26,7 @@ class ManageStockDevices extends ManageRecords
         
         return [
             Actions\CreateAction::make()
+                ->hidden(Auth::user()->role->role == Role::MANUFACTURER_ROLE)
                 ->label('Create device')
                 ->mutateFormDataUsing(function (array $data): array {
                     $now = now()->format('dmy');
@@ -33,6 +35,14 @@ class ManageStockDevices extends ManageRecords
                     $data['id'] = Str::uuid()->toString();
                     $data['initialization_code'] = $initializationCode;
                     $data['is_approved'] = true;
+                    // use elseif not else for in the future there might be another role which will have acess
+                    if (Auth::user()->role->role == Role::ADMIN_ROLE) {
+                        $data['initialized_by'] = Auth::user()->id;
+                        $data['approved_by'] = Auth::user()->id;
+                    } elseif (Auth::user()->role->role == Role::STOCK_MANAGER_ROLE) {
+                        $data['initialized_by'] = Auth::user()->stockManager->id;
+                        $data['approved_by'] = Auth::user()->stockManager->id;   
+                    }
                     return $data;
                 })
                 ->successNotification(
@@ -69,12 +79,24 @@ class ManageStockDevices extends ManageRecords
                     $data['updated_at'] = now();
                     if (Auth::user()->role->role === Role::ADMIN_ROLE || Auth::user()->role->role === Role::STOCK_MANAGER_ROLE) {
                         $data['is_approved'] = true;
+                        $data['initialized_by'] = Auth::user()->role->role === Role::ADMIN_ROLE ?
+                            Auth::user()->id 
+                            : Auth::user()->stockManager->id;
+                        $data['approved_by'] = Auth::user()->role->role === Role::ADMIN_ROLE ?
+                            Auth::user()->id 
+                            : Auth::user()->stockManager->id;
                     } else {
                         $data['is_approved'] = false;
+                        $data['initialized_by'] = Auth::user()->manufacturer->id; 
                     }
                     return StockDevice::create($data);
                 })
         ];
+    }
+
+    public function getTableQuery(): Builder
+    {
+        return parent::getTableQuery()->where('is_approved', true);
     }
 
     public function downloadStockExcelFormat()

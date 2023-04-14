@@ -2,8 +2,11 @@
 
 namespace App\Services;
 
+use App\Models\Role;
+use App\Models\StockDevice;
 use Illuminate\Support\Facades\Response;
 use App\Models\StockModel;
+use Illuminate\Support\Facades\Auth;
 
 class StockServices
 {
@@ -13,7 +16,7 @@ class StockServices
         return Response::download($filepath); 
     }
 
-    public function updateModelQuantityOnDeviceCreated($device)
+    public function updateModelQuantityOnDeviceCreatedOrApproved($device)
     {
         $deviceQuantity = StockModel::where('id', $device->model_id)->value('quantity');
         StockModel::where('id', $device->model_id)->update([
@@ -25,6 +28,20 @@ class StockServices
         $deviceQuantity = StockModel::where('id', $device->model_id)->value('quantity');
         StockModel::where('id', $device->model_id)->update([
             'quantity' => $deviceQuantity - 1
+        ]);
+    }
+
+    public function updateStockDeviceInitialization($initializationCode)
+    {
+        $approval = '';
+        if (Auth::user()->role->role == Role::ADMIN_ROLE) {
+            $approval = Auth::user()->id;
+        } else {
+            $approval = Auth::user()->stockManager->id;
+        }
+        StockDevice::where('initialization_code', $initializationCode)->update([
+            'is_approved' => true,
+            'approved_by' => $approval
         ]);
     }
 }

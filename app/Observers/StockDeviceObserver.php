@@ -12,7 +12,7 @@ class StockDeviceObserver
      */
     public function created(StockDevice $stockDevice): void
     {
-        (new StockServices)->updateModelQuantityOnDeviceCreated($stockDevice);
+        (new StockServices)->updateModelQuantityOnDeviceCreatedOrApproved($stockDevice);
     }
 
     /**
@@ -20,7 +20,7 @@ class StockDeviceObserver
      */
     public function updated(StockDevice $stockDevice): void
     {
-        //
+        (new StockServices)->updateModelQuantityOnDeviceCreatedOrApproved($stockDevice);
     }
 
     /**
