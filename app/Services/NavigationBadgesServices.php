@@ -63,4 +63,13 @@ class NavigationBadgesServices
     {
         return StockDevice::where('is_approved', true)->count();
     }
+
+    public function getTotalNumberOfPendingDevices()
+    {
+        if (Auth::user()->role->role === Role::MANUFACTURER_ROLE) {
+            return StockDevice::where('is_approved', false)->where('initialized_by', Auth::user()->manufacturer->id)->count();
+        } else {
+            return StockDevice::where('is_approved', false)->count();
+        }
+    }
 }

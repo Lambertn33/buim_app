@@ -7,6 +7,7 @@ use App\Filament\Resources\PendingStockDeviceResource\RelationManagers;
 use App\Models\PendingStockDevice;
 use App\Models\Role;
 use App\Models\User;
+use App\Services\NavigationBadgesServices;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -32,6 +33,11 @@ class PendingStockDeviceResource extends Resource
     protected static function shouldRegisterNavigation(): bool
     {
         return Auth::user()->hasPermission('stock_pending_access');
+    }
+
+    protected static function getNavigationBadge(): ?string
+    {
+        return (new NavigationBadgesServices)->getTotalNumberOfPendingDevices();
     }
 
     public static function form(Form $form): Form
