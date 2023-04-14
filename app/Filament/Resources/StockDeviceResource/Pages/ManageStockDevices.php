@@ -25,6 +25,7 @@ class ManageStockDevices extends ManageRecords
         
         return [
             Actions\CreateAction::make()
+                ->hidden(Auth::user()->role->role == Role::MANUFACTURER)
                 ->label('Create device')
                 ->mutateFormDataUsing(function (array $data): array {
                     $now = now()->format('dmy');
