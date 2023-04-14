@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\PendingStockDeviceResource\Pages;
 
 use App\Filament\Resources\PendingStockDeviceResource;
-use Filament\Pages\Actions;
 use Filament\Resources\Pages\ManageRecords;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -11,10 +10,12 @@ use App\Models\Role;
 use App\Models\StockDevice;
 use App\Models\StockModel;
 use App\Services\StockServices;
+use Filament\Forms\Components\Select;
 use Illuminate\Support\Str;
 use Filament\Pages\Actions\Action;
 use Konnco\FilamentImport\Actions\ImportAction;
 use Konnco\FilamentImport\Actions\ImportField;
+use Filament\Notifications\Notification;
 
 class ManagePendingStockDevices extends ManageRecords
 {
@@ -33,6 +34,7 @@ class ManagePendingStockDevices extends ManageRecords
             ImportAction::make()
                 ->visible(Auth::user()->role->role === Role::MANUFACTURER_ROLE)
                 ->handleBlankRows(true)
+                ->label('Import excel')
                 ->fields([
                     ImportField::make('device_name')
                         ->required()
@@ -54,7 +56,29 @@ class ManagePendingStockDevices extends ManageRecords
                     $data['created_at'] = now();
                     $data['updated_at'] = now();
                     return StockDevice::create($data);
-                })
+                }),
+            Action::make('approve stock')
+                ->hidden(Auth::user()->role->role === Role::MANUFACTURER_ROLE)
+                ->requiresConfirmation()
+                ->modalSubheading('Before selecting the initialisation code,
+                    please review the pending devices with such initialisation code that you want to approve')
+                ->modalButton('approve stock')
+                ->form([
+                    Select::make('initialization_code')
+                        ->required()
+                        ->label('Initialization code')
+                        ->placeholder('Select initialization code')
+                        ->options(StockDevice::where('is_approved', false)->distinct()->pluck('initialization_code', 'initialization_code')->toArray())
+                ])
+                ->action(function(array $data): void {
+                    $initializationCode = $data['initialization_code'];
+                    (new StockServices)->updateStockDeviceInitialization($initializationCode);
+                })->successNotification(
+                    Notification::make()
+                        ->success()
+                        ->title('Stock updated')
+                        ->body('The stock has been successfully updated.'),
+                ),
         ];
     }
 

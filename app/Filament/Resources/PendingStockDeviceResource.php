@@ -69,8 +69,9 @@ class PendingStockDeviceResource extends Resource
                     ->searchable()
                     ->label('Initialization Code'),
                 TextColumn::make('initialized_by')
-                    ->formatStateUsing(fn (string $state): string => 
-                        User::whereHas('manufacturer', function($query) use($state){
+                    ->formatStateUsing(
+                        fn (string $state): string =>
+                        User::whereHas('manufacturer', function ($query) use ($state) {
                             $query->where('id', $state);
                         })->value('name')
                     )
