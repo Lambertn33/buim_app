@@ -90,6 +90,7 @@ class userPermissionsSeeder extends Seeder
             'sub_stock_request_access',
             'sub_stock_request_show',
             'sub_stock_request_edit',
+            'stock_pending_access'
         ])->get();
 
         $manufacturerPermissions = Permission::whereIn('permission', [

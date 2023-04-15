@@ -62,6 +62,7 @@ class UsersServices
             'sub_stock_request_access',
             'sub_stock_request_show',
             'sub_stock_request_edit',
+            'stock_pending_access',
             'stock_create',
             'stock_access',
             'stock_show',
