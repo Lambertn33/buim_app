@@ -9,6 +9,8 @@ use App\Models\Role;
 use App\Models\User;
 use App\Services\NavigationBadgesServices;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -44,7 +46,18 @@ class PendingStockDeviceResource extends Resource
     {
         return $form
             ->schema([
-                //
+                TextInput::make('device_name')
+                    ->required()
+                    ->label('device name'),
+                Select::make('model_id')
+                    ->required()
+                    ->placeholder('select model')
+                    ->label('device model')
+                    ->relationship('model', 'name'),
+                TextInput::make('serial_number')
+                    ->required()
+                    ->unique(ignoreRecord: true)
+                    ->columnSpanFull()
             ]);
     }
 
