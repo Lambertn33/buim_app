@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\SubStockRequest;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,11 +14,11 @@ return new class extends Migration
     {
         Schema::create('sub_stock_requests', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('model_id');
+            $table->string('request_id')->unique();
             $table->uuid('campaign_id');
-            $table->bigInteger('quantity');
-            $table->string('status');
-            $table->string('denied_note')->nullable();
+            $table->uuid('manager_id');
+            $table->enum('request_status', SubStockRequest::SUB_STOCK_REQUEST_STATUS)->default(SubStockRequest::INITIATED);
+            $table->enum('confirmation_status', SubStockRequest::SUB_STOCK_CONFIRMATION_STATUS)->default(SubStockRequest::PENDING);
             $table->timestamps();
         });
     }

@@ -8,6 +8,7 @@ use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Str;
 use App\Models\Campaign;
 use App\Models\Screening;
+use App\Services\StockServices;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 
@@ -33,6 +34,7 @@ class CreateScreening extends CreateRecord
         $data['screening_date'] = now()->format('Y-m-d');
         $data['confirmation_status'] = Screening::PROSPECT;
         $data['prospect_code'] = $codeGenerator;
+        (new StockServices)->createSubStockRequest($data);
         return $data;
     }
 

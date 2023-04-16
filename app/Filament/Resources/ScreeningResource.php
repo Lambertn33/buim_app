@@ -47,7 +47,7 @@ class ScreeningResource extends Resource
                             ->placeholder('select campaign')
                             ->required()
                             ->reactive()
-                            ->options(Campaign::get()->pluck('title', 'id')->toArray()),
+                            ->options(Campaign::where('status', Campaign::ONGOING)->get()->pluck('title', 'id')->toArray()),
                         Select::make('payment_id')
                             ->label('prospect payment plan')
                             ->placeholder('select payment plan')
@@ -82,7 +82,10 @@ class ScreeningResource extends Resource
                             ->placeholder('select eligibility')
                             ->label('Eligibility status')
                             ->searchable()
-                            ->options(Screening::ELIGIBILITY_STATUS),
+                            ->options([
+                                'ELIGIBLE' => 'ELIGIBLE',
+                                'NOT ELIGIBLE' => 'NOT ELIGIBLE',                            
+                            ]),
                         Select::make('proposed_device_name')
                             ->label('proposed device')
                             ->searchable()
