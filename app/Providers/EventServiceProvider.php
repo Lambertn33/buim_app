@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Campaign;
 use App\Models\StockDevice;
 use App\Models\User;
+use App\Observers\CampaignObserver;
 use App\Observers\StockDeviceObserver;
 use App\Observers\UserObserver;
 use Illuminate\Auth\Events\Registered;
@@ -30,6 +32,7 @@ class EventServiceProvider extends ServiceProvider
     {
         User::observe(UserObserver::class);
         StockDevice::observe(StockDeviceObserver::class);
+        Campaign::observe(CampaignObserver::class);
     }
 
     /**

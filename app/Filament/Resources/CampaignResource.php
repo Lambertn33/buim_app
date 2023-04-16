@@ -68,6 +68,7 @@ class CampaignResource extends Resource
                         }
                     }),
                 Select::make('status')
+                    ->required()
                     ->hiddenOn('create')
                     ->placeholder('Select campaign status')
                     ->options([
