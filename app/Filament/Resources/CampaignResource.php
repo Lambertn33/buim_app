@@ -22,7 +22,6 @@ use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
-use stdClass;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -69,9 +68,16 @@ class CampaignResource extends Resource
                         }
                     }),
                 Select::make('status')
-                    ->disablePlaceholderSelection()
+                    ->required()
                     ->hiddenOn('create')
-                    ->options(self::$model::CAMPAIGN_STATUS),
+                    ->placeholder('Select campaign status')
+                    ->options([
+                        'CREATED' => 'CREATED',
+                        'ONGOING' => 'ONGOING',
+                        'FINISHED' => 'FINISHED',
+                        'STOPPED' => 'STOPPED',
+                    
+                    ]),
                 DatePicker::make('from')
                     ->label('starting date')
                     ->minDate(now())

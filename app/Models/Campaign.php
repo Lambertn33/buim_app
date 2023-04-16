@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Campaign extends Model
 {
@@ -73,8 +74,8 @@ class Campaign extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function stockRequests(): HasMany
+    public function stockRequest(): HasOne
     {
-        return $this->hasMany(SubStockRequest::class, 'campaign_id', 'id');
+        return $this->hasOne(SubStockRequest::class, 'campaign_id', 'id');
     }
 }
