@@ -60,7 +60,6 @@ class SubStockRequestResource extends Resource
     {
         return [
             'index' => Pages\ListSubStockRequests::route('/'),
-            'create' => Pages\CreateSubStockRequest::route('/create'),
             'view' => Pages\ViewSubStockRequest::route('/{record}'),
             'edit' => Pages\EditSubStockRequest::route('/{record}/edit'),
         ];
