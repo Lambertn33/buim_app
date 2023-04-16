@@ -13,15 +13,15 @@ class SubStockRequest extends Model
 
     public $incrementing = false;
 
-    const SUB_STOCK_REQUESTSTATUS = ['INITIATED', 'REQUESTED', 'VERIFIED', 'CONTRACT_PRINTING', 'READY_FOR_LOADING', 'DELIVERED'];
+    const SUB_STOCK_REQUEST_STATUS = ['INITIATED', 'REQUESTED', 'VERIFIED', 'CONTRACT_PRINTING', 'READY_FOR_LOADING', 'DELIVERED'];
     const SUB_STOCK_CONFIRMATION_STATUS = ['PENDING', 'RECEIVED'];
 
-    const INITIATED = self::SUB_STOCK_REQUESTSTATUS[0];
-    const REQUESTED = self::SUB_STOCK_REQUESTSTATUS[1];
-    const VERIFIED = self::SUB_STOCK_REQUESTSTATUS[2];
-    const CONTRACT_PRINTING = self::SUB_STOCK_REQUESTSTATUS[3];
-    const READY_FOR_LOADING = self::SUB_STOCK_REQUESTSTATUS[4];
-    const DELIVERED = self::SUB_STOCK_REQUESTSTATUS[5];
+    const INITIATED = self::SUB_STOCK_REQUEST_STATUS[0];
+    const REQUESTED = self::SUB_STOCK_REQUEST_STATUS[1];
+    const VERIFIED = self::SUB_STOCK_REQUEST_STATUS[2];
+    const CONTRACT_PRINTING = self::SUB_STOCK_REQUEST_STATUS[3];
+    const READY_FOR_LOADING = self::SUB_STOCK_REQUEST_STATUS[4];
+    const DELIVERED = self::SUB_STOCK_REQUEST_STATUS[5];
 
     const PENDING = self::SUB_STOCK_CONFIRMATION_STATUS[0];
     const RECEIVED = self::SUB_STOCK_CONFIRMATION_STATUS[1];
@@ -53,5 +53,16 @@ class SubStockRequest extends Model
     public function requestedDevices(): HasMany
     {
         return $this->hasMany(SubStockRequestDevice::class, 'sub_stock_request_id', 'id');
+    }
+
+    public function getTotalNumberOfRequestedDevices()
+    {
+        $total = 0;
+        if ($this->requestedDevices->count() > 0) {
+            foreach($this->requestedDevices as $requestedDevice) {
+                $total = $total + $requestedDevice->quantity;
+            }
+        }
+        return $total;
     }
 }

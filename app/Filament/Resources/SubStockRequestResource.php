@@ -10,6 +10,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -23,6 +24,8 @@ class SubStockRequestResource extends Resource
 
     protected static ?string $navigationLabel = 'Stock Requests';
 
+    protected static ?string $pluralModelLabel = 'Requested Stock';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -35,7 +38,14 @@ class SubStockRequestResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('request_id')
+                    ->label('Request ID')
+                    ->formatStateUsing(fn (string $state): string => sprintf("%08d", $state))
+                    ->searchable(),
+                TextColumn::make('Devices')
+                    ->label('number of requested devices')
+                    ->formatStateUsing(fn (SubStockRequest $record): string => $record->getTotalNumberOfRequestedDevices())
+                    ->searchable()
             ])
             ->filters([
                 //
