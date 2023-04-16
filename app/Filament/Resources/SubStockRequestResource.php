@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\SubStockRequestResource\Pages;
 use App\Filament\Resources\SubStockRequestResource\RelationManagers;
+use App\Filament\Resources\SubStockRequestResource\RelationManagers\RequestedDevicesRelationManager;
 use App\Models\SubStockRequest;
 use Filament\Forms;
 use Filament\Resources\Form;
@@ -62,7 +63,7 @@ class SubStockRequestResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RequestedDevicesRelationManager::class
         ];
     }
     
