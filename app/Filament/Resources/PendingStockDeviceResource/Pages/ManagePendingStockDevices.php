@@ -26,6 +26,15 @@ class ManagePendingStockDevices extends ManageRecords
 {
     protected static string $resource = PendingStockDeviceResource::class;
 
+    public $initializationCode;
+    public $now;
+
+    public function __construct()
+    {
+        $this->now = now()->format('dmyhis');
+        $this->initializationCode = 'ST-' . $this->now . '';
+    }
+
     protected function getActions(): array
     {
         return [
@@ -52,10 +61,6 @@ class ManagePendingStockDevices extends ManageRecords
                         ->label('model')
                         ->required()
                 ])->handleRecordCreation(function ($data) {
-                    $users =  User::whereHas('role', function ($query) {
-                        $query->where('role', Role::STOCK_MANAGER_ROLE)
-                            ->orWhere('role', Role::ADMIN_ROLE);
-                    })->get();
                     $autheticatedUser = Auth::user();
                     $now = now()->format('dmyhis');
                     $data['id'] = Str::uuid()->toString();
@@ -65,20 +70,16 @@ class ManagePendingStockDevices extends ManageRecords
                     $data['initialized_by'] = $autheticatedUser->manufacturer->id;
                     $data['created_at'] = now();
                     $data['updated_at'] = now();
-                    foreach ($users as $user) {
-                        $user->notify(
-                            Notification::make()
-                                ->title('New stock # ' . $data['initialization_code'] . '')
-                                ->body('a new stock with code ' . $data['initialization_code'] . ' has been initialized by '
-                                    . $autheticatedUser->name . ' ')
-                                ->actions([
-                                    NotificationAction::make('mark as read')
-                                        ->button()
-                                ])
-                                ->toDatabase(),
-                        );
-                    }
                     return StockDevice::create($data);
+                })->after(function () {
+                    $users =  User::whereHas('role', function ($query) {
+                        $query->where('role', Role::STOCK_MANAGER_ROLE)
+                            ->orWhere('role', Role::ADMIN_ROLE);
+                    })->get();
+                    $title = 'New stock # ' . $this->initializationCode . '';
+                    $message = 'a new stock with code ' . $this->initializationCode . ' has been initialized by '
+                        . Auth::user()->name . ' ';
+                    $this->sendNotificationOnStockInitialization($users, $title, $message);
                 }),
             Action::make('approve stock')
                 ->hidden(Auth::user()->role->role === Role::MANUFACTURER_ROLE)
@@ -123,5 +124,21 @@ class ManagePendingStockDevices extends ManageRecords
     public function downloadStockExcelFormat()
     {
         return (new StockServices)->getSampleExcel();
+    }
+
+    public function sendNotificationOnStockInitialization($users, $title, $message)
+    {
+        foreach ($users as $user) {
+            $user->notify(
+                Notification::make()
+                    ->title($title)
+                    ->body($message)
+                    ->actions([
+                        NotificationAction::make('mark as read')
+                            ->button()
+                    ])
+                    ->toDatabase(),
+            );
+        }
     }
 }
