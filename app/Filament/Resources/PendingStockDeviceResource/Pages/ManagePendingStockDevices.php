@@ -14,10 +14,13 @@ use App\Services\StockServices;
 use Filament\Forms\Components\Select;
 use Illuminate\Support\Str;
 use Filament\Pages\Actions\Action;
+use Filament\Notifications\Actions\Action as NotificationAction;
 use Konnco\FilamentImport\Actions\ImportAction;
 use Konnco\FilamentImport\Actions\ImportField;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
+use Maatwebsite\Excel\Row;
 
 class ManagePendingStockDevices extends ManageRecords
 {
@@ -49,14 +52,32 @@ class ManagePendingStockDevices extends ManageRecords
                         ->label('model')
                         ->required()
                 ])->handleRecordCreation(function ($data) {
+                    $users =  User::whereHas('role', function ($query) {
+                        $query->where('role', Role::STOCK_MANAGER_ROLE)
+                            ->orWhere('role', Role::ADMIN_ROLE);
+                    })->get();
+                    $autheticatedUser = Auth::user();
                     $now = now()->format('dmyhis');
                     $data['id'] = Str::uuid()->toString();
                     $data['model_id'] = $data['model'];
-                    $data['initialization_code'] = 'ST-' . $now . '';
                     $data['is_approved'] = false;
-                    $data['initialized_by'] = Auth::user()->manufacturer->id;
+                    $data['initialization_code'] = 'ST-' . $now . '';
+                    $data['initialized_by'] = $autheticatedUser->manufacturer->id;
                     $data['created_at'] = now();
                     $data['updated_at'] = now();
+                    foreach ($users as $user) {
+                        $user->notify(
+                            Notification::make()
+                                ->title('New stock # ' . $data['initialization_code'] . '')
+                                ->body('a new stock with code ' . $data['initialization_code'] . ' has been initialized by '
+                                    . $autheticatedUser->name . ' ')
+                                ->actions([
+                                    NotificationAction::make('mark as read')
+                                        ->button()
+                                ])
+                                ->toDatabase(),
+                        );
+                    }
                     return StockDevice::create($data);
                 }),
             Action::make('approve stock')
