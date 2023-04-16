@@ -27,12 +27,13 @@ class SubStockRequest extends Model
     const RECEIVED = self::SUB_STOCK_CONFIRMATION_STATUS[1];
 
     protected $fillable = [
-        'id', 'campaign_id', 'request_id', 'request_status', 'confirmation_status' 
+        'id', 'campaign_id', 'manager_id', 'request_id', 'request_status', 'confirmation_status' 
     ];
 
     protected $casts = [
         'id' => 'string',
         'campaign_id' => 'string',
+        'manager_id' => 'string'
     ];
 
     /**

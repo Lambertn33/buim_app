@@ -68,30 +68,22 @@ class StockServices
 
         if (SubStockRequest::where('campaign_id', $campaign->id)->exists()) {
             $campaignSubstockRequest = $campaign->stockRequest;
-            $checkDeviceExistence = SubStockRequestDevice::where('sub_stock_request_id', $campaignSubstockRequest->id)
-                ->where('device_name', $screener['proposed_device_name']);
-            if ($checkDeviceExistence->exists()) {
-                $checkDeviceExistence->update([
-                    'quantity' => $checkDeviceExistence->value('quantity') + 1
-                ]);
-                
-            } else {
-                $newSubStockRequestedDevice = [
-                    'id' => Str::uuid()->toString(),
-                    'model_id' => $deviceModel->id,
-                    'sub_stock_request_id' => $campaignSubstockRequest->id,
-                    'screener_code' => $screener['prospect_code'],
-                    'device_name' => $screener['proposed_device_name'],
-                    'quantity' => 1,
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ];
-                SubStockRequestDevice::insert($newSubStockRequestedDevice);
-            }
+            $newSubStockRequestedDevice = [
+                'id' => Str::uuid()->toString(),
+                'model_id' => $deviceModel->id,
+                'sub_stock_request_id' => $campaignSubstockRequest->id,
+                'screener_code' => $screener['prospect_code'],
+                'device_name' => $screener['proposed_device_name'],
+                'quantity' => 1,
+                'created_at' => now(),
+                'updated_at' => now()
+            ];
+            SubStockRequestDevice::insert($newSubStockRequestedDevice);
         } else {
             $newSubStockRequest = [
                 'id' => Str::uuid()->toString(),
-                'campaign_id' => $screener['campaign_id'],
+                'campaign_id' => $campaign->id,
+                'manager_id' => $campaign->manager_id,
                 'request_id' => $this->getLastSubStockRequestIndex(),
                 'created_at' => now(),
                 'updated_at' => now()
