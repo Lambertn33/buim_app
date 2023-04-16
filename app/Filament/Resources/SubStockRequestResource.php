@@ -6,6 +6,7 @@ use App\Filament\Resources\SubStockRequestResource\Pages;
 use App\Filament\Resources\SubStockRequestResource\RelationManagers;
 use App\Filament\Resources\SubStockRequestResource\RelationManagers\RequestedDevicesRelationManager;
 use App\Models\SubStockRequest;
+use App\Services\NavigationBadgesServices;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -26,6 +27,11 @@ class SubStockRequestResource extends Resource
     protected static ?string $navigationLabel = 'Stock Requests';
 
     protected static ?string $pluralModelLabel = 'Requested Stock';
+
+    protected static function getNavigationBadge(): ?string
+    {
+        return (new NavigationBadgesServices)->getTotalNumberOfRequestedDevices();
+    }
 
     public static function form(Form $form): Form
     {
