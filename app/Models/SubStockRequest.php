@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class SubStockRequest extends Model
 {
@@ -41,5 +42,15 @@ class SubStockRequest extends Model
     public function campaign(): BelongsTo
     {
         return $this->belongsTo(Campaign::class, 'campaign_id', 'id');
+    }
+
+    /**
+     * Get all of the requestedDevices for the SubStockRequest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function requestedDevices(): HasMany
+    {
+        return $this->hasMany(SubStockRequestDevice::class, 'sub_stock_request_id', 'id');
     }
 }
