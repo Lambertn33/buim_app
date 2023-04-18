@@ -20,6 +20,7 @@ return new class extends Migration
             $table->enum('account_status', \App\Models\User::ACCOUNT_STATUS)->default(\App\Models\User::ACTIVE);
             $table->uuid('role_id');
             $table->string('password');
+            $table->rememberToken();
             $table->timestamps();
         });
     }
