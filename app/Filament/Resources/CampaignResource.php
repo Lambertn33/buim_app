@@ -24,6 +24,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class CampaignResource extends Resource
 {
@@ -137,7 +138,16 @@ class CampaignResource extends Resource
             ->filters([
                 SelectFilter::make('status')
                     ->label('Filter by status')
-                    ->options(self::$model::CAMPAIGN_STATUS)
+                    ->options([
+                        'CREATED' => 'CREATED',
+                        'ONGOING' => 'ONGOING', 
+                        'FINISHED' => 'FINISHED',
+                        'STOPPED' => 'STOPPED'                           
+                    ]),
+                SelectFilter::make('province')
+                    ->label('Filter by province')
+                    ->options(Province::get()->pluck('province', 'province')->toArray())
+                    ->visible(Auth::user()->role->role === Role::ADMIN_ROLE)
 
             ])
             ->actions([
