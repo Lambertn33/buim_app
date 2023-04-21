@@ -19,34 +19,4 @@ class StockModel extends Model
     protected $casts = [
         'id' => 'string'
     ];
-
-    /**
-     * Get all of the devices for the StockModel
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function devices(): HasMany
-    {
-        return $this->hasMany(StockDevice::class, 'model_id', 'id');
-    }
-
-    /**
-     * Get all of the subDevices for the StockModel
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function subDevices(): HasMany
-    {
-        return $this->hasMany(SubStockDevice::class, 'model_id', 'id');
-    }
-    
-    /**
-     * Get all of the requestedDevices for the StockModel
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function requestedDevices(): HasMany
-    {
-        return $this->hasMany(SubStockRequestDevice::class, 'model_id', 'id');
-    }
 }

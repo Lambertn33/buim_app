@@ -66,26 +66,6 @@ class Screening extends Model
         return $this->belongsTo(Leader::class, 'leader_id', 'id');
     }
 
-    /**
-     * Get the device associated with the Screening
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function device(): HasOne
-    {
-        return $this->hasOne(StockDevice::class, 'screener_id', 'id');
-    }
-
-    /**
-     * Get the subDevice associated with the Screening
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function subDevice(): HasOne
-    {
-        return $this->hasOne(SubStockDevice::class, 'screener_id', 'id');
-    }
-
     public function getScreeningProvince()
     {
         return $this->campaign->province;
