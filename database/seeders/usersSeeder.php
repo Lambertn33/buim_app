@@ -144,7 +144,19 @@ class usersSeeder extends Seeder
                 ];
                 Manufacturer::insert($newManufacturer);
             }
-            
+        }
+
+        // assign some seeded districts to managers
+        $allManagers = \App\Models\Manager::get();
+        $latestDistricts = \App\Models\District::latest()->take($allManagers->count())->orderBy('district', 'asc')->get();
+        for ($i=0; $i < $latestDistricts->count() ; $i++) { 
+            for ($j = 0; $j < $allManagers->count(); $j++) {
+                if ($i == $j) {
+                    $latestDistricts[$i]->update([
+                        'manager_id' => $allManagers[$i]->id
+                    ]);
+                }
+            }
         }
     }
 }
