@@ -23,7 +23,8 @@ class CreateCampaign extends CreateRecord
     {
         $data['id'] = Str::uuid()->toString();
         $data['manager_id'] = Auth::user()->manager->id;
-        $data['province'] = Province::where('id', $data['province'])->value('province');
+        $data['district_id'] = Auth::user()->manager->district->id;
+        $data['province_id'] = Province::where('id', Auth::user()->manager->district->province_id)->value('id');
         return $data;
     }
 

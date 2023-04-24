@@ -78,7 +78,8 @@ class UserResource extends Resource
                             ->visibleOn('create'),
                         Select::make('district_id')
                             ->label('District to Manage')
-                            ->options(District::orderBy('district', 'asc')->get()->pluck('district', 'id')->toArray())
+                            ->required()
+                            ->options(District::whereNull('manager_id')->orderBy('district', 'asc')->get()->pluck('district', 'id')->toArray())
                             ->searchable()
                             ->visibleOn('create')
                             ->visible(function (callable $get) {
