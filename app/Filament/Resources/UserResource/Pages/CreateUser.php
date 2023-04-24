@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\UserResource\Pages;
 
 use App\Filament\Resources\UserResource;
+use App\Models\District;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Str;
@@ -19,8 +20,15 @@ class CreateUser extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['id'] = Str::uuid()->toString();
+        $userId = Str::uuid()->toString();
+        $data['id'] = $userId;
         $data['password'] = Hash::make($data['password']);
+        if ($data['district_id']) {
+            $district = District::find($data['district_id']);
+            $district->update([
+                'manager_id' => $userId
+            ]);
+        }
         return $data;
     }
 
