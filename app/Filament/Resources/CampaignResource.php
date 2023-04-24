@@ -104,10 +104,10 @@ class CampaignResource extends Resource
                         'success' => static fn ($state): bool => $state === self::$model::FINISHED,
                         'danger' => static fn ($state): bool => $state === self::$model::STOPPED,
                     ]),
-                TextColumn::make('province')
+                TextColumn::make('province.province')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('district')
+                TextColumn::make('district.district')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('screenings_count')
