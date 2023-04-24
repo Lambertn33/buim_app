@@ -15,6 +15,18 @@ class WarehousesSeeder extends Seeder
      */
     public function run(): void
     {
+        DB::table('warehouses')->delete();
         $districts = District::get();
+        foreach ($districts as $district) {
+            $district->warehouses()->create(
+                [
+                    'id' => Str::uuid()->toString(),
+                    'name' => '' . $district->district . '-WAREHOUSE',
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ],
+
+            );
+        }
     }
 }
