@@ -12,7 +12,7 @@ class Warehouse extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id', 'district_id','manager_id', 'name'];
+    protected $fillable = ['id', 'district_id', 'name'];
 
     protected $casts = [
         'id' => 'string',

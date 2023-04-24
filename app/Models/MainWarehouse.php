@@ -11,7 +11,7 @@ class MainWarehouse extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id', 'name'];
+    protected $fillable = ['id', 'name', 'description', 'location'];
 
     protected $casts = [
         'id' => 'string'

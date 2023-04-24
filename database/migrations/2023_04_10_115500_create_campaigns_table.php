@@ -16,8 +16,8 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuid('manager_id');
             $table->string('title');
-            $table->enum('province', \App\Models\Campaign::PROVINCES);
-            $table->string('district');
+            $table->uuid('province_id');
+            $table->uuid('district_id');
             $table->enum('status', Campaign::CAMPAIGN_STATUS)->default(Campaign::CREATED);
             $table->string('description');
             $table->date('from');

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('districts', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('province_id');
+            $table->uuid('manager_id')->nullable();
             $table->string('district');
             $table->timestamps();
         });

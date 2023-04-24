@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('warehouses', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('district_id');
-            $table->uuid('manager_id');
             $table->string('name');
             $table->timestamps();
         });
