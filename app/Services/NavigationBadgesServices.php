@@ -75,9 +75,30 @@ class NavigationBadgesServices
 
     public function getTotalNumberOfDPWorldWarehouseDevices()
     {
-        return MainWarehouseDevice::whereHas('mainWarehouse', function($query){
-            $query->where('name', MainWarehouse::DPWORLDWAREHOUSE);
-        })->count();
+        if (Auth::user()->role->role == Role::MANUFACTURER_ROLE) {
+            $manufacturerId = Auth::user()->manufacturer->id;
+            return MainWarehouseDevice::where('is_approved', true)->where('initialized_by', $manufacturerId)->whereHas('mainWarehouse', function ($query) {
+                $query->where('name', MainWarehouse::DPWORLDWAREHOUSE);
+            })->count();
+        } else {
+            return MainWarehouseDevice::where('is_approved', true)->whereHas('mainWarehouse', function ($query) {
+                $query->where('name', MainWarehouse::DPWORLDWAREHOUSE);
+            })->count();
+        }
+    }
+
+    public function getTotalNumberOfPendingDPWorldWarehouseDevices()
+    {
+        if (Auth::user()->role->role == Role::MANUFACTURER_ROLE) {
+            $manufacturerId = Auth::user()->manufacturer->id;
+            return MainWarehouseDevice::where('is_approved', false)->where('initialized_by', $manufacturerId)->whereHas('mainWarehouse', function ($query) {
+                $query->where('name', MainWarehouse::DPWORLDWAREHOUSE);
+            })->count();
+        } else {
+            return MainWarehouseDevice::where('is_approved', false)->whereHas('mainWarehouse', function ($query) {
+                $query->where('name', MainWarehouse::DPWORLDWAREHOUSE);
+            })->count();
+        }
     }
 
     public function getTotalNumberOfRugandoWarehouseDevices()

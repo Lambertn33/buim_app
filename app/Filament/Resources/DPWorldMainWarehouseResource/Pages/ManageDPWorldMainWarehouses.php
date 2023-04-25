@@ -92,7 +92,7 @@ class ManageDPWorldMainWarehouses extends ManageRecords
 
     protected function getTableQuery(): Builder
     {
-        return MainWarehouseDevice::whereHas('mainWarehouse', function ($query) {
+        return MainWarehouseDevice::where('is_approved', true)->whereHas('mainWarehouse', function ($query) {
             $query->where('name', MainWarehouse::DPWORLDWAREHOUSE);
         });
     }

@@ -34,6 +34,21 @@ class StockServices
         ]);
     }
 
+    // STOCK INITIALIZATION SERVICES
+    public function updateStockDeviceInitialization($initializationCode)
+    {
+        $approval = '';
+        if (Auth::user()->role->role == Role::ADMIN_ROLE) {
+            $approval = Auth::user()->id;
+        } else {
+            $approval = Auth::user()->stockManager->id;
+        }
+        MainWarehouseDevice::where('initialization_code', $initializationCode)->update([
+            'is_approved' => true,
+            'approved_by' => $approval
+        ]);
+    }
+
     //WAREHOUSES SERVICES
     public function transferMainWarehouseDevice($device, $warehouseId)
     {

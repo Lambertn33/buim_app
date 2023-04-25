@@ -11,6 +11,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use App\Models\MainWarehouseDevice;
+use App\Models\Role;
 use App\Services\NavigationBadgesServices;
 use App\Services\StockServices;
 use Filament\Forms\Components\Select;
@@ -23,6 +24,7 @@ use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class DPWorldMainWarehouseResource extends Resource
 {
@@ -39,6 +41,13 @@ class DPWorldMainWarehouseResource extends Resource
     protected static ?string $modelLabel = 'DP World Warehouse Devices';
 
     protected static ?int $navigationSort = 2;
+
+    protected static function shouldRegisterNavigation(): bool
+    {
+        return Auth::user()->role->role === Role::ADMIN_ROLE ||
+            Auth::user()->role->role === Role::STOCK_MANAGER_ROLE;
+    }
+
 
     protected static function getNavigationBadge(): ?string
     {
@@ -76,6 +85,10 @@ class DPWorldMainWarehouseResource extends Resource
                     ->sortable()
                     ->searchable()
                     ->label('device model'),
+                TextColumn::make('initialization_code')
+                    ->sortable()
+                    ->searchable()
+                    ->label('Initialization Code'),
                 TextColumn::make('serial_number')
                     ->sortable()
                     ->searchable()
@@ -96,7 +109,7 @@ class DPWorldMainWarehouseResource extends Resource
                     ->modalSubheading('select other main warehouse to transfer this device')
                     ->modalButton('transfer device')
                     ->icon('heroicon-o-paper-airplane')
-                    ->label('transfer to other main warehouse')
+                    ->label('Transfer')
                     ->form(fn ($record) => [
                         Select::make('main_warehouse_id')
                             ->label('Main warehouse')
@@ -123,7 +136,7 @@ class DPWorldMainWarehouseResource extends Resource
                             ->label('Main warehouse')
                             ->required()
                             ->placeholder('select other main warehouse')
-                            ->options(MainWarehouse::get()->pluck('name', 'id')->toArray())
+                            ->options(MainWarehouse::whereNot('name', MainWarehouse::DPWORLDWAREHOUSE)->get()->pluck('name', 'id')->toArray())
                     ])
                     ->action(fn (Collection $records, array $data) => $records->each->update([
                         'main_warehouse_id' => $data['main_warehouse_id']
