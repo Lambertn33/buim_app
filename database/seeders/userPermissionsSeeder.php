@@ -43,13 +43,6 @@ class userPermissionsSeeder extends Seeder
             'screening_create',
             'screening_edit',
             'screening_delete',
-            'sub_stock_access',
-            'sub_stock_show',
-            'sub_stock_create',
-            'sub_stock_edit',
-            'sub_stock_delete',
-            'sub_stock_request_create',
-            'sub_stock_request_delete'
         ])->get();
 
         $managerPermissions = Permission::whereIn('permission', [
@@ -59,15 +52,7 @@ class userPermissionsSeeder extends Seeder
             'campaign_edit',
             'campaign_delete',
             'stock_model_access',
-            'sub_stock_access',
-            'sub_stock_show',
-            'sub_stock_edit',
-            'sub_stock_delete',
             'screening_access',
-            'sub_stock_request_create',
-            'sub_stock_request_access',
-            'sub_stock_request_show',
-            'sub_stock_request_delete',
         ])->get();
 
         $leaderPermissions = Permission::whereIn('permission', [
@@ -79,26 +64,20 @@ class userPermissionsSeeder extends Seeder
         ])->get();
 
         $stockManagerPermissions = Permission::whereIn('permission', [
-            'sub_stock_create',
-            'sub_stock_access',
-            'sub_stock_show',
             'stock_create',
             'stock_access',
             'stock_show',
             'stock_edit',
             'stock_delete',
-            'sub_stock_request_access',
-            'sub_stock_request_show',
-            'sub_stock_request_edit',
-            'stock_pending_access'
+            'main_warehouse_access',
+            'main_warehouse_show',
+            'main_warehouse_edit',
+            'main_warehouse_create',
+            'main_warehouse_delete',
+            
         ])->get();
 
         $manufacturerPermissions = Permission::whereIn('permission', [
-            'stock_pending_create',
-            'stock_pending_access',
-            'stock_pending_show',
-            'stock_pending_edit',
-            'stock_pending_delete',
             'stock_model_access',
         ])->get();
 
