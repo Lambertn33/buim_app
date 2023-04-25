@@ -12,7 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('main_warehouse_devices', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->uuid('model_id');
+            $table->uuid('main_warehouse_id');
+            $table->string('device_name');
+            $table->string('initialization_code');
+            $table->boolean('is_approved');
+            $table->uuid('initialized_by');
+            $table->uuid('approved_by')->nullable();
+            $table->string('serial_number')->unique();
             $table->timestamps();
         });
     }

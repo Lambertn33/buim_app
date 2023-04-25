@@ -19,4 +19,15 @@ class StockModel extends Model
     protected $casts = [
         'id' => 'string'
     ];
+
+    /**
+     * Get all of the mainWarehouseDevices for the StockModel
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function mainWarehouseDevices(): HasMany
+    {
+        return $this->hasMany(MainWarehouseDevice::class, 'model_id', 'id');
+    }
 }
+
