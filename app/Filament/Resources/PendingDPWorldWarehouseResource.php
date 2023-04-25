@@ -41,7 +41,7 @@ class PendingDPWorldWarehouseResource extends Resource
     protected static function shouldRegisterNavigation(): bool
     {
         return Auth::user()->role->role === Role::ADMIN_ROLE ||
-              Auth::user()->role->role === Role::MANUFACTURER_ROLE ||
+            Auth::user()->role->role === Role::MANUFACTURER_ROLE ||
             Auth::user()->role->role === Role::STOCK_MANAGER_ROLE;
     }
 
@@ -56,48 +56,51 @@ class PendingDPWorldWarehouseResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-        ->columns([
-            TextColumn::make('device_name')
-                ->sortable()
-                ->searchable()
-                ->label('device name'),
-            TextColumn::make('model.name')
-                ->sortable()
-                ->searchable()
-                ->label('device model'),
-            TextColumn::make('serial_number')
-                ->sortable()
-                ->searchable()
-                ->label('serial Number'),
-            TextColumn::make('initialization_code')
-                ->sortable()
-                ->searchable()
-                ->label('Initialization Code'),
-            TextColumn::make('initialized_by')
-                ->formatStateUsing(
-                    fn (string $state): string =>
-                    User::whereHas('manufacturer', function ($query) use ($state) {
-                        $query->where('id', $state);
-                    })->value('name')
-                )
-                ->hidden(Auth::user()->role->role === Role::MANUFACTURER_ROLE)
-        ])
+            ->columns([
+                TextColumn::make('device_name')
+                    ->sortable()
+                    ->searchable()
+                    ->label('device name'),
+                TextColumn::make('model.name')
+                    ->sortable()
+                    ->searchable()
+                    ->label('device model'),
+                TextColumn::make('serial_number')
+                    ->sortable()
+                    ->searchable()
+                    ->label('serial Number'),
+                TextColumn::make('initialization_code')
+                    ->sortable()
+                    ->searchable()
+                    ->label('Initialization Code'),
+                TextColumn::make('initialized_by')
+                    ->formatStateUsing(
+                        fn (string $state): string =>
+                        User::whereHas('manufacturer', function ($query) use ($state) {
+                            $query->where('id', $state);
+                        })->value('name')
+                    )
+                    ->hidden(Auth::user()->role->role === Role::MANUFACTURER_ROLE)
+            ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->visible(Auth::user()->role->role == Role::MANUFACTURER_ROLE),
+                Tables\Actions\DeleteAction::make()
+                    ->visible(Auth::user()->role->role == Role::MANUFACTURER_ROLE),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\DeleteBulkAction::make()
+                    ->visible(Auth::user()->role->role == Role::MANUFACTURER_ROLE),
             ]);
     }
-    
+
     public static function getPages(): array
     {
         return [
             'index' => Pages\ManagePendingDPWorldWarehouses::route('/'),
         ];
-    }    
+    }
 }
