@@ -96,7 +96,7 @@ class DPWorldMainWarehouseResource extends Resource
                     ->modalSubheading('select other main warehouse to transfer this device')
                     ->modalButton('transfer device')
                     ->icon('heroicon-o-paper-airplane')
-                    ->label('transfer to other main warehouse')
+                    ->label('Transfer to other main warehouse')
                     ->form(fn ($record) => [
                         Select::make('main_warehouse_id')
                             ->label('Main warehouse')
