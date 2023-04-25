@@ -25,6 +25,10 @@ class MainWarehouseResource extends Resource
 
     protected static ?string $navigationGroup = 'main warehouses inventory';
 
+    protected static ?string $navigationLabel = 'Warehouses Overview';
+
+    protected static ?int $navigationSort = 1;
+
     public static function form(Form $form): Form
     {
         return $form

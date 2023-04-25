@@ -8,6 +8,11 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Models\MainWarehouseDevice;
 use App\Models\MainWarehouse;
 use App\Models\Role;
+use Filament\Pages\Actions\Action;
+use Konnco\FilamentImport\Actions\ImportAction;
+use Konnco\FilamentImport\Actions\ImportField;
+use App\Models\StockModel;
+use App\Services\StockServices;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Filament\Resources\Pages\ManageRecords;
@@ -20,7 +25,7 @@ class ManageDPWorldMainWarehouses extends ManageRecords
     {
         return [
             Actions\CreateAction::make()
-            ->label('Create device')
+                ->label('Create device')
                 ->mutateFormDataUsing(function (array $data): array {
                     $now = now()->format('dmy');
                     $randomNumber = rand(10000, 99999);
@@ -39,12 +44,55 @@ class ManageDPWorldMainWarehouses extends ManageRecords
                     }
                     return $data;
                 }),
+            Action::make('download excel sample')
+                ->action('downloadStockExcelFormat')
+                ->requiresConfirmation()
+                ->modalSubheading('please fill this downloaded file and upload it, initially all imported devices are stored in DP World Main warehouse')
+                ->color('danger')
+                ->modalButton('download sample'),
+            ImportAction::make()
+                ->handleBlankRows(true)
+                ->label('Import initial stock')
+                ->modalSubheading('This is the initial stock before being transfered to different warehouses')
+                ->fields([
+                    ImportField::make('device_name')
+                        ->required()
+                        ->label('device name'),
+                    ImportField::make('serial_number')
+                        ->required()
+                        ->label('serial number'),
+                    ImportField::make('model')
+                        ->mutateBeforeCreate(fn ($value) => StockModel::where('name', 'LIKE', "%{$value}%")->value('id'))
+                        ->label('model')
+                        ->required()
+                ])->handleRecordCreation(function ($data) {
+                    $now = now()->format('dmyhis');
+                    $data['id'] = Str::uuid()->toString();
+                    $data['model_id'] = $data['model'];
+                    $data['initialization_code'] = 'ST-' . $now . '';
+                    $data['main_warehouse_id'] = MainWarehouse::where('name', MainWarehouse::DPWORLDWAREHOUSE)->value('id');
+                    $data['created_at'] = now();
+                    $data['updated_at'] = now();
+                    if (Auth::user()->role->role === Role::ADMIN_ROLE || Auth::user()->role->role === Role::STOCK_MANAGER_ROLE) {
+                        $data['is_approved'] = true;
+                        $data['initialized_by'] = Auth::user()->role->role === Role::ADMIN_ROLE ?
+                            Auth::user()->id
+                            : Auth::user()->stockManager->id;
+                        $data['approved_by'] = Auth::user()->role->role === Role::ADMIN_ROLE ?
+                            Auth::user()->id
+                            : Auth::user()->stockManager->id;
+                    } else {
+                        $data['is_approved'] = false;
+                        $data['initialized_by'] = Auth::user()->manufacturer->id;
+                    }
+                    return MainWarehouseDevice::create($data);
+                })
         ];
     }
 
     protected function getTableQuery(): Builder
     {
-        return MainWarehouseDevice::whereHas('mainWarehouse', function($query){
+        return MainWarehouseDevice::whereHas('mainWarehouse', function ($query) {
             $query->where('name', MainWarehouse::DPWORLDWAREHOUSE);
         });
     }
@@ -54,5 +102,10 @@ class ManageDPWorldMainWarehouses extends ManageRecords
         abort_unless(Auth::user()->role->role == Role::ADMIN_ROLE ||
             Auth::user()->role->role == Role::MANUFACTURER_ROLE ||
             Auth::user()->role->role == Role::STOCK_MANAGER_ROLE, 403);
+    }
+
+    public function downloadStockExcelFormat()
+    {
+        return (new StockServices)->getSampleExcel();
     }
 }

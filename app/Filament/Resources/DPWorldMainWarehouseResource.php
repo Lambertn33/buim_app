@@ -5,16 +5,22 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\DPWorldMainWarehouseResource\Pages;
 use App\Filament\Resources\DPWorldMainWarehouseResource\RelationManagers;
 use App\Models\DPWorldMainWarehouse;
+use App\Models\MainWarehouse;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use App\Models\MainWarehouseDevice;
+use App\Services\StockServices;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class DPWorldMainWarehouseResource extends Resource
@@ -30,6 +36,8 @@ class DPWorldMainWarehouseResource extends Resource
     protected static ?string $slug = 'dp-world-warehouse';
 
     protected static ?string $modelLabel = 'DP World Warehouse Devices';
+
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
@@ -72,9 +80,51 @@ class DPWorldMainWarehouseResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+                Action::make('transfer')
+                    ->color('success')
+                    ->action(function (MainWarehouseDevice $record, array $data) {
+                        (new StockServices)->transferMainWarehouseDevice($record, $data['main_warehouse_id']);
+                    })
+                    ->requiresConfirmation()
+                    ->modalSubheading('select other main warehouse to transfer this device')
+                    ->modalButton('transfer device')
+                    ->icon('heroicon-o-paper-airplane')
+                    ->label('transfer to other main warehouse')
+                    ->form(fn ($record) => [
+                        Select::make('main_warehouse_id')
+                            ->label('Main warehouse')
+                            ->required()
+                            ->placeholder('select other main warehouse')
+                            ->options(MainWarehouse::whereNot('id', $record->main_warehouse_id)->get()->pluck('name', 'id')->toArray())
+                    ])
+                    ->successNotification(
+                        Notification::make('success')
+                            ->title('Device transfered')
+                            ->body('device has been successfully transfered.'),
+                    )
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+                BulkAction::make('transfer selected')
+                    ->color('success')
+                    ->icon('heroicon-o-paper-airplane')
+                    ->requiresConfirmation()
+                    ->modalSubheading('select other main warehouse to transfer selected devices')
+                    ->modalButton('transfer selected devices')
+                    ->form([
+                        Select::make('main_warehouse_id')
+                            ->label('Main warehouse')
+                            ->required()
+                            ->placeholder('select other main warehouse')
+                            ->options(MainWarehouse::get()->pluck('name', 'id')->toArray())
+                    ])
+                    ->action(fn (Collection $records, array $data) => $records->each->update([
+                        'main_warehouse_id' => $data['main_warehouse_id']
+                    ]))->successNotification(
+                        Notification::make('success')
+                            ->title('Device transfered')
+                            ->body('device has been successfully transfered.'),
+                    )
             ]);
     }
 
