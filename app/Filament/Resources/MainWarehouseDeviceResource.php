@@ -16,8 +16,11 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use PhpParser\Node\Stmt\Label;
 
@@ -69,7 +72,9 @@ class MainWarehouseDeviceResource extends Resource
                     ->label('Main warehouse'),
             ])
             ->filters([
-                //
+                SelectFilter::make('main_warehouse_id')
+                    ->label('filter by main warehouse')
+                    ->options(MainWarehouse::get()->pluck('name', 'id')->toArray())
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -81,7 +86,7 @@ class MainWarehouseDeviceResource extends Resource
                     })
                     ->requiresConfirmation()
                     ->modalSubheading('select other main warehouse to transfer this device')
-                    ->modalButton('transfer warehouse')
+                    ->modalButton('transfer device')
                     ->icon('heroicon-o-paper-airplane')
                     ->label('transfer to other main warehouse')
                     ->form(fn ($record) => [
@@ -100,6 +105,26 @@ class MainWarehouseDeviceResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+                BulkAction::make('transfer selected')
+                    ->color('success')
+                    ->icon('heroicon-o-paper-airplane')
+                    ->requiresConfirmation()
+                    ->modalSubheading('select other main warehouse to transfer selected devices')
+                    ->modalButton('transfer selected devices')
+                    ->form([
+                        Select::make('main_warehouse_id')
+                            ->label('Main warehouse')
+                            ->required()
+                            ->placeholder('select other main warehouse')
+                            ->options(MainWarehouse::get()->pluck('name', 'id')->toArray())
+                    ])
+                    ->action(fn (Collection $records, array $data) => $records->each->update([
+                        'main_warehouse_id' => $data['main_warehouse_id']
+                    ]))->successNotification(
+                        Notification::make('success')
+                            ->title('Device transfered')
+                            ->body('device has been successfully transfered.'),
+                    )
             ]);
     }
 
