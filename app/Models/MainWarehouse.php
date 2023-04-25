@@ -27,7 +27,7 @@ class MainWarehouse extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function mainWarehouseDevices(): HasMany
+    public function devices(): HasMany
     {
         return $this->hasMany(MainWarehouseDevice::class, 'main_warehouse_id', 'id');
     }

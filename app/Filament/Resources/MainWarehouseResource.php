@@ -4,7 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\MainWarehouseResource\Pages;
 use App\Filament\Resources\MainWarehouseResource\RelationManagers;
-use App\Filament\Resources\MainWarehouseResource\RelationManagers\MainWarehouseDevicesRelationManager;
 use App\Models\MainWarehouse;
 use Filament\Forms;
 use Filament\Forms\Components\Card;
@@ -52,13 +51,16 @@ class MainWarehouseResource extends Resource
                     ->searchable()
                     ->description(fn (MainWarehouse $record): string => $record->description)
                     ->sortable(),
-                TextColumn::make('location')
+                TextColumn::make('location'),
+                TextColumn::make('devices_count')
+                    ->label('number of held devices')
+                    ->counts('devices')
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                // Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 // Tables\Actions\DeleteBulkAction::make(),
@@ -67,9 +69,7 @@ class MainWarehouseResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            MainWarehouseDevicesRelationManager::class
-        ];
+        return [];
     }
 
     public static function getPages(): array
