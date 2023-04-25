@@ -12,6 +12,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use App\Models\MainWarehouseDevice;
+use App\Services\NavigationBadgesServices;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
@@ -32,6 +33,11 @@ class RugandoMainWarehouseResource extends Resource
     protected static ?string $modelLabel = 'Rugando Warehouse Devices';
 
     protected static ?int $navigationSort = 4;
+
+    protected static function getNavigationBadge(): ?string
+    {
+        return (new NavigationBadgesServices)->getTotalNumberOfRugandoWarehouseDevices();
+    }
 
     public static function form(Form $form): Form
     {

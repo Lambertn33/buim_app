@@ -10,6 +10,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use App\Models\MainWarehouseDevice;
+use App\Services\NavigationBadgesServices;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables;
@@ -32,6 +33,11 @@ class HQMainWarehouseResource extends Resource
     protected static ?string $modelLabel = 'HQ Warehouse Devices';
 
     protected static ?int $navigationSort = 3;
+
+    protected static function getNavigationBadge(): ?string
+    {
+        return (new NavigationBadgesServices)->getTotalNumberOfHQWarehouseDevices();
+    }
 
     public static function form(Form $form): Form
     {

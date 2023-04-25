@@ -11,6 +11,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use App\Models\MainWarehouseDevice;
+use App\Services\NavigationBadgesServices;
 use App\Services\StockServices;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -38,6 +39,12 @@ class DPWorldMainWarehouseResource extends Resource
     protected static ?string $modelLabel = 'DP World Warehouse Devices';
 
     protected static ?int $navigationSort = 2;
+
+    protected static function getNavigationBadge(): ?string
+    {
+        return (new NavigationBadgesServices)->getTotalNumberOfDPWorldWarehouseDevices();
+    }
+
 
     public static function form(Form $form): Form
     {
