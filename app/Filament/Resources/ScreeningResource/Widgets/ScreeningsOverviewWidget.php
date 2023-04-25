@@ -19,11 +19,12 @@ class ScreeningsOverviewWidget extends BaseWidget
                 Card::make('Total Non-eligible Screenings', Screening::where('eligibility_status', Screening::NOT_ELIGIBLE)->count())
             ];
         } elseif(Auth::user()->role->role === Role::DISTRICT_MANAGER_ROLE) {
+            $authManagerDistrict = Auth::user()->manager->district->district;
             $authManagerId = Auth::user()->manager->id;
             return [
-                Card::make('Total Screenings', Screening::where('manager_id', $authManagerId)->count()),
-                Card::make('Total Eligible Screenings', Screening::where('eligibility_status', Screening::ELIGIBLE)->where('manager_id', $authManagerId)->count()),
-                Card::make('Total Non-eligible Screenings', Screening::where('eligibility_status', Screening::NOT_ELIGIBLE)->where('manager_id', $authManagerId)->count())
+                Card::make('Screenings in '.$authManagerDistrict.' District' , Screening::where('manager_id', $authManagerId)->count()),
+                Card::make('Eligible Screenings in '.$authManagerDistrict.' District', Screening::where('eligibility_status', Screening::ELIGIBLE)->where('manager_id', $authManagerId)->count()),
+                Card::make('Non-eligible Screenings in '.$authManagerDistrict.' District', Screening::where('eligibility_status', Screening::NOT_ELIGIBLE)->where('manager_id', $authManagerId)->count())
             ];
         } else {
             $authLeaderId = Auth::user()->leader->id;

@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Filament\Resources\UserResource\RelationManagers\PermissionsRelationManager;
+use App\Models\District;
 use App\Models\Role;
 use App\Models\User;
 use App\Services\NavigationBadgesServices;
@@ -63,6 +64,7 @@ class UserResource extends Resource
                             ->label('user role')
                             ->required()
                             ->placeholder('select user role')
+                            ->reactive()
                             ->relationship('role', 'role'),
                         Select::make('account_status')
                             ->hiddenOn('create')
@@ -74,6 +76,21 @@ class UserResource extends Resource
                             ->minLength(8)
                             ->disableAutocomplete()
                             ->visibleOn('create'),
+                        Select::make('district_id')
+                            ->label('District to Manage')
+                            ->required()
+                            ->options(District::whereNull('manager_id')->orderBy('district', 'asc')->get()->pluck('district', 'id')->toArray())
+                            ->searchable()
+                            ->visibleOn('create')
+                            ->visible(function (callable $get) {
+                                $role = $get('role_id');
+                                if ($role) {
+                                    $roleName = Role::find($role);
+                                    if ($roleName->role === Role::DISTRICT_MANAGER_ROLE) {
+                                        return true;
+                                    }
+                                }
+                            })
                     ])
             ]);
     }

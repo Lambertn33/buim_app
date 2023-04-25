@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Campaign;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,16 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('campaigns', function (Blueprint $table) {
+        Schema::create('warehouses', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('manager_id');
-            $table->string('title');
-            $table->uuid('province_id');
             $table->uuid('district_id');
-            $table->enum('status', Campaign::CAMPAIGN_STATUS)->default(Campaign::CREATED);
-            $table->string('description');
-            $table->date('from');
-            $table->date('to');
+            $table->string('name');
             $table->timestamps();
         });
     }
@@ -31,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('campaigns');
+        Schema::dropIfExists('warehouses');
     }
 };

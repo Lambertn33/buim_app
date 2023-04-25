@@ -31,13 +31,33 @@ class Campaign extends Model
     const STOPPED = self::CAMPAIGN_STATUS[3];
 
     protected $fillable = [
-        'id', 'title', 'description','province','district', 'from', 'to', 'manager_id', 'status'
+        'id', 'title', 'description','province_id','district_id', 'from', 'to', 'manager_id', 'status'
     ];
 
     protected $casts = [
         'id' => 'string',
         'manager_id' => 'string'
     ];
+
+    /**
+     * Get the province that owns the Campaign
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function province(): BelongsTo
+    {
+        return $this->belongsTo(Province::class, 'province_id', 'id');
+    }
+
+    /**
+     * Get the district that owns the Campaign
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function district(): BelongsTo
+    {
+        return $this->belongsTo(District::class, 'district_id', 'id');
+    }
 
      /**
      * Get the manager that owns the Campaign
@@ -57,25 +77,5 @@ class Campaign extends Model
     public function screenings(): HasMany
     {
         return $this->hasMany(Screening::class, 'campaign_id', 'id');
-    }
-
-    /**
-     * Get all of the devices for the Campaign
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function devices(): HasMany
-    {
-        return $this->hasMany(SubStockDevice::class, 'campaign_id', 'id');
-    }
-
-    /**
-     * Get all of the stockRequests for the Campaign
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function stockRequest(): HasOne
-    {
-        return $this->hasOne(SubStockRequest::class, 'campaign_id', 'id');
     }
 }

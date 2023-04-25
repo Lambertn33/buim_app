@@ -144,7 +144,6 @@ class usersSeeder extends Seeder
                 ];
                 Manufacturer::insert($newManufacturer);
             }
-            
         }
     }
 }

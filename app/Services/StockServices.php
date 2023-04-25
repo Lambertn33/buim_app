@@ -3,14 +3,11 @@
 namespace App\Services;
 
 use App\Models\Role;
-use App\Models\StockDevice;
 use Illuminate\Support\Facades\Response;
 use App\Models\StockModel;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Campaign;
-use App\Models\SubStockDevice;
-use App\Models\SubStockRequest;
-use App\Models\SubStockRequestDevice;
+use App\Models\MainWarehouseDevice;
 use Illuminate\Support\Str;
 
 class StockServices
@@ -37,69 +34,11 @@ class StockServices
         ]);
     }
 
-    public function updateStockDeviceInitialization($initializationCode)
+    //WAREHOUSES SERVICES
+    public function transferMainWarehouseDevice($device, $warehouseId)
     {
-        $approval = '';
-        if (Auth::user()->role->role == Role::ADMIN_ROLE) {
-            $approval = Auth::user()->id;
-        } else {
-            $approval = Auth::user()->stockManager->id;
-        }
-        StockDevice::where('initialization_code', $initializationCode)->update([
-            'is_approved' => true,
-            'approved_by' => $approval
+        return MainWarehouseDevice::find($device->id)->update([
+            'main_warehouse_id' => $warehouseId
         ]);
-    }
-
-    //SUBSTOCK REQUESTS AND DEVICES SERVICES
-    public function getLastSubStockRequestIndex()
-    {
-        $index = 1;
-        if (count(SubStockRequest::get()) > 0) {
-            $index = intval(SubStockRequest::max('request_id'));
-        }
-        return $index;
-    }
-    public function createSubStockRequest($screener)
-    {
-        $device = StockDevice::where('device_name', $screener['proposed_device_name'])->first();
-        $deviceModel = $device->model;
-        $campaign = Campaign::find($screener['campaign_id']);
-
-        if (SubStockRequest::where('campaign_id', $campaign->id)->exists()) {
-            $campaignSubstockRequest = $campaign->stockRequest;
-            $newSubStockRequestedDevice = [
-                'id' => Str::uuid()->toString(),
-                'model_id' => $deviceModel->id,
-                'sub_stock_request_id' => $campaignSubstockRequest->id,
-                'screener_code' => $screener['prospect_code'],
-                'device_name' => $screener['proposed_device_name'],
-                'quantity' => 1,
-                'created_at' => now(),
-                'updated_at' => now()
-            ];
-            SubStockRequestDevice::insert($newSubStockRequestedDevice);
-        } else {
-            $newSubStockRequest = [
-                'id' => Str::uuid()->toString(),
-                'campaign_id' => $campaign->id,
-                'manager_id' => $campaign->manager_id,
-                'request_id' => $this->getLastSubStockRequestIndex(),
-                'created_at' => now(),
-                'updated_at' => now()
-            ];
-            $newSubStockRequestedDevice = [
-                'id' => Str::uuid()->toString(),
-                'model_id' => $deviceModel->id,
-                'sub_stock_request_id' => $newSubStockRequest['id'],
-                'screener_code' => $screener['prospect_code'],
-                'device_name' => $screener['proposed_device_name'],
-                'quantity' => 1,
-                'created_at' => now(),
-                'updated_at' => now()
-            ];
-            SubStockRequest::insert($newSubStockRequest);
-            SubStockRequestDevice::insert($newSubStockRequestedDevice);
-        }
     }
 }

@@ -7,7 +7,6 @@ use App\Filament\Resources\ScreeningResource\RelationManagers;
 use App\Models\Campaign;
 use App\Models\PaymentPlan;
 use App\Models\Screening;
-use App\Models\StockDevice;
 use App\Services\NavigationBadgesServices;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -91,7 +90,7 @@ class ScreeningResource extends Resource
                             ->searchable()
                             ->required()
                             ->placeholder('select device')
-                            ->options(StockDevice::distinct()->pluck('device_name', 'device_name')->toArray())
+                            ->options([])
 
                     ])
             ]);

@@ -6,25 +6,27 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class SubStockDevice extends Model
+class MainWarehouseDevice extends Model
 {
     use HasFactory;
-
+    
     public $incrementing = false;
 
     protected $fillable = [
-        'id', 'campaign_id', 'model_id', 'name', 'serial_number', 'screener_id'
+        'id', 'model_id', 'main_warehouse_id' ,'device_name', 'serial_number', 'initialization_code', 'is_approved',
+        'initialized_by', 'approved_by'
     ];
 
     protected $casts = [
         'id' => 'string',
         'model_id' => 'string',
-        'screener_id' => 'string',
-        'campaign_id' => 'string'
+        'initialized_by' => 'string',
+        'main_warehouse_id' => 'string',
+        'approved_by' => 'string'
     ];
 
     /**
-     * Get the model that owns the StockDevice
+     * Get the model that owns the MainWarehouseDevice
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -34,22 +36,12 @@ class SubStockDevice extends Model
     }
 
     /**
-     * Get the screener that owns the StockDevice
+     * Get the mainWarehouse that owns the MainWarehouseDevice
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function screener(): BelongsTo
+    public function mainWarehouse(): BelongsTo
     {
-        return $this->belongsTo(Screening::class, 'screener_id', 'id');
-    }
-
-    /**
-     * Get the campaign that owns the SubStockDevice
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function campaign(): BelongsTo
-    {
-        return $this->belongsTo(Campaign::class, 'campaign_id', 'id');
+        return $this->belongsTo(MainWarehouse::class, 'main_warehouse_id', 'id');
     }
 }

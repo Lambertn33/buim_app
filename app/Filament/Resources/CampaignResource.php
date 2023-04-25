@@ -52,22 +52,6 @@ class CampaignResource extends Resource
                     ->required()
                     ->label('campaign description')
                     ->columnSpanFull(),
-                Select::make('province')
-                    ->options(Province::get()->pluck('province', 'id')->toArray())
-                    ->placeholder('select province')
-                    ->required()
-                    ->visibleOn('create')
-                    ->reactive(),
-                Select::make('district')
-                    ->placeholder('select district')
-                    ->required()
-                    ->visibleOn('create')
-                    ->options(function (callable $get) {
-                        $province = $get('province');
-                        if ($province) {
-                            return District::where('province_id', $province)->pluck('district', 'district')->toArray();
-                        }
-                    }),
                 Select::make('status')
                     ->required()
                     ->hiddenOn('create')
@@ -120,10 +104,10 @@ class CampaignResource extends Resource
                         'success' => static fn ($state): bool => $state === self::$model::FINISHED,
                         'danger' => static fn ($state): bool => $state === self::$model::STOPPED,
                     ]),
-                TextColumn::make('province')
+                TextColumn::make('province.province')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('district')
+                TextColumn::make('district.district')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('screenings_count')

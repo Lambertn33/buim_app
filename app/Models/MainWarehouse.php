@@ -6,15 +6,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class StockModel extends Model
+class MainWarehouse extends Model
 {
     use HasFactory;
 
     public $incrementing = false;
 
-    protected $fillable = [
-        'id', 'name', 'quantity'
-    ];
+    protected $fillable = ['id', 'name', 'description', 'location'];
+
+    const DPWORLDWAREHOUSE = 'DP World warehouse';
+    const HQWAREHOUSE = 'HQ warehouse';
+    const RUGANDOWAREHOUSE = 'Rugando warehouse';
 
     protected $casts = [
         'id' => 'string'
@@ -25,9 +27,8 @@ class StockModel extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function mainWarehouseDevices(): HasMany
+    public function devices(): HasMany
     {
-        return $this->hasMany(MainWarehouseDevice::class, 'model_id', 'id');
+        return $this->hasMany(MainWarehouseDevice::class, 'main_warehouse_id', 'id');
     }
 }
-

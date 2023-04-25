@@ -2,26 +2,26 @@
 
 namespace App\Policies;
 
-use App\Models\SubStockRequest;
+use App\Models\MainWarehouse;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class SubStockRequestPolicy
+class MainWarehousePolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermission('sub_stock_request_access');
+        return $user->hasPermission('main_warehouse_access');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, SubStockRequest $subStockRequest): bool
+    public function view(User $user, MainWarehouse $mainWarehouse): bool
     {
-        return $user->hasPermission('sub_stock_request_show');
+        return $user->hasPermission('main_warehouse_show');
     }
 
     /**
@@ -29,15 +29,15 @@ class SubStockRequestPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermission('sub_stock_request_create');
+        return $user->hasPermission('main_warehouse_create');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, SubStockRequest $subStockRequest): bool
+    public function update(User $user, MainWarehouse $mainWarehouse): bool
     {
-        return $user->hasPermission('sub_stock_request_edit');
+        return $user->hasPermission('main_warehouse_edit');
     }
 
     /**
@@ -45,21 +45,20 @@ class SubStockRequestPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->hasPermission('sub_stock_request_delete');
+        return $user->hasPermission('main_warehouse_delete');
     }
-
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, SubStockRequest $subStockRequest): bool
+    public function delete(User $user, MainWarehouse $mainWarehouse): bool
     {
-        return $user->hasPermission('sub_stock_request_delete');
+        return $user->hasPermission('main_warehouse_delete');
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, SubStockRequest $subStockRequest): bool
+    public function restore(User $user, MainWarehouse $mainWarehouse): bool
     {
         //
     }
@@ -67,7 +66,7 @@ class SubStockRequestPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, SubStockRequest $subStockRequest): bool
+    public function forceDelete(User $user, MainWarehouse $mainWarehouse): bool
     {
         //
     }

@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sub_stock_request_devices', function (Blueprint $table) {
+        Schema::create('main_warehouses', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('model_id');
-            $table->uuid('sub_stock_request_id');
-            $table->string('screener_code');
-            $table->string('device_name');
-            $table->bigInteger('quantity');
+            $table->string('name');
+            $table->string('description');
+            $table->string('location');
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sub_stock_request_devices');
+        Schema::dropIfExists('main_warehouses');
     }
 };
