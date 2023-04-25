@@ -21,6 +21,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -89,7 +90,9 @@ class HQMainWarehouseResource extends Resource
                     ->label('serial Number'),
             ])
             ->filters([
-                //
+                SelectFilter::make('device_name')
+                    ->label('Filter by Device name')
+                    ->options(MainWarehouseDevice::orderBy('device_name', 'asc')->where('is_approved', true)->distinct()->pluck('device_name', 'device_name')->toArray())
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
