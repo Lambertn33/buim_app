@@ -24,7 +24,7 @@ class StockModelResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
 
-    protected static ?string $navigationGroup = 'inventory';
+    protected static ?string $navigationGroup = 'main warehouses inventory';
 
     protected static ?string $navigationLabel = 'Device models';
 

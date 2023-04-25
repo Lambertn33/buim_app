@@ -20,7 +20,7 @@ class MainWarehouseResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard';
 
-    protected static ?string $navigationGroup = 'inventory';
+    protected static ?string $navigationGroup = 'main warehouses inventory';
 
     public static function form(Form $form): Form
     {
