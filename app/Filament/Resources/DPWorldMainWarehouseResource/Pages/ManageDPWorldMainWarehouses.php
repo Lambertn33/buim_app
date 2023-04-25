@@ -92,16 +92,9 @@ class ManageDPWorldMainWarehouses extends ManageRecords
 
     protected function getTableQuery(): Builder
     {
-        if (Auth::user()->role->role == Role::MANUFACTURER_ROLE) {
-            $manufacturerId = Auth::user()->manufacturer->id;
-            return MainWarehouseDevice::where('initialized_by', $manufacturerId)->whereHas('mainWarehouse', function ($query) {
-                $query->where('name', MainWarehouse::DPWORLDWAREHOUSE);
-            });
-        } else {
-            return MainWarehouseDevice::whereHas('mainWarehouse', function ($query) {
-                $query->where('name', MainWarehouse::DPWORLDWAREHOUSE);
-            });
-        }
+        return MainWarehouseDevice::where('is_approved', true)->whereHas('mainWarehouse', function ($query) {
+            $query->where('name', MainWarehouse::DPWORLDWAREHOUSE);
+        });
     }
 
     public function mount(): void

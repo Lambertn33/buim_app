@@ -23,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
         Filament::registerNavigationGroups([
             'activities',
             'inventory settings',
+            'stock initialization',
             'main warehouses inventory',
             'access control'
         ]);

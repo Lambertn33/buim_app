@@ -42,6 +42,13 @@ class DPWorldMainWarehouseResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
+    protected static function shouldRegisterNavigation(): bool
+    {
+        return Auth::user()->role->role === Role::ADMIN_ROLE ||
+            Auth::user()->role->role === Role::STOCK_MANAGER_ROLE;
+    }
+
+
     protected static function getNavigationBadge(): ?string
     {
         return (new NavigationBadgesServices)->getTotalNumberOfDPWorldWarehouseDevices();
