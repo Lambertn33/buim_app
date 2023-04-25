@@ -35,4 +35,13 @@ class MainWarehouseDevice extends Model
         return $this->belongsTo(StockModel::class, 'model_id', 'id');
     }
 
+    /**
+     * Get the mainWarehouse that owns the MainWarehouseDevice
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function mainWarehouse(): BelongsTo
+    {
+        return $this->belongsTo(MainWarehouse::class, 'main_warehouse_id', 'id');
+    }
 }

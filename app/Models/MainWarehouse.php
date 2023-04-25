@@ -14,6 +14,10 @@ class MainWarehouse extends Model
 
     protected $fillable = ['id', 'name', 'description', 'location'];
 
+    const DPWORLDWAREHOUSE = 'DP World warehouse';
+    const HQWAREHOUSE = 'HQ warehouse';
+    const RUGANDOWAREHOUSE = 'Rugando warehouse';
+
     protected $casts = [
         'id' => 'string'
     ];

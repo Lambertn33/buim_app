@@ -26,7 +26,7 @@ class StockModelResource extends Resource
 
     protected static ?string $navigationGroup = 'main warehouses inventory';
 
-    protected static ?string $navigationLabel = 'Device models';
+    protected static ?string $navigationLabel = 'Main Device models';
 
     protected static function getNavigationBadge(): ?string
     {

@@ -4,8 +4,12 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\MainWarehouseResource\Pages;
 use App\Filament\Resources\MainWarehouseResource\RelationManagers;
+use App\Filament\Resources\MainWarehouseResource\RelationManagers\MainWarehouseDevicesRelationManager;
 use App\Models\MainWarehouse;
 use Filament\Forms;
+use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -26,7 +30,16 @@ class MainWarehouseResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Card::make()
+                    ->schema([
+                        TextInput::make('name')
+                            ->label('Main warehouse name')
+                            ->required()
+                            ->unique(ignoreRecord: true),
+                        Textarea::make('description')
+                            ->label('Main warehouse description')
+                            ->required()
+                    ])
             ]);
     }
 
@@ -51,14 +64,14 @@ class MainWarehouseResource extends Resource
                 // Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
-            //
+            MainWarehouseDevicesRelationManager::class
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -67,5 +80,5 @@ class MainWarehouseResource extends Resource
             'view' => Pages\ViewMainWarehouse::route('/{record}'),
             'edit' => Pages\EditMainWarehouse::route('/{record}/edit'),
         ];
-    }    
+    }
 }

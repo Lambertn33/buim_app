@@ -34,7 +34,6 @@ class CreateScreening extends CreateRecord
         $data['screening_date'] = now()->format('Y-m-d');
         $data['confirmation_status'] = Screening::PROSPECT;
         $data['prospect_code'] = $codeGenerator;
-        (new StockServices)->createSubStockRequest($data);
         return $data;
     }
 
