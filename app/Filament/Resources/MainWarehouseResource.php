@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\MainWarehouseResource\Pages;
 use App\Filament\Resources\MainWarehouseResource\RelationManagers;
 use App\Models\MainWarehouse;
+use App\Services\NavigationBadgesServices;
 use Filament\Forms;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Textarea;
@@ -24,6 +25,15 @@ class MainWarehouseResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-clipboard';
 
     protected static ?string $navigationGroup = 'main warehouses inventory';
+
+    protected static ?string $navigationLabel = 'Main Warehouses Overview';
+
+    protected static ?int $navigationSort = 1;
+    
+    protected static function getNavigationBadge(): ?string
+    {
+        return (new NavigationBadgesServices)->getTotalNumberOfMainWarehouses();
+    }
 
     public static function form(Form $form): Form
     {

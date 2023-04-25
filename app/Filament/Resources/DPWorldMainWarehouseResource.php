@@ -2,35 +2,49 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\MainWarehouseDeviceResource\Pages;
-use App\Filament\Resources\MainWarehouseDeviceResource\RelationManagers;
+use App\Filament\Resources\DPWorldMainWarehouseResource\Pages;
+use App\Filament\Resources\DPWorldMainWarehouseResource\RelationManagers;
+use App\Models\DPWorldMainWarehouse;
 use App\Models\MainWarehouse;
-use App\Models\MainWarehouseDevice;
-use App\Services\StockServices;
 use Filament\Forms;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Notifications\Notification;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
+use App\Models\MainWarehouseDevice;
+use App\Services\NavigationBadgesServices;
+use App\Services\StockServices;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use PhpParser\Node\Stmt\Label;
 
-class MainWarehouseDeviceResource extends Resource
+class DPWorldMainWarehouseResource extends Resource
 {
     protected static ?string $model = MainWarehouseDevice::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard';
 
+    protected static ?string $navigationLabel = 'DP World Warehouse';
+
     protected static ?string $navigationGroup = 'main warehouses inventory';
+
+    protected static ?string $slug = 'dp-world-warehouse';
+
+    protected static ?string $modelLabel = 'DP World Warehouse Devices';
+
+    protected static ?int $navigationSort = 2;
+
+    protected static function getNavigationBadge(): ?string
+    {
+        return (new NavigationBadgesServices)->getTotalNumberOfDPWorldWarehouseDevices();
+    }
+
 
     public static function form(Form $form): Form
     {
@@ -66,15 +80,9 @@ class MainWarehouseDeviceResource extends Resource
                     ->sortable()
                     ->searchable()
                     ->label('serial Number'),
-                TextColumn::make('mainWarehouse.name')
-                    ->sortable()
-                    ->searchable()
-                    ->label('Main warehouse'),
             ])
             ->filters([
-                SelectFilter::make('main_warehouse_id')
-                    ->label('filter by main warehouse')
-                    ->options(MainWarehouse::get()->pluck('name', 'id')->toArray())
+                //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -101,7 +109,6 @@ class MainWarehouseDeviceResource extends Resource
                             ->title('Device transfered')
                             ->body('device has been successfully transfered.'),
                     )
-
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
@@ -131,7 +138,7 @@ class MainWarehouseDeviceResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageMainWarehouseDevices::route('/'),
+            'index' => Pages\ManageDPWorldMainWarehouses::route('/'),
         ];
     }
 }

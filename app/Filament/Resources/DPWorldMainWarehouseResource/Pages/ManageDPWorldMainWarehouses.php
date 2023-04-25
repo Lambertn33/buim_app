@@ -1,34 +1,31 @@
 <?php
 
-namespace App\Filament\Resources\MainWarehouseDeviceResource\Pages;
+namespace App\Filament\Resources\DPWorldMainWarehouseResource\Pages;
 
-use App\Filament\Resources\MainWarehouseDeviceResource;
-use App\Models\MainWarehouse;
-use App\Models\MainWarehouseDevice;
+use App\Filament\Resources\DPWorldMainWarehouseResource;
 use Filament\Pages\Actions;
+use Illuminate\Database\Eloquent\Builder;
+use App\Models\MainWarehouseDevice;
+use App\Models\MainWarehouse;
+use App\Models\Role;
 use Filament\Pages\Actions\Action;
-use Filament\Resources\Pages\ManageRecords;
-use Illuminate\Support\Facades\Auth;
 use Konnco\FilamentImport\Actions\ImportAction;
 use Konnco\FilamentImport\Actions\ImportField;
-use Illuminate\Support\Str;
-use App\Models\Role;
 use App\Models\StockModel;
-use App\Models\Warehouse;
 use App\Services\StockServices;
-use Filament\Forms\Components\Select;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use Filament\Resources\Pages\ManageRecords;
 
-class ManageMainWarehouseDevices extends ManageRecords
+class ManageDPWorldMainWarehouses extends ManageRecords
 {
-    protected static string $resource = MainWarehouseDeviceResource::class;
+    protected static string $resource = DPWorldMainWarehouseResource::class;
 
     protected function getActions(): array
     {
         return [
             Actions\CreateAction::make()
-                ->hidden(Auth::user()->role->role == Role::MANUFACTURER_ROLE)
                 ->label('Create device')
-                ->modalSubheading('please fill this downloaded file and upload it, initially all imported devices are stored in DP World Main warehouse')
                 ->mutateFormDataUsing(function (array $data): array {
                     $now = now()->format('dmy');
                     $randomNumber = rand(10000, 99999);
@@ -55,6 +52,8 @@ class ManageMainWarehouseDevices extends ManageRecords
                 ->modalButton('download sample'),
             ImportAction::make()
                 ->handleBlankRows(true)
+                ->label('Import initial stock')
+                ->modalSubheading('This is the initial stock before being transfered to different warehouses')
                 ->fields([
                     ImportField::make('device_name')
                         ->required()
@@ -89,6 +88,20 @@ class ManageMainWarehouseDevices extends ManageRecords
                     return MainWarehouseDevice::create($data);
                 })
         ];
+    }
+
+    protected function getTableQuery(): Builder
+    {
+        return MainWarehouseDevice::whereHas('mainWarehouse', function ($query) {
+            $query->where('name', MainWarehouse::DPWORLDWAREHOUSE);
+        });
+    }
+
+    public function mount(): void
+    {
+        abort_unless(Auth::user()->role->role == Role::ADMIN_ROLE ||
+            Auth::user()->role->role == Role::MANUFACTURER_ROLE ||
+            Auth::user()->role->role == Role::STOCK_MANAGER_ROLE, 403);
     }
 
     public function downloadStockExcelFormat()

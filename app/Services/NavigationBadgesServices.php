@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\Campaign;
+use App\Models\MainWarehouse;
+use App\Models\MainWarehouseDevice;
 use App\Models\PaymentPlan;
 use App\Models\Permission;
 use App\Models\Role;
@@ -57,5 +59,31 @@ class NavigationBadgesServices
     public function getTotalNumberOfDeviceModels()
     {
         return StockModel::count();
+    }
+
+    public function getTotalNumberOfMainWarehouses()
+    {
+        return MainWarehouse::count();
+    }
+
+    public function getTotalNumberOfHQWarehouseDevices()
+    {
+        return MainWarehouseDevice::whereHas('mainWarehouse', function($query){
+            $query->where('name', MainWarehouse::HQWAREHOUSE);
+        })->count();
+    }
+
+    public function getTotalNumberOfDPWorldWarehouseDevices()
+    {
+        return MainWarehouseDevice::whereHas('mainWarehouse', function($query){
+            $query->where('name', MainWarehouse::DPWORLDWAREHOUSE);
+        })->count();
+    }
+
+    public function getTotalNumberOfRugandoWarehouseDevices()
+    {
+        return MainWarehouseDevice::whereHas('mainWarehouse', function($query){
+            $query->where('name', MainWarehouse::RUGANDOWAREHOUSE);
+        })->count();
     }
 }
