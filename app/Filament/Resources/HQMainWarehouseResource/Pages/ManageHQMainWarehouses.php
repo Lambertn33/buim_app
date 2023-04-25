@@ -1,33 +1,33 @@
 <?php
 
-namespace App\Filament\Resources\RugandoMainWarehouseResource\Pages;
+namespace App\Filament\Resources\HQMainWarehouseResource\Pages;
 
-use App\Filament\Resources\RugandoMainWarehouseResource;
-use App\Models\MainWarehouse;
-use App\Models\MainWarehouseDevice;
+use App\Filament\Resources\HQMainWarehouseResource;
 use Filament\Pages\Actions;
-use Filament\Resources\Pages\ManageRecords;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Role;
 use Illuminate\Database\Eloquent\Builder;
+use App\Models\MainWarehouseDevice;
+use App\Models\MainWarehouse;
+use App\Models\Role;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Filament\Resources\Pages\ManageRecords;
 
-class ManageRugandoMainWarehouses extends ManageRecords
+class ManageHQMainWarehouses extends ManageRecords
 {
-    protected static string $resource = RugandoMainWarehouseResource::class;
+    protected static string $resource = HQMainWarehouseResource::class;
 
     protected function getActions(): array
     {
         return [
             Actions\CreateAction::make()
-                ->label('Create device')
+            ->label('Create device')
                 ->mutateFormDataUsing(function (array $data): array {
                     $now = now()->format('dmy');
                     $randomNumber = rand(10000, 99999);
                     $initializationCode = 'ST-' . $now . '-' . $randomNumber . '';
                     $data['id'] = Str::uuid()->toString();
                     $data['initialization_code'] = $initializationCode;
-                    $data['main_warehouse_id'] = MainWarehouse::where('name', MainWarehouse::RUGANDOWAREHOUSE)->value('id');
+                    $data['main_warehouse_id'] = MainWarehouse::where('name', MainWarehouse::HQWAREHOUSE)->value('id');
                     $data['is_approved'] = true;
                     // use elseif not else for in the future there might be another role which will have acess
                     if (Auth::user()->role->role == Role::ADMIN_ROLE) {
@@ -45,7 +45,7 @@ class ManageRugandoMainWarehouses extends ManageRecords
     protected function getTableQuery(): Builder
     {
         return MainWarehouseDevice::whereHas('mainWarehouse', function($query){
-            $query->where('name', MainWarehouse::RUGANDOWAREHOUSE);
+            $query->where('name', MainWarehouse::HQWAREHOUSE);
         });
     }
 
