@@ -41,11 +41,6 @@ class MainWarehouseDeviceResource extends Resource
                     ->placeholder('select model')
                     ->label('device model')
                     ->relationship('model', 'name'),
-                Select::make('main_warehouse_id')
-                    ->required()
-                    ->placeholder('select main warehouse')
-                    ->label('device main warehouse')
-                    ->relationship('mainWarehouse', 'name'),
                 TextInput::make('serial_number')
                     ->required()
                     ->unique(ignoreRecord: true)
@@ -89,27 +84,23 @@ class MainWarehouseDeviceResource extends Resource
                     ->modalButton('transfer warehouse')
                     ->icon('heroicon-o-paper-airplane')
                     ->label('transfer to other main warehouse')
-                    ->form([
+                    ->form(fn ($record) => [
                         Select::make('main_warehouse_id')
                             ->label('Main warehouse')
                             ->required()
                             ->placeholder('select other main warehouse')
-                            ->options(MainWarehouse::get()->pluck('name', 'id')->toArray())
+                            ->options(MainWarehouse::whereNot('id', $record->main_warehouse_id)->get()->pluck('name', 'id')->toArray())
                     ])
                     ->successNotification(
                         Notification::make('success')
                             ->title('Device transfered')
                             ->body('device has been successfully transfered.'),
                     )
+
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
-    }
-
-    public function transferMainWarehouseDevice($device)
-    {
-        dd($device);
     }
 
     public static function getPages(): array
