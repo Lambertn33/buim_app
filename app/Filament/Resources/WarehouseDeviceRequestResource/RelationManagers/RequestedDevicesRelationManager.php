@@ -48,13 +48,20 @@ class RequestedDevicesRelationManager extends RelationManager
             ])
             ->headerActions([
                 // Tables\Actions\CreateAction::make(),
+                Tables\Actions\Action::make('Approve and Transfer devices')
+                    ->color('success')
+                    ->action(fn () => null)
+                    ->requiresConfirmation()
+                    ->modalSubheading('you are about to transfer all devices')
+                    ->modalButton('transfer device')
+                    ->icon('heroicon-o-paper-airplane')
             ])
             ->actions([
                 Tables\Actions\Action::make('transfer')
                     ->color('success')
-                    ->action(fn() => null)
+                    ->action(fn () => null)
                     ->requiresConfirmation()
-                    ->modalSubheading(fn ($record) => 'you are about to transfer a single device to ' .$record->warehouseDeviceRequest->campaign->district->district. ' District')
+                    ->modalSubheading(fn ($record) => 'you are about to transfer a single device to ' . $record->warehouseDeviceRequest->campaign->district->district . ' District')
                     ->modalButton('transfer device')
                     ->icon('heroicon-o-paper-airplane')
                     ->label('Transfer')
