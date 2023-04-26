@@ -20,9 +20,11 @@ class WarehouseDeviceRequestResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-question-mark-circle';
 
-    protected static ?string $navigationGroup = 'district requested stock';
+    protected static ?string $navigationGroup = 'district warehouses inventory';
 
     protected static ?string $navigationLabel = 'Requested devices';
+
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
