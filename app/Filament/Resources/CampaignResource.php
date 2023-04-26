@@ -61,11 +61,11 @@ class CampaignResource extends Resource
                         'ONGOING' => 'ONGOING',
                         'FINISHED' => 'FINISHED',
                         'STOPPED' => 'STOPPED',
-                    
+
                     ]),
                 DatePicker::make('from')
                     ->label('starting date')
-                    ->minDate(date('Y-m-d',strtotime('+1 day')))
+                    ->minDate(date('Y-m-d', strtotime('+1 day')))
                     ->required()
                     ->placeholder('select the starting date')
                     ->reactive(),
@@ -97,13 +97,17 @@ class CampaignResource extends Resource
                 TextColumn::make('to')
                     ->label('ending date')
                     ->sortable(),
-                BadgeColumn::make('status')
-                    ->colors([
-                        'primary' => static fn ($state): bool => $state === self::$model::CREATED,
-                        'warning' => static fn ($state): bool => $state === self::$model::ONGOING,
-                        'success' => static fn ($state): bool => $state === self::$model::FINISHED,
-                        'danger' => static fn ($state): bool => $state === self::$model::STOPPED,
-                    ]),
+                SelectColumn::make('status')
+                    ->options([
+                        'CREATED' => 'CREATED',
+                        'ONGOING' => 'ONGOING',
+                        'FINISHED' => 'FINISHED',
+                        'STOPPED' => 'STOPPED',
+
+                    ])
+                    ->sortable()
+                    ->disablePlaceholderSelection()
+                    ->disabled(Auth::user()->role->role !== Role::ADMIN_ROLE),
                 TextColumn::make('province.province')
                     ->sortable()
                     ->searchable(),
@@ -124,9 +128,9 @@ class CampaignResource extends Resource
                     ->label('Filter by status')
                     ->options([
                         'CREATED' => 'CREATED',
-                        'ONGOING' => 'ONGOING', 
+                        'ONGOING' => 'ONGOING',
                         'FINISHED' => 'FINISHED',
-                        'STOPPED' => 'STOPPED'                           
+                        'STOPPED' => 'STOPPED'
                     ]),
                 SelectFilter::make('province')
                     ->label('Filter by province')
