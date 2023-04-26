@@ -15,6 +15,8 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuid('model_id');
             $table->uuid('warehouse_id');
+            $table->uuid('district_id');
+            $table->uuid('manager_id')->nullable();
             $table->string('device_name');
             $table->string('serial_number')->unique();
             $table->timestamps();

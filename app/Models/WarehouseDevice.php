@@ -13,13 +13,15 @@ class WarehouseDevice extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'id', 'model_id', 'warehouse_id' ,'device_name', 'serial_number',
+        'id', 'model_id', 'warehouse_id','district_id','manager_id','device_name', 'serial_number',
     ];
 
     protected $casts = [
         'id' => 'string',
         'model_id' => 'string',
-        'warehouse_id' => 'string'
+        'warehouse_id' => 'string',
+        'district_id' => 'string',
+        'manager_id' => 'string'
     ];
 
     /**
