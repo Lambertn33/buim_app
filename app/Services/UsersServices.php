@@ -29,6 +29,11 @@ class UsersServices
             'campaign_show',
             'campaign_edit',
             'campaign_delete',
+            'warehouse_access',
+            'warehouse_show',
+            'warehouse_edit',
+            'warehouse_create',
+            'warehouse_delete',
             'stock_model_access',
             'screening_access',
         ])->get();
@@ -47,6 +52,11 @@ class UsersServices
             'stock_show',
             'stock_edit',
             'stock_delete',
+            'warehouse_access',
+            'warehouse_show',
+            'warehouse_edit',
+            'warehouse_create',
+            'warehouse_delete',
             'main_warehouse_access',
             'main_warehouse_show',
             'main_warehouse_edit',
@@ -78,7 +88,7 @@ class UsersServices
             } elseif ($user->role->role == Role::STOCK_MANAGER_ROLE) {
                 $user->permissions()->sync($stockManagerPermissions);
                 StockManager::insert($newNonAdmin);
-            } elseif($user->role->role == Role::MANUFACTURER_ROLE) {
+            } elseif ($user->role->role == Role::MANUFACTURER_ROLE) {
                 $user->permissions()->sync($manufacturerPermissions);
                 Manufacturer::insert($newNonAdmin);
             }

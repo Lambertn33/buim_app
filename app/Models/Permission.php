@@ -55,6 +55,12 @@ class Permission extends Model
         'main_warehouse_create',
         'main_warehouse_delete',
 
+        'warehouse_access',
+        'warehouse_show',
+        'warehouse_edit',
+        'warehouse_create',
+        'warehouse_delete',
+
         'stock_create',
         'stock_access',
         'stock_show',
@@ -66,24 +72,6 @@ class Permission extends Model
         'stock_model_show',
         'stock_model_edit',
         'stock_model_delete',
-
-        'stock_pending_create',
-        'stock_pending_access',
-        'stock_pending_show',
-        'stock_pending_edit',
-        'stock_pending_delete',
-
-        'sub_stock_create',
-        'sub_stock_access',
-        'sub_stock_show',
-        'sub_stock_edit',
-        'sub_stock_delete',
-
-        'sub_stock_request_create',
-        'sub_stock_request_access',
-        'sub_stock_request_show',
-        'sub_stock_request_edit',
-        'sub_stock_request_delete',
     ];
 
     protected $fillable = [

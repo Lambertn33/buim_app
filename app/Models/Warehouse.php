@@ -12,7 +12,12 @@ class Warehouse extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id', 'district_id', 'name'];
+    const STATUS = ['ACTIVE', 'CLOSED'];
+
+    const ACTIVE = self::STATUS[0];
+    const CLOSED = self::STATUS[1];
+
+    protected $fillable = ['id', 'district_id', 'name', 'status'];
 
     protected $casts = [
         'id' => 'string',

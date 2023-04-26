@@ -53,6 +53,11 @@ class userPermissionsSeeder extends Seeder
             'campaign_delete',
             'stock_model_access',
             'screening_access',
+            'warehouse_access',
+            'warehouse_show',
+            'warehouse_edit',
+            'warehouse_create',
+            'warehouse_delete',
         ])->get();
 
         $leaderPermissions = Permission::whereIn('permission', [
@@ -74,7 +79,12 @@ class userPermissionsSeeder extends Seeder
             'main_warehouse_edit',
             'main_warehouse_create',
             'main_warehouse_delete',
-            
+            'warehouse_access',
+            'warehouse_show',
+            'warehouse_edit',
+            'warehouse_create',
+            'warehouse_delete',
+
         ])->get();
 
         $manufacturerPermissions = Permission::whereIn('permission', [
