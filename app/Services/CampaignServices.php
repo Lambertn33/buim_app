@@ -3,15 +3,15 @@
 namespace App\Services;
 
 use App\Models\Campaign;
-use App\Models\SubStockRequest;
+use App\Models\WarehouseDeviceRequest;
 
 class CampaignServices
 {
-   public function updateStockRequestStatusOnCampaignCompleted($campaign)
+   public function updateWarehouseDevicesRequestStatusOnCampaignCompleted($campaign)
    {
         if ($campaign->status === Campaign::FINISHED) {
-            $campaign->stockRequest->update([
-                'request_status' => SubStockRequest::REQUESTED
+            $campaign->warehouseDeviceRequest->update([
+                'request_status' => WarehouseDeviceRequest::REQUESTED
             ]);
         }
    }

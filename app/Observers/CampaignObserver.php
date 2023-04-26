@@ -20,7 +20,7 @@ class CampaignObserver
      */
     public function updated(Campaign $campaign): void
     {
-        (new CampaignServices)->updateStockRequestStatusOnCampaignCompleted($campaign);
+        (new CampaignServices)->updateWarehouseDevicesRequestStatusOnCampaignCompleted($campaign);
     }
 
     /**

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class WarehouseDeviceRequest extends Model
 {
@@ -41,5 +42,26 @@ class WarehouseDeviceRequest extends Model
     public function campaign(): BelongsTo
     {
         return $this->belongsTo(Campaign::class, 'campaign_id', 'id');
+    }
+
+    /**
+     * Get all of the requestedDevices for the WarehouseDeviceRequest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function requestedDevices(): HasMany
+    {
+        return $this->hasMany(WarehouseDeviceRequestedDevice::class, 'warehouse_device_request_id', 'id');
+    }
+
+    public function getTotalNumberOfRequestedDevices()
+    {
+        $total = 0;
+        if ($this->requestedDevices->count() > 0) {
+            foreach($this->requestedDevices as $requestedDevice) {
+                $total = $total + $requestedDevice->quantity;
+            }
+        }
+        return $total;
     }
 }
