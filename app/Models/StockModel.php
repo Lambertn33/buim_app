@@ -49,5 +49,15 @@ class StockModel extends Model
     {
         return $this->hasMany(WarehouseDeviceRequest::class, 'model_id', 'id');
     }
+
+    /**
+     * Get all of the warehouseDeviceRequestedDevices for the StockModel
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function warehouseDeviceRequestedDevices(): HasMany
+    {
+        return $this->hasMany(WarehouseDeviceRequestedDevice::class, 'model_id', 'id');
+    }
 }
 
