@@ -4,8 +4,11 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\WarehouseDeviceRequestResource\Pages;
 use App\Filament\Resources\WarehouseDeviceRequestResource\RelationManagers;
+use App\Filament\Resources\WarehouseDeviceRequestResource\RelationManagers\RequestedDevicesRelationManager;
 use App\Models\WarehouseDeviceRequest;
 use Filament\Forms;
+use Filament\Forms\Components\Card;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -24,13 +27,22 @@ class WarehouseDeviceRequestResource extends Resource
 
     protected static ?string $navigationLabel = 'Requested devices';
 
+    protected static ?string $pluralModelLabel = 'District Warehouses Requested Devices';
+
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                //
+                Card::make()
+                    ->columns(2)
+                    ->schema([
+                        TextInput::make('request_id')
+                            ->formatStateUsing(fn (string $state): string => sprintf("%08d", $state)),
+                        TextInput::make('request_status'),
+                        TextInput::make('confirmation_status')
+                    ])
             ]);
     }
 
@@ -65,7 +77,7 @@ class WarehouseDeviceRequestResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RequestedDevicesRelationManager::class
         ];
     }
 

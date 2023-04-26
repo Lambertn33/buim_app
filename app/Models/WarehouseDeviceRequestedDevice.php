@@ -41,4 +41,9 @@ class WarehouseDeviceRequestedDevice extends Model
     {
         return $this->belongsTo(StockModel::class, 'model_id', 'id');
     }
+
+    public function getScreenedPerson()
+    {
+        return Screening::where('prospect_code', $this->screener_code);
+    }
 }
