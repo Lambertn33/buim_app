@@ -17,7 +17,7 @@ class Warehouse extends Model
     const ACTIVE = self::STATUS[0];
     const CLOSED = self::STATUS[1];
 
-    protected $fillable = ['id', 'district_id', 'name', 'status'];
+    protected $fillable = ['id', 'district_id', 'manager_id', 'name', 'status'];
 
     protected $casts = [
         'id' => 'string',
