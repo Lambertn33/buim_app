@@ -5,6 +5,8 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ScreeningResource\Pages;
 use App\Filament\Resources\ScreeningResource\RelationManagers;
 use App\Models\Campaign;
+use App\Models\MainWarehouse;
+use App\Models\MainWarehouseDevice;
 use App\Models\PaymentPlan;
 use App\Models\Screening;
 use App\Services\NavigationBadgesServices;
@@ -90,7 +92,10 @@ class ScreeningResource extends Resource
                             ->searchable()
                             ->required()
                             ->placeholder('select device')
-                            ->options([])
+                            ->options(MainWarehouseDevice::whereHas('mainWarehouse', function($query){
+                                $query->where('name', MainWarehouse::DPWORLDWAREHOUSE)
+                                    ->where('is_approved', true);
+                            })->get()->pluck('device_name', 'device_name')->toArray())
 
                     ])
             ]);

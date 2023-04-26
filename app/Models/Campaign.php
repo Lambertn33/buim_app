@@ -78,4 +78,14 @@ class Campaign extends Model
     {
         return $this->hasMany(Screening::class, 'campaign_id', 'id');
     }
+
+    /**
+     * Get all of the warehousedevicerequests for the Campaign
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function warehouseDeviceRequest(): HasOne
+    {
+        return $this->hasOne(WarehouseDeviceRequest::class, 'campaign_id', 'id');
+    }
 }

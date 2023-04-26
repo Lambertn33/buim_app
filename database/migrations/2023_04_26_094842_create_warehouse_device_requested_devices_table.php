@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Warehouse;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('warehouses', function (Blueprint $table) {
+        Schema::create('warehouse_device_requested_devices', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('district_id');
-            $table->uuid('manager_id')->nullable();
-            $table->string('name');
-            $table->enum('status', Warehouse::STATUS)->default(Warehouse::ACTIVE);
+            $table->uuid('model_id');
+            $table->uuid('warehouse_device_request_id');
+            $table->string('screener_code');
+            $table->string('device_name');
+            $table->bigInteger('quantity');
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('warehouses');
+        Schema::dropIfExists('warehouse_device_requested_devices');
     }
 };

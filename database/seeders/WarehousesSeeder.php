@@ -22,6 +22,7 @@ class WarehousesSeeder extends Seeder
                 [
                     'id' => Str::uuid()->toString(),
                     'name' => '' . $district->district . '-WAREHOUSE',
+                    'manager_id' => $district->manager_id ? $district->manager_id : null,
                     'created_at' => now(),
                     'updated_at' => now()
                 ],

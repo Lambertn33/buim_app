@@ -29,5 +29,35 @@ class StockModel extends Model
     {
         return $this->hasMany(MainWarehouseDevice::class, 'model_id', 'id');
     }
+
+    /**
+     * Get all of the warehouseDevices for the StockModel
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function warehouseDevices(): HasMany
+    {
+        return $this->hasMany(WarehouseDevice::class, 'model_id', 'id');
+    }
+
+    /**
+     * Get all of the warehousedevicerequests for the Campaign
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function warehouseDeviceRequests(): HasMany
+    {
+        return $this->hasMany(WarehouseDeviceRequest::class, 'model_id', 'id');
+    }
+
+    /**
+     * Get all of the warehouseDeviceRequestedDevices for the StockModel
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function warehouseDeviceRequestedDevices(): HasMany
+    {
+        return $this->hasMany(WarehouseDeviceRequestedDevice::class, 'model_id', 'id');
+    }
 }
 

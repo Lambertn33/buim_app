@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Warehouse extends Model
 {
@@ -12,7 +13,12 @@ class Warehouse extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id', 'district_id', 'name'];
+    const STATUS = ['ACTIVE', 'CLOSED'];
+
+    const ACTIVE = self::STATUS[0];
+    const CLOSED = self::STATUS[1];
+
+    protected $fillable = ['id', 'district_id', 'manager_id', 'name', 'status'];
 
     protected $casts = [
         'id' => 'string',
@@ -38,5 +44,15 @@ class Warehouse extends Model
     public function manager(): BelongsTo
     {
         return $this->belongsTo(Manager::class, 'manager_id', 'id');
+    }
+
+    /**
+     * Get all of the devices for the Warehouse
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function devices(): HasMany
+    {
+        return $this->hasMany(WarehouseDevice::class, 'warehouse_id', 'id');
     }
 }

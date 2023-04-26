@@ -65,7 +65,7 @@ class CampaignResource extends Resource
                     ]),
                 DatePicker::make('from')
                     ->label('starting date')
-                    ->minDate(now())
+                    ->minDate(date('Y-m-d',strtotime('+1 day')))
                     ->required()
                     ->placeholder('select the starting date')
                     ->reactive(),

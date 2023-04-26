@@ -20,8 +20,8 @@ class DatabaseSeeder extends Seeder
         $this->call(districtsSeeder::class);
         $this->call(stockModelsSeeder::class);
         $this->call(PaymentPlansSeeder::class);
+        $this->call(ManagerDistrictLinkSeeder::class);
         $this->call(MainWarehousesSeeder::class);
         $this->call(WarehousesSeeder::class);
-        $this->call(ManagerDistrictLinkSeeder::class);
     }
 }
