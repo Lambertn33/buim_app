@@ -61,6 +61,12 @@ class Permission extends Model
         'warehouse_create',
         'warehouse_delete',
 
+        'warehouse_device_request_access',
+        'warehouse_device_request_show',
+        'warehouse_device_request_edit',
+        'warehouse_device_request_create',
+        'warehouse_device_request_delete',
+
         'stock_create',
         'stock_access',
         'stock_show',

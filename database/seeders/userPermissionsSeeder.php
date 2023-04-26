@@ -43,6 +43,9 @@ class userPermissionsSeeder extends Seeder
             'screening_create',
             'screening_edit',
             'screening_delete',
+            'warehouse_device_request_edit',
+            'warehouse_device_request_create',
+            'warehouse_device_request_delete',
         ])->get();
 
         $managerPermissions = Permission::whereIn('permission', [
@@ -58,6 +61,11 @@ class userPermissionsSeeder extends Seeder
             'warehouse_edit',
             'warehouse_create',
             'warehouse_delete',
+            'warehouse_device_request_access',
+            'warehouse_device_request_show',
+            'warehouse_device_request_edit',
+            'warehouse_device_request_create',
+            'warehouse_device_request_delete',
         ])->get();
 
         $leaderPermissions = Permission::whereIn('permission', [
@@ -84,6 +92,11 @@ class userPermissionsSeeder extends Seeder
             'warehouse_edit',
             'warehouse_create',
             'warehouse_delete',
+            'warehouse_device_request_access',
+            'warehouse_device_request_show',
+            'warehouse_device_request_edit',
+            'warehouse_device_request_create',
+            'warehouse_device_request_delete',
 
         ])->get();
 
