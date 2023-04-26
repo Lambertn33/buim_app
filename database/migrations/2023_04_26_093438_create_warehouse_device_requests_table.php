@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('warehouse_device_requests', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('campaign_id');
-            $table->enum('request_status', WarehouseDeviceRequest::REQUEST_STATUS)->default(WarehouseDeviceRequest::REQUESTED);
+            $table->enum('request_status', WarehouseDeviceRequest::REQUEST_STATUS)->default(WarehouseDeviceRequest::INITIATED);
             $table->enum('confirmation_status', WarehouseDeviceRequest::CONFIRMATION_STATUS)->default(WarehouseDeviceRequest::PENDING);
             $table->timestamps();
         });

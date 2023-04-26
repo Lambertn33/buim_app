@@ -12,14 +12,15 @@ class WarehouseDeviceRequest extends Model
 
     public $incrementing = false;
 
-    const REQUEST_STATUS = ['REQUESTED', 'VERIFIED', 'CONTRACT_PRINTING', 'READY_FOR_LOADING', 'DELIVERED'];
+    const REQUEST_STATUS = ['INITIATED','REQUESTED', 'VERIFIED', 'CONTRACT_PRINTING', 'READY_FOR_LOADING', 'DELIVERED'];
     const CONFIRMATION_STATUS = ['PENDING', 'RECEIVED'];
 
-    const REQUESTED = self::REQUEST_STATUS[0];
-    const VERIFIED = self::REQUEST_STATUS[1];
-    const CONTRACT_PRINTING = self::REQUEST_STATUS[2];
-    const READY_FOR_LOADING = self::REQUEST_STATUS[3];
-    const DELIVERED = self::REQUEST_STATUS[4];
+    const INITIATED = self::REQUEST_STATUS[0];
+    const REQUESTED = self::REQUEST_STATUS[1];
+    const VERIFIED = self::REQUEST_STATUS[2];
+    const CONTRACT_PRINTING = self::REQUEST_STATUS[3];
+    const READY_FOR_LOADING = self::REQUEST_STATUS[4];
+    const DELIVERED = self::REQUEST_STATUS[5];
 
     const PENDING = self::CONFIRMATION_STATUS[0];
     const RECEIVED = self::CONFIRMATION_STATUS[1];
