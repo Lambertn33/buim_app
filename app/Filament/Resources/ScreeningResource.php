@@ -21,6 +21,7 @@ use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\Card;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ScreeningResource extends Resource
@@ -134,8 +135,10 @@ class ScreeningResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->visible(fn($record) => $record->campaign->status == Campaign::ONGOING),
+                Tables\Actions\DeleteAction::make()
+                    ->visible(fn($record) => $record->campaign->status == Campaign::ONGOING),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
