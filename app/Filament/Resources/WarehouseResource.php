@@ -25,7 +25,11 @@ class WarehouseResource extends Resource
 {
     protected static ?string $model = Warehouse::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard';
+
+    protected static ?string $navigationGroup = 'district warehouses inventory';
+
+    protected static ?string $navigationLabel = 'Warehouses Overview';
 
     public static function form(Form $form): Form
     {

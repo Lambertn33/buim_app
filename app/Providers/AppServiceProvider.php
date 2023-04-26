@@ -25,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
             'inventory settings',
             'stock initialization',
             'main warehouses inventory',
+            'district warehouses inventory',
             'access control'
         ]);
     }
