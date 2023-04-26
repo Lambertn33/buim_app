@@ -84,8 +84,8 @@ class Campaign extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function warehouseDeviceRequests(): HasMany
+    public function warehouseDeviceRequest(): HasOne
     {
-        return $this->hasMany(WarehouseDeviceRequest::class, 'campaign_id', 'id');
+        return $this->hasOne(WarehouseDeviceRequest::class, 'campaign_id', 'id');
     }
 }

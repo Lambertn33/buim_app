@@ -12,21 +12,24 @@ class WarehouseDeviceRequest extends Model
 
     public $incrementing = false;
 
-    const STATUS = ['REQUESTED', 'VERIFIED', 'CONTRACT_PRINTING', 'READY_FOR_LOADING', 'DELIVERED'];
+    const REQUEST_STATUS = ['REQUESTED', 'VERIFIED', 'CONTRACT_PRINTING', 'READY_FOR_LOADING', 'DELIVERED'];
+    const CONFIRMATION_STATUS = ['PENDING', 'RECEIVED'];
 
-    const REQUESTED = self::STATUS[0];
-    const VERIFIED = self::STATUS[1];
-    const CONTRACT_PRINTING = self::STATUS[2];
-    const READY_FOR_LOADING = self::STATUS[3];
-    const DELIVERED = self::STATUS[4];
+    const REQUESTED = self::REQUEST_STATUS[0];
+    const VERIFIED = self::REQUEST_STATUS[1];
+    const CONTRACT_PRINTING = self::REQUEST_STATUS[2];
+    const READY_FOR_LOADING = self::REQUEST_STATUS[3];
+    const DELIVERED = self::REQUEST_STATUS[4];
+
+    const PENDING = self::CONFIRMATION_STATUS[0];
+    const RECEIVED = self::CONFIRMATION_STATUS[1];
 
     protected $fillable = [
-        'id', 'model_id', 'campaign_id', 'quantity', 'status', 'denied_note'
+        'id', 'campaign_id', 'request_id', 'request_status', 'confirmation_status' 
     ];
     protected $casts = [
         'id' => 'string',
         'campaign_id' => 'string',
-        'model_id' => 'string'
     ];
 
      /**
@@ -37,15 +40,5 @@ class WarehouseDeviceRequest extends Model
     public function campaign(): BelongsTo
     {
         return $this->belongsTo(Campaign::class, 'campaign_id', 'id');
-    }
-
-    /**
-     * Get the model that owns the SubStockRequest
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function model(): BelongsTo
-    {
-        return $this->belongsTo(StockModel::class, 'model_id', 'id');
     }
 }
