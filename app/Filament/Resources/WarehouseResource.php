@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\WarehouseResource\Pages;
 use App\Filament\Resources\WarehouseResource\RelationManagers;
 use App\Models\District;
+use App\Models\Role;
 use App\Models\Warehouse;
 use Filament\Forms;
 use Filament\Forms\Components\Card;
@@ -14,9 +15,11 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class WarehouseResource extends Resource
 {
@@ -54,26 +57,35 @@ class WarehouseResource extends Resource
                 TextColumn::make('district.district')
                     ->sortable()
                     ->searchable(),
+                SelectColumn::make('status')
+                    ->options([
+                        'CLOSED' => 'CLOSED',
+                        'ACTIVE' => 'ACTIVE'
+                    ])
+                    ->sortable()
+                    ->disablePlaceholderSelection()
+                    ->disabled(Auth::user()->role->role !== Role::ADMIN_ROLE),
                 TextColumn::make('manager.user.name')
                     ->label('Manager')
                     ->searchable()
+                    ->visible(Auth::user()->role->role !== Role::DISTRICT_MANAGER_ROLE)
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->visible(Auth::user()->role->role !== Role::DISTRICT_MANAGER_ROLE),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
-    
+
     public static function getPages(): array
     {
         return [
             'index' => Pages\ManageWarehouses::route('/'),
         ];
-    }    
+    }
 }
