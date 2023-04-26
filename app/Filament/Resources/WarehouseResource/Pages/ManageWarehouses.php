@@ -35,7 +35,7 @@ class ManageWarehouses extends ManageRecords
     public function getTableQuery(): Builder
     {
         if (Auth::user()->role->role === Role::DISTRICT_MANAGER_ROLE) {
-            return Auth::user()->manager->warehouses;
+            return parent::getTableQuery()->where('manager_id', Auth::user()->manager->id);
         } else {
             return parent::getTableQuery();
         }
