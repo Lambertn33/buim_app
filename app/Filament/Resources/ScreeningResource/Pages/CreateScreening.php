@@ -23,8 +23,9 @@ class CreateScreening extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $campaignProvince = Campaign::where('id', $data['campaign_id'])->value('province');
-        $campaignDistrict = Campaign::where('id', $data['campaign_id'])->value('district');
+        $campaign = Campaign::find($data['campaign_id']);
+        $campaignProvince = $campaign->province->province;
+        $campaignDistrict = $campaign->district->district;
         $codeGenerator = 'C' . $campaignProvince[0] . rand(100000000, 999999999) . '';
 
         $data['id'] = Str::uuid()->toString();
@@ -34,6 +35,7 @@ class CreateScreening extends CreateRecord
         $data['screening_date'] = now()->format('Y-m-d');
         $data['confirmation_status'] = Screening::PROSPECT;
         $data['prospect_code'] = $codeGenerator;
+        (new StockServices)->createWarehouseDeviceRequest($data);
         return $data;
     }
 
