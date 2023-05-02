@@ -12,6 +12,7 @@ use App\Models\MainWarehouseDevice;
 use App\Models\MainWarehouse;
 use App\Models\StockModel;
 use App\Models\User;
+use App\Services\NotificationsServices;
 use Illuminate\Support\Str;
 use App\Services\StockServices;
 use Filament\Forms\Components\Select;
@@ -109,16 +110,7 @@ class ManagePendingDPWorldWarehouses extends ManageRecords
     public function sendNotificationOnStockInitialization($users, $title, $message)
     {
         foreach ($users as $user) {
-            $user->notify(
-                Notification::make()
-                    ->title($title)
-                    ->body($message)
-                    ->actions([
-                        NotificationAction::make('mark as read')
-                            ->button()
-                    ])
-                    ->toDatabase(),
-            );
+            (new NotificationsServices)->sendNotificationToUser($user, $title, $message);
         }
     }
 

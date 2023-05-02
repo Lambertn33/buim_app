@@ -12,6 +12,8 @@ use App\Models\Screening;
 use App\Models\StockModel;
 use App\Models\SubStockRequest;
 use App\Models\User;
+use App\Models\Warehouse;
+use App\Models\WarehouseDevice;
 use Illuminate\Support\Facades\Auth;
 
 class NavigationBadgesServices
@@ -19,7 +21,7 @@ class NavigationBadgesServices
     public function getTotalNumberOfUsers()
     {
         return User::count();
-    } 
+    }
 
     public function getTotalNumberOfRoles()
     {
@@ -35,7 +37,7 @@ class NavigationBadgesServices
     {
         return Permission::count();
     }
-    
+
     public function getTotalNumberOfCampaigns()
     {
         if (Auth::user()->role->role === Role::ADMIN_ROLE) {
@@ -68,7 +70,7 @@ class NavigationBadgesServices
 
     public function getTotalNumberOfHQWarehouseDevices()
     {
-        return MainWarehouseDevice::whereHas('mainWarehouse', function($query){
+        return MainWarehouseDevice::whereHas('mainWarehouse', function ($query) {
             $query->where('name', MainWarehouse::HQWAREHOUSE);
         })->count();
     }
@@ -103,8 +105,26 @@ class NavigationBadgesServices
 
     public function getTotalNumberOfRugandoWarehouseDevices()
     {
-        return MainWarehouseDevice::whereHas('mainWarehouse', function($query){
+        return MainWarehouseDevice::whereHas('mainWarehouse', function ($query) {
             $query->where('name', MainWarehouse::RUGANDOWAREHOUSE);
         })->count();
+    }
+
+    public function getTotalNumberOfWarehouses()
+    {
+        if (Auth::user()->role->role === Role::DISTRICT_MANAGER_ROLE) {
+            return Warehouse::where('manager_id', Auth::user()->manager->id)->count();
+        } else {
+            return Warehouse::count();
+        }
+    }
+
+    public function getTotalNumberOfWarehouseDevices()
+    {
+        if (Auth::user()->role->role === Role::DISTRICT_MANAGER_ROLE) {
+            return WarehouseDevice::where('manager_id', Auth::user()->manager->id)->count();
+        } else {
+            return WarehouseDevice::count();
+        }
     }
 }

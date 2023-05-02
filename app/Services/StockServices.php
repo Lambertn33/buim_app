@@ -9,9 +9,11 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Campaign;
 use App\Models\MainWarehouse;
 use App\Models\MainWarehouseDevice;
+use App\Models\Warehouse;
 use App\Models\WarehouseDevice;
 use App\Models\WarehouseDeviceRequest;
 use App\Models\WarehouseDeviceRequestedDevice;
+use App\Models\WarehouseDeviceTransfer;
 use Illuminate\Support\Str;
 
 class StockServices
@@ -54,11 +56,61 @@ class StockServices
     }
 
     //WAREHOUSES  SERVICES
-    public function transferMainWarehouseDevice($device, $warehouseId)
+    public function transferMainWarehouseDevice($device, $warehouseId, $warehouseType)
     {
-        return MainWarehouseDevice::find($device->id)->update([
-            'main_warehouse_id' => $warehouseId
+        $deviceToTransfer = MainWarehouseDevice::with('model')->find($device->id);
+        if ($warehouseType === "Main warehouse") {
+            // transfer from main warehouse to other main warehouse
+            return $deviceToTransfer->update([
+                'main_warehouse_id' => $warehouseId
+            ]);
+        } else {
+            //transfer from main warehouse to district warehouse
+            $districtWarehouse = Warehouse::find($warehouseId);
+            $newDistrictWarehouseDevice = [
+                'id' => Str::uuid()->toString(),
+                'model_id' => $deviceToTransfer->model->id,
+                'warehouse_id' => $warehouseId,
+                'district_id' => $districtWarehouse->district->id,
+                'manager_id' => $districtWarehouse->manager == null ? null : $districtWarehouse->manager->id,
+                'device_name' => $device->device_name,
+                'serial_number' => $device->serial_number,
+                'created_at' => now(),
+                'updated_at' => now()
+            ];
+            WarehouseDevice::insert($newDistrictWarehouseDevice);
+            $deviceToTransfer->delete();
+        }
+    }
+
+    public function transferDistrictWarehouseDevice($device, $data) {
+
+        $deviceSender = $device->warehouse;
+        $deviceReceiver = $data['warehouse_id'];
+        $reason = $data['reason'];
+
+        $warehouse = Warehouse::find($data['warehouse_id']);
+        $manager = $warehouse->manager->user;
+        $title = 'New device received';
+        $message = 'you received a new device with serial number '. $device->serial_number .' from '. $device->warehouse->district->district .' district ';
+        
+        $newDeviceTransfer = [
+            'id' => Str::uuid()->toString(),
+            'warehouse_sender_id' => $deviceSender->id,
+            'warehouse_receiver_id' => $deviceReceiver,
+            'serial_number' => $device->serial_number,
+            'device_name' => $device->device_name,
+            'description' => $reason,
+            'created_at' => now(),
+            'updated_at' => now()
+        ];
+        WarehouseDeviceTransfer::insert($newDeviceTransfer);
+        WarehouseDevice::find($device->id)->update([
+            'district_id' => $warehouse->district->id,
+            'warehouse_id' => $data['warehouse_id'],
+            'manager_id' => $warehouse->manager->id
         ]);
+        (new NotificationsServices)->sendNotificationToUser($manager, $title, $message);
     }
 
     //WAREHOUSE DEVICES REQUESTS

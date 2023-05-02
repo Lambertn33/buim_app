@@ -26,7 +26,7 @@ class MainWarehouseResource extends Resource
 
     protected static ?string $navigationGroup = 'main warehouses inventory';
 
-    protected static ?string $navigationLabel = 'Main Warehouses Overview';
+    protected static ?string $navigationLabel = 'Overview';
 
     protected static ?int $navigationSort = 1;
     

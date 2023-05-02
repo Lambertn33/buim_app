@@ -55,4 +55,24 @@ class Warehouse extends Model
     {
         return $this->hasMany(WarehouseDevice::class, 'warehouse_id', 'id');
     }
+
+        /**
+     * Get all of the warehouseTransfers for the WarehouseDevice
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function warehouseSentDevices(): HasMany
+    {
+        return $this->hasMany(WarehouseDeviceTransfer::class, 'warehouse_sender_id', 'id');
+    }
+
+    /**
+     * Get all of the warehouseReceivedDevices for the WarehouseDevice
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function warehouseReceivedDevices(): HasMany
+    {
+        return $this->hasMany(WarehouseDeviceTransfer::class, 'warehouse_receiver_id', 'id');
+    }
 }
