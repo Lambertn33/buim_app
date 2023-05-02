@@ -4,7 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\WarehouseDeviceResource\Pages;
 use App\Filament\Resources\WarehouseDeviceResource\RelationManagers;
+use App\Models\District;
 use App\Models\Role;
+use App\Models\StockModel;
 use App\Models\WarehouseDevice;
 use Filament\Forms;
 use Filament\Resources\Form;
@@ -12,6 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
@@ -59,7 +62,16 @@ class WarehouseDeviceResource extends Resource
                     ->label('Serial number')
             ])
             ->filters([
-                //
+                SelectFilter::make('district_id')
+                    ->label('Filter by District')
+                    ->searchable()
+                    ->visible(Auth::user()->role->role !==Role::DISTRICT_MANAGER_ROLE)
+                    ->options(District::orderBy('district', 'asc')->get()->pluck('district', 'id')->toArray()),
+                SelectFilter::make('model_id')
+                    ->label('Filter by device models')
+                    ->searchable()
+                    ->options(StockModel::get()->pluck('name', 'id')->toArray())
+
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
