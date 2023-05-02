@@ -4,6 +4,7 @@ namespace App\Filament\Resources\WarehouseDeviceResource\Pages;
 
 use App\Filament\Resources\WarehouseDeviceResource;
 use App\Models\Role;
+use App\Models\Warehouse;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
@@ -23,7 +24,9 @@ class ListWarehouseDevices extends ListRecords
     protected function getTableQuery(): Builder
     {
         if (Auth::user()->role->role === Role::DISTRICT_MANAGER_ROLE) {
-            return parent::getTableQuery()->where('manager_id', Auth::user()->manager->id);
+            return parent::getTableQuery()->where('manager_id', Auth::user()->manager->id)->whereHas('warehouse', function($query){
+                $query->where('status', Warehouse::ACTIVE);
+            });
         } else {
             return parent::getTableQuery();
         }
