@@ -7,6 +7,7 @@ use App\Filament\Resources\WarehouseResource\RelationManagers;
 use App\Models\District;
 use App\Models\Role;
 use App\Models\Warehouse;
+use App\Services\NavigationBadgesServices;
 use Filament\Forms;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Select;
@@ -32,6 +33,11 @@ class WarehouseResource extends Resource
     protected static ?string $navigationLabel = 'Warehouses Overview';
 
     protected static ?int $navigationSort = 1;
+
+    protected static function getNavigationBadge(): ?string
+    {
+        return (new NavigationBadgesServices)->getTotalNumberOfWarehouses();
+    }
 
     public static function form(Form $form): Form
     {

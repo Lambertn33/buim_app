@@ -8,6 +8,7 @@ use App\Models\District;
 use App\Models\Role;
 use App\Models\StockModel;
 use App\Models\WarehouseDevice;
+use App\Services\NavigationBadgesServices;
 use App\Services\StockServices;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -19,8 +20,6 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
 
 class WarehouseDeviceResource extends Resource
@@ -36,6 +35,11 @@ class WarehouseDeviceResource extends Resource
     protected static ?string $pluralModelLabel = 'District Warehouse Devices';
 
     protected static ?int $navigationSort = 3;
+
+    protected static function getNavigationBadge(): ?string
+    {
+        return (new NavigationBadgesServices)->getTotalNumberOfWarehouseDevices();
+    }
 
     public static function form(Form $form): Form
     {
