@@ -14,6 +14,7 @@ use App\Models\MainWarehouseDevice;
 use App\Models\Role;
 use App\Models\Warehouse;
 use App\Services\NavigationBadgesServices;
+use App\Services\NotificationsServices;
 use App\Services\StockServices;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -123,23 +124,31 @@ class HQMainWarehouseResource extends Resource
                             ->label('District warehouse')
                             ->placeholder('select warehouse')
                             ->searchable()
-                            ->options(function(callable $get, $record){
+                            ->options(function (callable $get, $record) {
                                 $warehouseType = $get('warehouse_type');
                                 if ($warehouseType) {
                                     if ($warehouseType == 'Main warehouse') {
-                                       return MainWarehouse::whereNot('id', $record->main_warehouse_id)->get()->pluck('name', 'id')->toArray(); 
+                                        return MainWarehouse::whereNot('id', $record->main_warehouse_id)->get()->pluck('name', 'id')->toArray();
                                     } else {
-                                        return Warehouse::get()->pluck('name', 'id')->toArray();
+                                        return Warehouse::whereNotNull('manager_id')->get()->pluck('name', 'id')->toArray();
                                     }
                                 }
                             })
-                            ->visible(function(callable $get){
+                            ->visible(function (callable $get) {
                                 $warehouseType = $get('warehouse_type');
                                 if ($warehouseType) {
                                     return true;
                                 }
                             })
                     ])
+                    ->after(function (MainWarehouseDevice $record, array $data) {
+                        if ($data['warehouse_type'] == 'District warehouse') {
+                            $districtWarehouse = Warehouse::with('manager')->find($data['warehouse_id']);
+                            $title = 'New Received device';
+                            $message = 'a new device with serial number ' . $record->serial_number . ' has been sent to your warehouse ';
+                            (new NotificationsServices)->sendNotificationToUser($districtWarehouse->manager->user, $title, $message);
+                        }
+                    })
                     ->successNotification(
                         Notification::make('success')
                             ->title('Device transfered')

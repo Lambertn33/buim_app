@@ -16,6 +16,7 @@ use App\Models\MainWarehouseDevice;
 use App\Models\Role;
 use App\Models\Warehouse;
 use App\Services\NavigationBadgesServices;
+use App\Services\NotificationsServices;
 use App\Services\StockServices;
 use Filament\Notifications\Notification;
 use Filament\Tables;
@@ -129,7 +130,7 @@ class RugandoMainWarehouseResource extends Resource
                                     if ($warehouseType == 'Main warehouse') {
                                        return MainWarehouse::whereNot('id', $record->main_warehouse_id)->get()->pluck('name', 'id')->toArray(); 
                                     } else {
-                                        return Warehouse::get()->pluck('name', 'id')->toArray();
+                                        return Warehouse::whereNotNull('manager_id')->get()->pluck('name', 'id')->toArray();
                                     }
                                 }
                             })
@@ -140,6 +141,14 @@ class RugandoMainWarehouseResource extends Resource
                                 }
                             })
                     ])
+                    ->after(function(MainWarehouseDevice $record, array $data) {
+                        if ($data['warehouse_type'] == 'District warehouse') {
+                            $districtWarehouse = Warehouse::with('manager')->find($data['warehouse_id']);
+                            $title = 'New Received device';
+                            $message = 'a new device with serial number '. $record->serial_number .' has been sent to your warehouse ';
+                            (new NotificationsServices)->sendNotificationToUser($districtWarehouse->manager->user, $title, $message);
+                        }
+                    })
                     ->successNotification(
                         Notification::make('success')
                             ->title('Device transfered')
