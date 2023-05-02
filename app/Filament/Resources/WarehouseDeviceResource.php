@@ -11,6 +11,7 @@ use App\Models\WarehouseDevice;
 use App\Services\StockServices;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -109,10 +110,12 @@ class WarehouseDeviceResource extends Resource
                                 if ($district) {
                                     return true;
                                 }
-                            })
+                            }),
+                        Textarea::make('reason')
+                            ->required()
                     ])
                     ->action(function(WarehouseDevice $record, array $data) {
-                        (new StockServices)->transferDistrictWarehouseDevice($record, $data['warehouse_id']);
+                        (new StockServices)->transferDistrictWarehouseDevice($record, $data);
                     })
                     ->successNotification(
                         Notification::make('success')

@@ -13,6 +13,7 @@ use App\Models\Warehouse;
 use App\Models\WarehouseDevice;
 use App\Models\WarehouseDeviceRequest;
 use App\Models\WarehouseDeviceRequestedDevice;
+use App\Models\WarehouseDeviceTransfer;
 use Illuminate\Support\Str;
 
 class StockServices
@@ -82,15 +83,31 @@ class StockServices
         }
     }
 
-    public function transferDistrictWarehouseDevice($device, $warehouseId) {
-        $warehouse = Warehouse::find($warehouseId);
+    public function transferDistrictWarehouseDevice($device, $data) {
+
+        $deviceSender = $device->warehouse;
+        $deviceReceiver = $data['warehouse_id'];
+        $reason = $data['reason'];
+
+        $warehouse = Warehouse::find($data['warehouse_id']);
         $manager = $warehouse->manager->user;
         $title = 'New device received';
-        $message = 'you have received a new device from '. $device->warehouse->district->district .' district ';
-
+        $message = 'you received a new device with serial number '. $device->serial_number .' from '. $device->warehouse->district->district .' district ';
+        
+        $newDeviceTransfer = [
+            'id' => Str::uuid()->toString(),
+            'warehouse_sender_id' => $deviceSender->id,
+            'warehouse_receiver_id' => $deviceReceiver,
+            'serial_number' => $device->serial_number,
+            'device_name' => $device->device_name,
+            'description' => $reason,
+            'created_at' => now(),
+            'updated_at' => now()
+        ];
+        WarehouseDeviceTransfer::insert($newDeviceTransfer);
         WarehouseDevice::find($device->id)->update([
             'district_id' => $warehouse->district->id,
-            'warehouse_id' => $warehouseId,
+            'warehouse_id' => $data['warehouse_id'],
             'manager_id' => $warehouse->manager->id
         ]);
         (new NotificationsServices)->sendNotificationToUser($manager, $title, $message);
