@@ -23,7 +23,7 @@ class WarehouseDeviceRequestResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-question-mark-circle';
 
-    protected static ?string $navigationGroup = 'district warehouses inventory';
+    protected static ?string $navigationGroup = 'Inventory - District warehouses';
 
     protected static ?string $navigationLabel = 'Campaigns Requested devices';
 

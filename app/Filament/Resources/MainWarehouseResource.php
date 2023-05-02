@@ -24,7 +24,7 @@ class MainWarehouseResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard';
 
-    protected static ?string $navigationGroup = 'main warehouses inventory';
+    protected static ?string $navigationGroup = 'Inventory - Main warehouses';
 
     protected static ?string $navigationLabel = 'Overview';
 
@@ -63,7 +63,8 @@ class MainWarehouseResource extends Resource
                     ->sortable(),
                 TextColumn::make('location'),
                 TextColumn::make('devices_count')
-                    ->label('number of held devices')
+                    ->label('Available quantity')
+                    ->sortable()
                     ->counts('devices')
             ])
             ->filters([

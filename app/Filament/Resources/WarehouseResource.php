@@ -28,9 +28,9 @@ class WarehouseResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard';
 
-    protected static ?string $navigationGroup = 'district warehouses inventory';
+    protected static ?string $navigationGroup = 'Inventory - District warehouses';
 
-    protected static ?string $navigationLabel = 'Warehouses Overview';
+    protected static ?string $navigationLabel = 'Overview';
 
     protected static ?int $navigationSort = 1;
 

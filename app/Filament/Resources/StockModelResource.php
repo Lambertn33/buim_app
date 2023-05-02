@@ -26,7 +26,9 @@ class StockModelResource extends Resource
 
     protected static ?string $navigationGroup = 'inventory settings';
 
-    protected static ?string $navigationLabel = 'Main Device models';
+    protected static ?string $navigationLabel = 'Device models';
+
+    protected static ?string $pluralModelLabel = 'Device models';
 
     protected static function getNavigationBadge(): ?string
     {
@@ -50,10 +52,11 @@ class StockModelResource extends Resource
             ->columns([
                 TextColumn::make('name')
                     ->sortable()
-                    ->label('model name')
+                    ->label('Model name')
                     ->searchable(),
                 TextColumn::make('quantity')
-                    ->label('number of devices')
+                    ->label('Available quantity')
+                    ->sortable()
                     ->visible(Auth::user()->role->role === Role::ADMIN_ROLE)
             ])
             ->filters([

@@ -30,7 +30,7 @@ class WarehouseDeviceResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard';
 
-    protected static ?string $navigationGroup = 'district warehouses inventory';
+    protected static ?string $navigationGroup = 'Inventory - District warehouses';
 
     protected static ?string $navigationLabel = 'Warehouse devices';
 

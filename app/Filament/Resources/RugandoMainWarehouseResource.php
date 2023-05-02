@@ -35,13 +35,13 @@ class RugandoMainWarehouseResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard';
 
-    protected static ?string $navigationLabel = 'Rugando Warehouse';
+    protected static ?string $navigationLabel = 'Transit';
 
-    protected static ?string $navigationGroup = 'main warehouses inventory';
+    protected static ?string $navigationGroup = 'Inventory - Main warehouses';
 
     protected static ?string $slug = 'rugando-warehouse';
 
-    protected static ?string $modelLabel = 'Rugando Warehouse Devices';
+    protected static ?string $modelLabel = 'Transit Warehouse Devices';
 
     protected static ?int $navigationSort = 4;
 

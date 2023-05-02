@@ -35,9 +35,9 @@ class HQMainWarehouseResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard';
 
-    protected static ?string $navigationLabel = 'HQ Warehouse';
+    protected static ?string $navigationLabel = 'HQ';
 
-    protected static ?string $navigationGroup = 'main warehouses inventory';
+    protected static ?string $navigationGroup = 'Inventory - Main warehouses';
 
     protected static ?string $slug = 'hq-warehouse';
 
