@@ -18,8 +18,10 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 
 class WarehouseDeviceResource extends Resource
@@ -118,7 +120,7 @@ class WarehouseDeviceResource extends Resource
                         Textarea::make('reason')
                             ->required()
                     ])
-                    ->action(function(WarehouseDevice $record, array $data) {
+                    ->action(function (WarehouseDevice $record, array $data) {
                         (new StockServices)->transferDistrictWarehouseDevice($record, $data);
                     })
                     ->successNotification(
@@ -126,9 +128,48 @@ class WarehouseDeviceResource extends Resource
                             ->title('Device transfered')
                             ->body('device has been successfully transfered.'),
                     )
+                    ->visible(Auth::user()->role->role == Role::DISTRICT_MANAGER_ROLE)
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+                BulkAction::make('transfer selected')
+                    ->color('success')
+                    ->icon('heroicon-o-paper-airplane')
+                    ->requiresConfirmation()
+                    ->modalSubheading('select other main warehouse to transfer selected devices')
+                    ->modalButton('transfer selected devices')
+                    ->form([
+                        Select::make('district_id')
+                            ->required()
+                            ->placeholder('select district')
+                            ->label('District')
+                            ->reactive()
+                            ->options(function () {
+                                return District::whereNotNull('manager_id')->get()->pluck('district', 'id')->toArray();
+                            }),
+                        Select::make('warehouse_id')
+                            ->required()
+                            ->label('District warehouse')
+                            ->placeholder('select warehouse')
+                            ->searchable()
+                            ->options(function (callable $get) {
+                                $district = District::find($get('district_id'));
+                                return $district->warehouses()->get()->pluck('name', 'id')->toArray();
+                            })
+                            ->visible(function (callable $get) {
+                                $district = $get('district_id');
+                                if ($district) {
+                                    return true;
+                                }
+                            }),
+                        Textarea::make('reason')
+                            ->required()
+                    ])
+                    ->action(function (Collection $records, array $data) {
+                        foreach ($records as $record) {
+                            (new StockServices)->transferDistrictWarehouseDevice($record, $data);
+                        }
+                    })
             ]);
     }
 
