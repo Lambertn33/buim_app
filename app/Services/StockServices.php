@@ -82,6 +82,20 @@ class StockServices
         }
     }
 
+    public function transferDistrictWarehouseDevice($device, $warehouseId) {
+        $warehouse = Warehouse::find($warehouseId);
+        $manager = $warehouse->manager->user;
+        $title = 'New device received';
+        $message = 'you have received a new device from '. $device->warehouse->district->district .' district ';
+
+        WarehouseDevice::find($device->id)->update([
+            'district_id' => $warehouse->district->id,
+            'warehouse_id' => $warehouseId,
+            'manager_id' => $warehouse->manager->id
+        ]);
+        (new NotificationsServices)->sendNotificationToUser($manager, $title, $message);
+    }
+
     //WAREHOUSE DEVICES REQUESTS
     public function getLastSubStockRequestIndex()
     {

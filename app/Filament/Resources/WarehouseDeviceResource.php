@@ -8,7 +8,10 @@ use App\Models\District;
 use App\Models\Role;
 use App\Models\StockModel;
 use App\Models\WarehouseDevice;
+use App\Services\StockServices;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
+use Filament\Notifications\Notification;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -52,7 +55,7 @@ class WarehouseDeviceResource extends Resource
                 TextColumn::make('model.name')
                     ->label('Device model')
                     ->sortable()
-                    -> searchable(),
+                    ->searchable(),
                 TextColumn::make('warehouse.district.district')
                     ->visible(Auth::user()->role->role !== Role::DISTRICT_MANAGER_ROLE),
                 TextColumn::make('warehouse.name')
@@ -67,7 +70,7 @@ class WarehouseDeviceResource extends Resource
                 SelectFilter::make('district_id')
                     ->label('Filter by District')
                     ->searchable()
-                    ->visible(Auth::user()->role->role !==Role::DISTRICT_MANAGER_ROLE)
+                    ->visible(Auth::user()->role->role !== Role::DISTRICT_MANAGER_ROLE)
                     ->options(District::orderBy('district', 'asc')->get()->pluck('district', 'id')->toArray()),
                 SelectFilter::make('model_id')
                     ->label('Filter by device models')
@@ -76,20 +79,59 @@ class WarehouseDeviceResource extends Resource
 
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('transfer')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalSubheading('select district and warehouse to transfer this device')
+                    ->modalButton('transfer device')
+                    ->icon('heroicon-o-paper-airplane')
+                    ->label('Transfer')
+                    ->form([
+                        Select::make('district_id')
+                            ->required()
+                            ->placeholder('select district')
+                            ->label('District')
+                            ->reactive()
+                            ->options(function ($record) {
+                                return District::whereNotNull('manager_id')->whereNot('id', $record->district_id)->get()->pluck('district', 'id')->toArray();
+                            }),
+                        Select::make('warehouse_id')
+                            ->required()
+                            ->label('District warehouse')
+                            ->placeholder('select warehouse')
+                            ->searchable()
+                            ->options(function (callable $get) {
+                                $district = District::find($get('district_id'));
+                                return $district->warehouses()->get()->pluck('name', 'id')->toArray();
+                            })
+                            ->visible(function (callable $get) {
+                                $district = $get('district_id');
+                                if ($district) {
+                                    return true;
+                                }
+                            })
+                    ])
+                    ->action(function(WarehouseDevice $record, array $data) {
+                        (new StockServices)->transferDistrictWarehouseDevice($record, $data['warehouse_id']);
+                    })
+                    ->successNotification(
+                        Notification::make('success')
+                            ->title('Device transfered')
+                            ->body('device has been successfully transfered.'),
+                    )
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -97,5 +139,5 @@ class WarehouseDeviceResource extends Resource
             'create' => Pages\CreateWarehouseDevice::route('/create'),
             'edit' => Pages\EditWarehouseDevice::route('/{record}/edit'),
         ];
-    }    
+    }
 }
