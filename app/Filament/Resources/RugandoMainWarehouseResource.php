@@ -14,6 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use App\Models\MainWarehouseDevice;
 use App\Models\Role;
+use App\Models\Warehouse;
 use App\Services\NavigationBadgesServices;
 use App\Services\StockServices;
 use Filament\Notifications\Notification;
@@ -100,7 +101,7 @@ class RugandoMainWarehouseResource extends Resource
                 Action::make('transfer')
                     ->color('success')
                     ->action(function (MainWarehouseDevice $record, array $data) {
-                        (new StockServices)->transferMainWarehouseDevice($record, $data['main_warehouse_id']);
+                        (new StockServices)->transferMainWarehouseDevice($record, $data['warehouse_id'], $data['warehouse_type']);
                     })
                     ->requiresConfirmation()
                     ->modalSubheading('select other main warehouse to transfer this device')
@@ -108,17 +109,42 @@ class RugandoMainWarehouseResource extends Resource
                     ->icon('heroicon-o-paper-airplane')
                     ->label('Transfer')
                     ->form(fn ($record) => [
-                        Select::make('main_warehouse_id')
-                            ->label('Main warehouse')
+                        Select::make('warehouse_type')
+                            ->label('warehouse type')
                             ->required()
-                            ->placeholder('select other main warehouse')
-                            ->options(MainWarehouse::whereNot('id', $record->main_warehouse_id)->whereNot('name', MainWarehouse::DPWORLDWAREHOUSE)->get()->pluck('name', 'id')->toArray())
+                            ->placeholder('select warehouse type')
+                            ->reactive()
+                            ->options([
+                                'Main warehouse' => 'Main warehouse',
+                                'District warehouse' => 'District warehouse'
+                            ]),
+                        Select::make('warehouse_id')
+                            ->required()
+                            ->label('District warehouse')
+                            ->placeholder('select warehouse')
+                            ->searchable()
+                            ->options(function(callable $get, $record){
+                                $warehouseType = $get('warehouse_type');
+                                if ($warehouseType) {
+                                    if ($warehouseType == 'Main warehouse') {
+                                       return MainWarehouse::whereNot('id', $record->main_warehouse_id)->get()->pluck('name', 'id')->toArray(); 
+                                    } else {
+                                        return Warehouse::get()->pluck('name', 'id')->toArray();
+                                    }
+                                }
+                            })
+                            ->visible(function(callable $get){
+                                $warehouseType = $get('warehouse_type');
+                                if ($warehouseType) {
+                                    return true;
+                                }
+                            })
                     ])
                     ->successNotification(
                         Notification::make('success')
                             ->title('Device transfered')
                             ->body('device has been successfully transfered.'),
-                    ),
+                    )
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
