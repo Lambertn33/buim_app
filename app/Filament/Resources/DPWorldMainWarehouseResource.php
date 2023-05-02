@@ -130,28 +130,28 @@ class DPWorldMainWarehouseResource extends Resource
                             ->label('District warehouse')
                             ->placeholder('select warehouse')
                             ->searchable()
-                            ->options(function(callable $get, $record){
+                            ->options(function (callable $get, $record) {
                                 $warehouseType = $get('warehouse_type');
                                 if ($warehouseType) {
                                     if ($warehouseType == 'Main warehouse') {
-                                       return MainWarehouse::whereNot('id', $record->main_warehouse_id)->get()->pluck('name', 'id')->toArray(); 
+                                        return MainWarehouse::whereNot('id', $record->main_warehouse_id)->get()->pluck('name', 'id')->toArray();
                                     } else {
                                         return Warehouse::whereNotNull('manager_id')->get()->pluck('name', 'id')->toArray();
                                     }
                                 }
                             })
-                            ->visible(function(callable $get){
+                            ->visible(function (callable $get) {
                                 $warehouseType = $get('warehouse_type');
                                 if ($warehouseType) {
                                     return true;
                                 }
                             })
                     ])
-                    ->after(function(MainWarehouseDevice $record, array $data) {
+                    ->after(function (MainWarehouseDevice $record, array $data) {
                         if ($data['warehouse_type'] == 'District warehouse') {
                             $districtWarehouse = Warehouse::with('manager')->find($data['warehouse_id']);
                             $title = 'New Received device';
-                            $message = 'a new device with serial number '. $record->serial_number .' has been sent to your warehouse ';
+                            $message = 'a new device with serial number ' . $record->serial_number . ' has been sent to your warehouse ';
                             (new NotificationsServices)->sendNotificationToUser($districtWarehouse->manager->user, $title, $message);
                         }
                     })
@@ -170,15 +170,45 @@ class DPWorldMainWarehouseResource extends Resource
                     ->modalSubheading('select other main warehouse to transfer selected devices')
                     ->modalButton('transfer selected devices')
                     ->form([
-                        Select::make('main_warehouse_id')
-                            ->label('Main warehouse')
+                        Select::make('warehouse_type')
+                            ->label('warehouse type')
                             ->required()
-                            ->placeholder('select other main warehouse')
-                            ->options(MainWarehouse::whereNot('name', MainWarehouse::DPWORLDWAREHOUSE)->get()->pluck('name', 'id')->toArray())
+                            ->placeholder('select warehouse type')
+                            ->reactive()
+                            ->options([
+                                'Main warehouse' => 'Main warehouse',
+                                'District warehouse' => 'District warehouse'
+                            ]),
+                        Select::make('warehouse_id')
+                            ->required()
+                            ->label('District warehouse')
+                            ->placeholder('select warehouse')
+                            ->searchable()
+                            ->options(function (callable $get) {
+                                $warehouseType = $get('warehouse_type');
+                                if ($warehouseType) {
+                                    if ($warehouseType == 'Main warehouse') {
+                                        $dpWarehouse = MainWarehouse::where('name', MainWarehouse::DPWORLDWAREHOUSE)->first();
+                                        return MainWarehouse::whereNot('id', $dpWarehouse->id)->get()->pluck('name', 'id')->toArray();
+                                    } else {
+                                        return Warehouse::whereNotNull('manager_id')->get()->pluck('name', 'id')->toArray();
+                                    }
+                                }
+                            })
+                            ->visible(function (callable $get) {
+                                $warehouseType = $get('warehouse_type');
+                                if ($warehouseType) {
+                                    return true;
+                                }
+                            })
                     ])
-                    ->action(fn (Collection $records, array $data) => $records->each->update([
-                        'main_warehouse_id' => $data['main_warehouse_id']
-                    ]))->successNotification(
+                    ->action(
+                        function (Collection $records, array $data) {
+                            foreach ($records as $record) {
+                                (new StockServices)->transferMainWarehouseDevice($record, $data['warehouse_id'], $data['warehouse_type']);
+                            }
+                        }
+                    )->successNotification(
                         Notification::make('success')
                             ->title('Device transfered')
                             ->body('device has been successfully transfered.'),

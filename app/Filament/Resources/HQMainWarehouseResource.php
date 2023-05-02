@@ -164,15 +164,45 @@ class HQMainWarehouseResource extends Resource
                     ->modalSubheading('select other main warehouse to transfer selected devices')
                     ->modalButton('transfer selected devices')
                     ->form([
-                        Select::make('main_warehouse_id')
-                            ->label('Main warehouse')
+                        Select::make('warehouse_type')
+                            ->label('warehouse type')
                             ->required()
-                            ->placeholder('select other main warehouse')
-                            ->options(MainWarehouse::whereNot('name', MainWarehouse::DPWORLDWAREHOUSE)->whereNot('name', MainWarehouse::HQWAREHOUSE)->get()->pluck('name', 'id')->toArray())
+                            ->placeholder('select warehouse type')
+                            ->reactive()
+                            ->options([
+                                'Main warehouse' => 'Main warehouse',
+                                'District warehouse' => 'District warehouse'
+                            ]),
+                        Select::make('warehouse_id')
+                            ->required()
+                            ->label('District warehouse')
+                            ->placeholder('select warehouse')
+                            ->searchable()
+                            ->options(function (callable $get) {
+                                $warehouseType = $get('warehouse_type');
+                                if ($warehouseType) {
+                                    if ($warehouseType == 'Main warehouse') {
+                                        $HQWarehouse = MainWarehouse::where('name', MainWarehouse::HQWAREHOUSE)->first();
+                                        return MainWarehouse::whereNot('id', $HQWarehouse->id)->get()->pluck('name', 'id')->toArray();
+                                    } else {
+                                        return Warehouse::whereNotNull('manager_id')->get()->pluck('name', 'id')->toArray();
+                                    }
+                                }
+                            })
+                            ->visible(function (callable $get) {
+                                $warehouseType = $get('warehouse_type');
+                                if ($warehouseType) {
+                                    return true;
+                                }
+                            })
                     ])
-                    ->action(fn (Collection $records, array $data) => $records->each->update([
-                        'main_warehouse_id' => $data['main_warehouse_id']
-                    ]))->successNotification(
+                    ->action(
+                        function (Collection $records, array $data) {
+                            foreach ($records as $record) {
+                                (new StockServices)->transferMainWarehouseDevice($record, $data['warehouse_id'], $data['warehouse_type']);
+                            }
+                        }
+                    )->successNotification(
                         Notification::make('success')
                             ->title('Device transfered')
                             ->body('device has been successfully transfered.'),
