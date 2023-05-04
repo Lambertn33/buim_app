@@ -143,7 +143,7 @@ class StockServices
         $device = WarehouseDevice::find($device['id']);
         $warehouseReceiver = Warehouse::with('district')->with('manager')->find($deviceReceiver);
         $warehouseSender = Warehouse::with('district')->with('manager')->find($deviceSender['id']);
-        $managerSender = $warehouseSender->manager->user;
+        $managerSender = $warehouseSender->district->manager->user;
 
         WarehouseDeviceTransfer::where('serial_number', $device->serial_number)->where('warehouse_receiver_id', $deviceReceiver)->update([
             'status' => WarehouseDeviceTransfer::REJECTED
