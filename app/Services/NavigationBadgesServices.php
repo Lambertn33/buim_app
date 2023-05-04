@@ -14,6 +14,7 @@ use App\Models\SubStockRequest;
 use App\Models\User;
 use App\Models\Warehouse;
 use App\Models\WarehouseDevice;
+use App\Models\WarehouseDeviceTransfer;
 use Illuminate\Support\Facades\Auth;
 
 class NavigationBadgesServices
@@ -125,6 +126,15 @@ class NavigationBadgesServices
             return WarehouseDevice::where('manager_id', Auth::user()->manager->id)->count();
         } else {
             return WarehouseDevice::count();
+        }
+    }
+
+    public function getTotalNumberOfWarehouseDeviceTransfers()
+    {
+        if (Auth::user()->role->role === Role::DISTRICT_MANAGER_ROLE) {
+            return WarehouseDeviceTransfer::where('manager_sender_id', Auth::user()->manager->id)->orWhere('manager_receiver_id', Auth::user()->manager->id)->count();
+        } else {
+            return WarehouseDeviceTransfer::count();
         }
     }
 }

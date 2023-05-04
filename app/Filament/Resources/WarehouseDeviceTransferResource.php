@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\WarehouseDeviceTransferResource\Pages;
 use App\Filament\Resources\WarehouseDeviceTransferResource\RelationManagers;
 use App\Models\WarehouseDeviceTransfer;
+use App\Services\NavigationBadgesServices;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -29,6 +30,11 @@ class WarehouseDeviceTransferResource extends Resource
 
     protected static ?int $navigationSort = 4;
 
+    protected static function getNavigationBadge(): ?string
+    {
+        return (new NavigationBadgesServices)->getTotalNumberOfWarehouseDeviceTransfers();
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -45,6 +51,10 @@ class WarehouseDeviceTransferResource extends Resource
                     ->sortable()
                     ->searchable()
                     ->description(fn (WarehouseDeviceTransfer $record): string => $record->description),
+                TextColumn::make('serial_number')
+                    ->sortable()
+                    ->searchable()
+                    ->label('Device serial number'),
                 TextColumn::make('warehouse_sender_id')
                     ->label('Sender')
                     ->formatStateUsing(
