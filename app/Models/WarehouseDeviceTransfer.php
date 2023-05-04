@@ -20,12 +20,14 @@ class WarehouseDeviceTransfer extends Model
     const APPROVED = self::STATUS[1];
     const REJECTED = self::STATUS[2];
 
-    protected $fillable = ['id','warehouse_sender_id', 'warehouse_receiver_id', 'device_name','serial_number', 'description', 'status'];
+    protected $fillable = ['id','warehouse_sender_id', 'manager_sender_id', 'warehouse_receiver_id','manager_receiver_id', 'device_name','serial_number', 'description', 'status'];
 
     protected $casts = [
         'id' => 'string',
         'warehouse_sender_id' => 'string',
-        'warehouse_receiver_id' => 'string'
+        'warehouse_receiver_id' => 'string',
+        'manager_sender_id' => 'string', 
+        'manager_receiver_id' => 'string'
     ];
 
     /**

@@ -16,6 +16,8 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuid('warehouse_sender_id');
             $table->uuid('warehouse_receiver_id');
+            $table->uuid('manager_sender_id');
+            $table->uuid('manager_receiver_id');
             $table->string('serial_number');
             $table->string('device_name');
             $table->string('description');

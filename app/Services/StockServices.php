@@ -91,8 +91,8 @@ class StockServices
         $deviceReceiver = $data['warehouse_id'];
         $reason = $data['reason'];
 
-        $warehouse = Warehouse::find($data['warehouse_id']);
-        $manager = $warehouse->manager->user;
+        $warehouseReceiver = Warehouse::find($data['warehouse_id']);
+        $manager = $warehouseReceiver->manager->user;
         $pendingTitle = 'New device received';
         $pendingMessage = 'you received a new device with serial number ' . $device->serial_number . ' from ' . $device->warehouse->district->district . ' district ';
 
@@ -100,6 +100,8 @@ class StockServices
             'id' => Str::uuid()->toString(),
             'warehouse_sender_id' => $deviceSender->id,
             'warehouse_receiver_id' => $deviceReceiver,
+            'manager_sender_id' => $deviceSender->manager->id,
+            'manager_receiver_id' => $warehouseReceiver->manager->id,
             'serial_number' => $device->serial_number,
             'device_name' => $device->device_name,
             'description' => $reason,
@@ -110,7 +112,7 @@ class StockServices
         $actions = [
             NotificationAction::make('Approve')
                 ->color('success')
-                ->emit('approveDistrictIncomingDevice', ['warehouse' => $warehouse, 'warehouseId' => $data['warehouse_id'], 'device' => $device])
+                ->emit('approveDistrictIncomingDevice', ['warehouse' => $warehouseReceiver, 'warehouseId' => $data['warehouse_id'], 'device' => $device])
                 ->button()
                 ->close(),
             NotificationAction::make('Reject')
