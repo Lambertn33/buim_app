@@ -25,6 +25,7 @@ use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Notifications\Actions\Action as NotificationAction;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
@@ -146,7 +147,14 @@ class HQMainWarehouseResource extends Resource
                             $districtWarehouse = Warehouse::with('manager')->find($data['warehouse_id']);
                             $title = 'New Received device';
                             $message = 'a new device with serial number ' . $record->serial_number . ' has been sent to your warehouse ';
-                            (new NotificationsServices)->sendNotificationToUser($districtWarehouse->manager->user, $title, $message);
+                            $actions = [
+                                NotificationAction::make('Mark as Read')
+                                    ->color('primary')
+                                    ->button()
+                                    ->close(),
+                    
+                            ];
+                            (new NotificationsServices)->sendNotificationToUser($districtWarehouse->manager->user, $title, $message, $actions);
                         }
                     })
                     ->successNotification(

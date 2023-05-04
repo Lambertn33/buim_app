@@ -23,6 +23,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Notifications\Actions\Action as NotificationAction;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -146,7 +147,15 @@ class RugandoMainWarehouseResource extends Resource
                             $districtWarehouse = Warehouse::with('manager')->find($data['warehouse_id']);
                             $title = 'New Received device';
                             $message = 'a new device with serial number ' . $record->serial_number . ' has been sent to your warehouse ';
-                            (new NotificationsServices)->sendNotificationToUser($districtWarehouse->manager->user, $title, $message);
+
+                            $actions = [
+                                NotificationAction::make('Mark as Read')
+                                    ->color('primary')
+                                    ->button()
+                                    ->close(),
+                    
+                            ];
+                            (new NotificationsServices)->sendNotificationToUser($districtWarehouse->manager->user, $title, $message, $actions);
                         }
                     })
                     ->successNotification(

@@ -11,6 +11,8 @@ class WarehouseDeviceRequest extends Model
 {
     use HasFactory;
 
+    // this is a request that is made when a campaign is finished
+
     public $incrementing = false;
 
     const REQUEST_STATUS = ['INITIATED','REQUESTED', 'VERIFIED', 'CONTRACT_PRINTING', 'READY_FOR_LOADING', 'DELIVERED'];

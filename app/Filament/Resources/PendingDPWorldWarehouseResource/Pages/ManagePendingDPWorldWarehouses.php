@@ -110,7 +110,7 @@ class ManagePendingDPWorldWarehouses extends ManageRecords
     public function sendNotificationOnStockInitialization($users, $title, $message)
     {
         foreach ($users as $user) {
-            (new NotificationsServices)->sendNotificationToUser($user, $title, $message);
+            (new NotificationsServices)->sendNotificationToUser($user, $title, $message, []);
         }
     }
 
