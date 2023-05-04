@@ -7,16 +7,13 @@ use Filament\Notifications\Actions\Action as NotificationAction;
 
 class NotificationsServices
 {
-    public function sendNotificationToUser($user, $title, $message)
+    public function sendNotificationToUser($user, $title, $message, $actions)
     {
         return $user->notify(
             Notification::make()
                 ->title($title)
                 ->body($message)
-                ->actions([
-                    NotificationAction::make('mark as read')
-                        ->button()
-                ])
+                ->actions($actions)
                 ->toDatabase(),
         );
     }

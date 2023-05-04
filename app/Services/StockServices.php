@@ -14,6 +14,7 @@ use App\Models\WarehouseDevice;
 use App\Models\WarehouseDeviceRequest;
 use App\Models\WarehouseDeviceRequestedDevice;
 use App\Models\WarehouseDeviceTransfer;
+use Filament\Notifications\Actions\Action as NotificationAction;
 use Illuminate\Support\Str;
 
 class StockServices
@@ -83,7 +84,8 @@ class StockServices
         }
     }
 
-    public function transferDistrictWarehouseDevice($device, $data) {
+    public function transferDistrictWarehouseDevice($device, $data)
+    {
 
         $deviceSender = $device->warehouse;
         $deviceReceiver = $data['warehouse_id'];
@@ -91,9 +93,9 @@ class StockServices
 
         $warehouse = Warehouse::find($data['warehouse_id']);
         $manager = $warehouse->manager->user;
-        $title = 'New device received';
-        $message = 'you received a new device with serial number '. $device->serial_number .' from '. $device->warehouse->district->district .' district ';
-        
+        $pendingTitle = 'New device received';
+        $pendingMessage = 'you received a new device with serial number ' . $device->serial_number . ' from ' . $device->warehouse->district->district . ' district ';
+
         $newDeviceTransfer = [
             'id' => Str::uuid()->toString(),
             'warehouse_sender_id' => $deviceSender->id,
@@ -105,12 +107,50 @@ class StockServices
             'updated_at' => now()
         ];
         WarehouseDeviceTransfer::insert($newDeviceTransfer);
+        $actions = [
+            NotificationAction::make('Approve')
+                ->color('success')
+                ->emit('approveDistrictIncomingDevice', ['warehouse' => $warehouse, 'warehouseId' => $data['warehouse_id'], 'device' => $device])
+                ->button()
+                ->close(),
+            NotificationAction::make('Reject')
+                ->color('danger')
+                ->emit('rejectDistrictIncomingDevice', ['device' => $device, 'deviceReceiver' => $deviceReceiver, 'deviceSender' => $deviceSender])
+                ->button()
+                ->close()
+        ];
+        (new NotificationsServices)->sendNotificationToUser($manager, $pendingTitle, $pendingMessage, $actions);
+    }
+
+    public function approveDistrictIncomingDeviceListener($warehouse, $deviceReceiver, $device)
+    {
+        $device = WarehouseDevice::find($device['id']);
+        $warehouse = Warehouse::with('district')->with('manager')->find($deviceReceiver);
         WarehouseDevice::find($device->id)->update([
             'district_id' => $warehouse->district->id,
-            'warehouse_id' => $data['warehouse_id'],
+            'warehouse_id' => $deviceReceiver,
             'manager_id' => $warehouse->manager->id
         ]);
-        (new NotificationsServices)->sendNotificationToUser($manager, $title, $message);
+    }
+
+    public function rejectDistrictIncomingDeviceListener($device, $deviceReceiver, $deviceSender)
+    {
+        $device = WarehouseDevice::find($device['id']);
+        $warehouseReceiver = Warehouse::with('district')->with('manager')->find($deviceReceiver);
+        $warehouseSender = Warehouse::with('district')->with('manager')->find($deviceSender['id']);
+        $managerSender = $warehouseSender->manager->user;
+
+        $title = 'Device Rejected';
+        $message = 'a device with serial number ' . $device->serial_number . ' sent to ' . $warehouseReceiver->district->district . ' has been declined and returned back to initial warehouse';
+
+        $actions = [
+            NotificationAction::make('Mark as Read')
+                ->color('primary')
+                ->button()
+                ->close(),
+
+        ];
+        (new NotificationsServices)->sendNotificationToUser($managerSender, $title, $message, $actions);
     }
 
     //WAREHOUSE DEVICES REQUESTS
@@ -125,7 +165,7 @@ class StockServices
 
     public function createWarehouseDeviceRequest($screener)
     {
-        $device = MainWarehouseDevice::where('device_name', $screener['proposed_device_name'])->whereHas('mainWarehouse', function($query){
+        $device = MainWarehouseDevice::where('device_name', $screener['proposed_device_name'])->whereHas('mainWarehouse', function ($query) {
             $query->where('name', MainWarehouse::DPWORLDWAREHOUSE)
                 ->where('is_approved', true);
         })->first();
@@ -140,7 +180,6 @@ class StockServices
                 $checkDeviceExistence->update([
                     'quantity' => $checkDeviceExistence->value('quantity') + 1
                 ]);
-
             } else {
                 $newWarehouseRequestedDevice = [
                     'id' => Str::uuid()->toString(),

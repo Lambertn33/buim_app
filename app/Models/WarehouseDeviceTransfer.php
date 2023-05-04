@@ -14,7 +14,13 @@ class WarehouseDeviceTransfer extends Model
 
     // this is normal transfer between districts
 
-    protected $fillable = ['id','warehouse_sender_id', 'warehouse_receiver_id', 'device_name','serial_number', 'description'];
+    const STATUS = ['PENDING','APPROVED', 'REJECTED'];
+
+    const PENDING = self::STATUS[0];
+    const APPROVED = self::STATUS[1];
+    const REJECTED = self::STATUS[2];
+
+    protected $fillable = ['id','warehouse_sender_id', 'warehouse_receiver_id', 'device_name','serial_number', 'description', 'status'];
 
     protected $casts = [
         'id' => 'string',

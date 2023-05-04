@@ -19,6 +19,7 @@ use App\Services\StockServices;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Filament\Notifications\Actions\Action as NotificationAction;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\BulkAction;
@@ -152,7 +153,14 @@ class DPWorldMainWarehouseResource extends Resource
                             $districtWarehouse = Warehouse::with('manager')->find($data['warehouse_id']);
                             $title = 'New Received device';
                             $message = 'a new device with serial number ' . $record->serial_number . ' has been sent to your warehouse ';
-                            (new NotificationsServices)->sendNotificationToUser($districtWarehouse->manager->user, $title, $message);
+                            $actions = [
+                                NotificationAction::make('Mark as Read')
+                                    ->color('primary')
+                                    ->button()
+                                    ->close(),
+                    
+                            ];
+                            (new NotificationsServices)->sendNotificationToUser($districtWarehouse->manager->user, $title, $message, $actions);
                         }
                     })
                     ->successNotification(
