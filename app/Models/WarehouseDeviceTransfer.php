@@ -12,6 +12,8 @@ class WarehouseDeviceTransfer extends Model
 
     public $incrementing = false;
 
+    // this is normal transfer between districts
+
     protected $fillable = ['id','warehouse_sender_id', 'warehouse_receiver_id', 'device_name','serial_number', 'description'];
 
     protected $casts = [
