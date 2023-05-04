@@ -145,7 +145,7 @@ class WarehouseDeviceResource extends Resource
                             ->label('District')
                             ->reactive()
                             ->options(function () {
-                                return District::whereNotNull('manager_id')->get()->pluck('district', 'id')->toArray();
+                                return District::whereNotNull('manager_id')->whereNot('id', Auth::user()->manager->district->id)->get()->pluck('district', 'id')->toArray();
                             }),
                         Select::make('warehouse_id')
                             ->required()
