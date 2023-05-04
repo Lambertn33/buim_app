@@ -126,6 +126,9 @@ class StockServices
     {
         $device = WarehouseDevice::find($device['id']);
         $warehouse = Warehouse::with('district')->with('manager')->find($deviceReceiver);
+        WarehouseDeviceTransfer::where('serial_number', $device->serial_number)->where('warehouse_receiver_id', $deviceReceiver)->update([
+            'status' => WarehouseDeviceTransfer::APPROVED
+        ]);
         WarehouseDevice::find($device->id)->update([
             'district_id' => $warehouse->district->id,
             'warehouse_id' => $deviceReceiver,
@@ -139,6 +142,10 @@ class StockServices
         $warehouseReceiver = Warehouse::with('district')->with('manager')->find($deviceReceiver);
         $warehouseSender = Warehouse::with('district')->with('manager')->find($deviceSender['id']);
         $managerSender = $warehouseSender->manager->user;
+
+        WarehouseDeviceTransfer::where('serial_number', $device->serial_number)->where('warehouse_receiver_id', $deviceReceiver)->update([
+            'status' => WarehouseDeviceTransfer::REJECTED
+        ]);
 
         $title = 'Device Rejected';
         $message = 'a device with serial number ' . $device->serial_number . ' sent to ' . $warehouseReceiver->district->district . ' has been declined and returned back to initial warehouse';
