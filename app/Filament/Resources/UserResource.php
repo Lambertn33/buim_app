@@ -108,7 +108,11 @@ class UserResource extends Resource
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('role.role')
-                    ->sortable(),
+                    ->sortable()
+                    ->description(fn (User $record): string =>
+                    $record->role->role == Role::DISTRICT_MANAGER_ROLE ?
+                    $record->manager->district->district. ' District' : ''
+                ), 
                 BadgeColumn::make('account_status')
                     ->label('account status')
                     ->sortable()

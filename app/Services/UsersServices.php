@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\District;
 use App\Models\Role;
 use App\Models\Permission;
 use Illuminate\Support\Str;
@@ -9,6 +10,7 @@ use App\Models\Leader;
 use App\Models\Manager;
 use App\Models\Manufacturer;
 use App\Models\StockManager;
+use Illuminate\Support\Facades\Session;
 
 class UsersServices
 {
@@ -105,6 +107,13 @@ class UsersServices
             if ($user->role->role == Role::DISTRICT_MANAGER_ROLE) {
                 $user->permissions()->sync($managerPermissions);
                 Manager::insert($newNonAdmin);
+                if (Session::has('district_id')) {
+                    $districtId = Session::get('district_id');
+                    $district = District::find($districtId);
+                    $district->update([
+                        'manager_id' => $newNonAdmin['id']
+                    ]);
+                }
             } elseif ($user->role->role == Role::SECTOR_LEADER_ROLE) {
                 $user->permissions()->sync($leaderPermissions);
                 Leader::insert($newNonAdmin);

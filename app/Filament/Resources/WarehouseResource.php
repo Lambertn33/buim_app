@@ -77,10 +77,6 @@ class WarehouseResource extends Resource
                     ->sortable()
                     ->disablePlaceholderSelection()
                     ->disabled(Auth::user()->role->role !== Role::ADMIN_ROLE),
-                TextColumn::make('manager.user.name')
-                    ->label('Manager')
-                    ->searchable()
-                    ->visible(Auth::user()->role->role !== Role::DISTRICT_MANAGER_ROLE)
             ])
             ->filters([
                 //

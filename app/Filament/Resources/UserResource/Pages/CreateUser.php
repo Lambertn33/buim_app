@@ -3,11 +3,11 @@
 namespace App\Filament\Resources\UserResource\Pages;
 
 use App\Filament\Resources\UserResource;
-use App\Models\District;
 use Filament\Notifications\Notification;
-use Filament\Resources\Pages\CreateRecord;
+use Filament\Resources\Pages\CreateRecord;;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 
 class CreateUser extends CreateRecord
 {
@@ -24,10 +24,7 @@ class CreateUser extends CreateRecord
         $data['id'] = $userId;
         $data['password'] = Hash::make($data['password']);
         if ($data['district_id']) {
-            $district = District::find($data['district_id']);
-            $district->update([
-                'manager_id' => $userId
-            ]);
+            Session::put('district_id', $data['district_id']);
         }
         return $data;
     }

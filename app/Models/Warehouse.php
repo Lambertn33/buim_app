@@ -75,4 +75,16 @@ class Warehouse extends Model
     {
         return $this->hasMany(WarehouseDeviceTransfer::class, 'warehouse_receiver_id', 'id');
     }
+
+    public function returnManagerName()
+    {
+        $name = '';
+        if (!is_null($this->manager_id)) {
+            $districtManager = Manager::where('id', $this->manager_id)->first();
+            if ($districtManager) {
+                $name =  User::where('id', $districtManager->user_id)->value('name');
+            }
+        }
+        return $name;
+    }
 }
