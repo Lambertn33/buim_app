@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('leaders', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('user_id');
+            $table->uuid('district_id');
             $table->timestamps();
         });
     }

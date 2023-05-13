@@ -29,6 +29,9 @@ class UsersServices
             'warehouse_device_request_edit',
             'warehouse_device_request_create',
             'warehouse_device_request_delete',
+            'technician_edit',
+            'technician_create',
+            'technician_delete',
         ])->get();
 
         $managerPermissions = Permission::whereIn('permission', [
@@ -54,6 +57,11 @@ class UsersServices
             'warehouse_device_request_edit',
             'warehouse_device_request_create',
             'warehouse_device_request_delete',
+            'technician_access',
+            'technician_show',
+            'technician_edit',
+            'technician_create',
+            'technician_delete',
         ])->get();
 
         $leaderPermissions = Permission::whereIn('permission', [
@@ -61,7 +69,8 @@ class UsersServices
             'screening_create',
             'screening_show',
             'screening_edit',
-            'screening_delete'
+            'screening_delete',
+            'technician_access',
         ])->get();
 
         $stockManagerPermissions = Permission::whereIn('permission', [
