@@ -23,5 +23,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ManagerDistrictLinkSeeder::class);
         $this->call(MainWarehousesSeeder::class);
         $this->call(WarehousesSeeder::class);
+        $this->call(TechniciansSeeder::class);
     }
 }
