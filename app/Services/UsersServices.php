@@ -124,6 +124,16 @@ class UsersServices
                     ]);
                 }
             } elseif ($user->role->role == Role::SECTOR_LEADER_ROLE) {
+                if (Session::has('district_id')) {
+                    $districtId = Session::get('district_id');
+                    $newNonAdmin = [
+                        'id' => Str::uuid()->toString(),
+                        'user_id' => $user->id,
+                        'district_id' => $districtId,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ];
+                }
                 $user->permissions()->sync($leaderPermissions);
                 Leader::insert($newNonAdmin);
             } elseif ($user->role->role == Role::STOCK_MANAGER_ROLE) {
