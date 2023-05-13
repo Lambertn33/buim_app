@@ -17,6 +17,7 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Closure;
+use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\SelectColumn;
@@ -43,7 +44,8 @@ class CampaignResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('title')
+                Card::make([
+                    TextInput::make('title')
                     ->required()
                     ->label('Campaign title')
                     ->placeholder('enter title')
@@ -79,6 +81,7 @@ class CampaignResource extends Resource
                             return $from;
                         }
                     }),
+                ])->columnSpan(2)
 
             ]);
     }

@@ -23,6 +23,7 @@ use Filament\Forms\Components\Card;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class ScreeningResource extends Resource
 {
@@ -49,7 +50,9 @@ class ScreeningResource extends Resource
                             ->placeholder('select campaign')
                             ->required()
                             ->reactive()
-                            ->options(Campaign::where('status', Campaign::ONGOING)->get()->pluck('title', 'id')->toArray()),
+                            ->options(Campaign::where('status', Campaign::ONGOING)->whereHas('district', function($query) {
+                                $query->where('id', Auth::user()->leader->district_id);
+                            })->get()->pluck('title', 'id')->toArray()),
                         Select::make('payment_id')
                             ->label('prospect payment plan')
                             ->placeholder('select payment plan')

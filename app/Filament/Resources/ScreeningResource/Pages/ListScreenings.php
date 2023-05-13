@@ -20,7 +20,9 @@ class ListScreenings extends ListRecords
     {
         return [
             Actions\CreateAction::make()
-                ->disabled(Campaign::count() < 1 || PaymentPlan::count() < 1),
+                ->disabled(Campaign::whereHas('district', function($query) {
+                    $query->where('id', Auth::user()->leader->district_id);
+                })->count() < 1 || PaymentPlan::count() < 1),
         ];
     }
 
