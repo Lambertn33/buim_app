@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
         $this->call(stockModelsSeeder::class);
         $this->call(PaymentPlansSeeder::class);
         $this->call(ManagerDistrictLinkSeeder::class);
+        $this->call(LeaderDistrictLinkSeeder::class);
         $this->call(MainWarehousesSeeder::class);
         $this->call(WarehousesSeeder::class);
         $this->call(TechniciansSeeder::class);
