@@ -224,4 +224,9 @@ class StockServices
             WarehouseDeviceRequestedDevice::insert($newWarehouseRequestedDevice);
         }
     }
+
+    public function approveCampaignRequestedDevices($warehouseId, $deviceId)
+    {
+        dd($warehouseId);
+    }
 }

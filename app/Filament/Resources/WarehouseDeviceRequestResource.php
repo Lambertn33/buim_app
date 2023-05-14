@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\WarehouseDeviceRequestResource\Pages;
 use App\Filament\Resources\WarehouseDeviceRequestResource\RelationManagers;
 use App\Filament\Resources\WarehouseDeviceRequestResource\RelationManagers\RequestedDevicesRelationManager;
+use App\Models\Role;
 use App\Models\WarehouseDeviceRequest;
 use Filament\Forms;
 use Filament\Forms\Components\Card;
@@ -13,9 +14,11 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class WarehouseDeviceRequestResource extends Resource
 {
@@ -61,7 +64,22 @@ class WarehouseDeviceRequestResource extends Resource
                     ->label('number of requested devices')
                     ->sortable()
                     ->formatStateUsing(fn (WarehouseDeviceRequest $record): string => $record->getTotalNumberOfRequestedDevices())
-                    ->searchable()
+                    ->searchable(),
+                SelectColumn::make('request_status')
+                    ->options([
+                        'INITIATED' => WarehouseDeviceRequest::INITIATED,
+                        'REQUESTED' => WarehouseDeviceRequest::REQUESTED,
+                        'VERIFIED' => WarehouseDeviceRequest::VERIFIED,
+                        'CONTRACT_PRINTING' => WarehouseDeviceRequest::CONTRACT_PRINTING,
+                        'INITIATED' => WarehouseDeviceRequest::INITIATED,
+                        'READY_FOR_LOADING' => WarehouseDeviceRequest::READY_FOR_LOADING,
+                        'DELIVERED' => WarehouseDeviceRequest::DELIVERED,
+                    ])->disabled(Auth::user()->role->role === Role::DISTRICT_MANAGER_ROLE),
+                SelectColumn::make('confirmation_status')
+                    ->options([
+                        'PENDING' => WarehouseDeviceRequest::PENDING,
+                        'RECEIVED' => WarehouseDeviceRequest::RECEIVED,
+                    ])->disabled(Auth::user()->role->role !== Role::DISTRICT_MANAGER_ROLE),
             ])
             ->filters([
                 //
