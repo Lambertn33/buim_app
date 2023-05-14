@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class WarehouseDevice extends Model
 {
@@ -44,5 +45,15 @@ class WarehouseDevice extends Model
     public function model(): BelongsTo
     {
         return $this->belongsTo(StockModel::class, 'model_id', 'id');
+    }
+
+    /**
+     * Get the distribution associated with the Screening
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function distribution(): HasOne
+    {
+        return $this->hasOne(WarehouseDeviceDistribution::class, 'warehouse_device_id', 'id');
     }
 }

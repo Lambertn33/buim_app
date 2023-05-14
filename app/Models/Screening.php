@@ -59,4 +59,14 @@ class Screening extends Model
     {
         return $this->campaign->province;
     }
+
+    /**
+     * Get the distribution associated with the Screening
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function distribution(): HasOne
+    {
+        return $this->hasOne(WarehouseDeviceDistribution::class, 'screener_id', 'id');
+    }
 }
