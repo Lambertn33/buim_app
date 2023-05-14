@@ -20,13 +20,4 @@ class PaymentPlan extends Model
         'id' => 'string'
     ];
 
-    /**
-     * Get all of the screenings for the PaymentPlan
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function screenings(): HasMany
-    {
-        return $this->hasMany(Screening::class, 'payment_id', 'id');
-    }
 }
