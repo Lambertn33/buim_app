@@ -8,6 +8,7 @@ use App\Models\District;
 use App\Models\Role;
 use App\Models\Technician;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -37,7 +38,14 @@ class TechnicianResource extends Resource
     {
         return $form
             ->schema([
-                //
+                TextInput::make('names')
+                    ->required()
+                    ->label('Technician names'),
+                TextInput::make('telephone')
+                    ->label('Technician telephone')
+                    ->tel()
+                    ->required()
+                    ->unique(ignoreRecord: true),
             ]);
     }
 
@@ -79,14 +87,14 @@ class TechnicianResource extends Resource
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -94,5 +102,5 @@ class TechnicianResource extends Resource
             'create' => Pages\CreateTechnician::route('/create'),
             'edit' => Pages\EditTechnician::route('/{record}/edit'),
         ];
-    }    
+    }
 }
