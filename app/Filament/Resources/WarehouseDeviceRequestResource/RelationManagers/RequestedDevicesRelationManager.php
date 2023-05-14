@@ -3,14 +3,18 @@
 namespace App\Filament\Resources\WarehouseDeviceRequestResource\RelationManagers;
 
 use App\Models\Role;
+use App\Models\WarehouseDeviceRequest;
 use App\Models\WarehouseDeviceRequestedDevice;
+use App\Services\StockServices;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
+use Filament\Notifications\Notification;
 use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
 
@@ -54,40 +58,34 @@ class RequestedDevicesRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                // Tables\Actions\CreateAction::make(),
                 Tables\Actions\Action::make('Approve and Transfer devices')
                     ->color('success')
-                    ->action(fn () => null)
+                    ->action(function (array $data, RelationManager $livewire) {
+                        foreach ($livewire->ownerRecord->requestedDevices as $requestedDevice) {
+                            (new StockServices)->approveCampaignRequestedDevices($requestedDevice, $data['warehouse_id'], $livewire->ownerRecord);
+                        }
+                    })
                     ->requiresConfirmation()
                     ->modalSubheading('you are about to transfer all devices')
                     ->modalButton('transfer device')
                     ->icon('heroicon-o-paper-airplane')
-                    ->visible(Auth::user()->role->role == Role::ADMIN_ROLE || Auth::user()->role->role == Role::STOCK_MANAGER_ROLE)
-            ])
-            ->actions([
-                Tables\Actions\Action::make('transfer')
-                    ->visible(Auth::user()->role->role == Role::ADMIN_ROLE || Auth::user()->role->role == Role::STOCK_MANAGER_ROLE)
-                    ->color('success')
-                    ->action(fn () => null)
-                    ->requiresConfirmation()
-                    ->modalSubheading(fn ($record) => 'you are about to transfer a single device to ' . $record->warehouseDeviceRequest->campaign->district->district . ' District')
-                    ->modalButton('transfer device')
-                    ->icon('heroicon-o-paper-airplane')
-                    ->label('Transfer')
+                    ->visible(function (RelationManager $livewire) {
+                        return $livewire->ownerRecord->request_status !== WarehouseDeviceRequest::DELIVERED && (Auth::user()->role->role == Role::ADMIN_ROLE || Auth::user()->role->role == Role::STOCK_MANAGER_ROLE);
+                    })
                     ->form([
                         Select::make('warehouse_id')
+                            ->label(fn (RelationManager $livewire) => 'select warehouse in ' . $livewire->ownerRecord->campaign->district->district . ' District')
+                            ->required()
                             ->options(
-                                fn ($record) =>
-                                $record->warehouseDeviceRequest->campaign->district->warehouses()->get()->pluck('name', 'id')->toArray()
+                                fn (RelationManager $livewire) =>
+                                $livewire->ownerRecord->campaign->district->warehouses()->get()->pluck('name', 'id')->toArray()
                             )
-                    ])
-            ])
-            ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make()
-                    ->visible(Auth::user()->role->role == Role::ADMIN_ROLE || Auth::user()->role->role == Role::STOCK_MANAGER_ROLE),
-                Tables\Actions\BulkAction::make('transfer selected')
-                    ->icon('heroicon-o-paper-airplane')
-                    ->visible(Auth::user()->role->role == Role::ADMIN_ROLE || Auth::user()->role->role == Role::STOCK_MANAGER_ROLE)
+                    ])->successNotification(
+                        Notification::make()
+                            ->success()
+                            ->title('Stock updated')
+                            ->body('The stock has been successfully trasferred.'),
+                    ),
             ]);
     }
 }

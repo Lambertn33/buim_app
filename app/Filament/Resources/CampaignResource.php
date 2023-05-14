@@ -81,7 +81,7 @@ class CampaignResource extends Resource
                             return $from;
                         }
                     }),
-                ])->columnSpan(2)
+                ])->columns(2)
 
             ]);
     }
@@ -109,8 +109,7 @@ class CampaignResource extends Resource
 
                     ])
                     ->sortable()
-                    ->disablePlaceholderSelection()
-                    ->disabled(Auth::user()->role->role !== Role::ADMIN_ROLE),
+                    ->disablePlaceholderSelection(),
                 TextColumn::make('province.province')
                     ->sortable()
                     ->searchable(),

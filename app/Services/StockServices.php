@@ -225,8 +225,28 @@ class StockServices
         }
     }
 
-    public function approveCampaignRequestedDevices($warehouseId, $deviceId)
+    public function approveCampaignRequestedDevices($device, $warehouseId, $request)
     {
-        dd($warehouseId);
+        $warehouseToDistributeDevice = Warehouse::find($warehouseId);
+        $randomDevice = MainWarehouseDevice::whereHas('mainWarehouse', function($query) {
+            $query->where('name', MainWarehouse::RUGANDOWAREHOUSE);
+        })->where('device_name', $device->device_name)->first();
+        $newWarehouseDevice = [
+            'id' => Str::uuid()->toString(),
+            'model_id' => $randomDevice->model->id,
+            'warehouse_id' => $warehouseToDistributeDevice->id,
+            'district_id' => $warehouseToDistributeDevice->district->id,
+            'manager_id' => $warehouseToDistributeDevice->manager->id,
+            'screener_id' => null,
+            'device_name' => $device->device_name,
+            'serial_number' => $randomDevice->serial_number,
+            'created_at' => now(),
+            'updated_at' => now()           
+        ];
+        WarehouseDevice::insert($newWarehouseDevice);
+        $randomDevice->delete();
+        WarehouseDeviceRequest::find($request->id)->update([
+            'request_status' => WarehouseDeviceRequest::DELIVERED
+        ]);
     }
 }

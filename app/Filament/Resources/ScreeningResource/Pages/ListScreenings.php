@@ -20,8 +20,13 @@ class ListScreenings extends ListRecords
     {
         return [
             Actions\CreateAction::make()
+                ->visible(Auth::user()->role->role == Role::SECTOR_LEADER_ROLE)
                 ->disabled(Campaign::where('status', Campaign::ONGOING)->whereHas('district', function($query) {
-                    $query->where('id', Auth::user()->leader->district_id);
+                    if (Auth::user()->role->role == Role::SECTOR_LEADER_ROLE) {
+                        $query->where('id', Auth::user()->leader->district_id);
+                    } else if(Auth::user()->role->role == Role::DISTRICT_MANAGER_ROLE) {
+                        $query->where('id', Auth::user()->manager->district->id);
+                    }
                 })->count() < 1),
         ];
     }

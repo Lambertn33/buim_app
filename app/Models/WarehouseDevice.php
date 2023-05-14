@@ -14,6 +14,7 @@ class WarehouseDevice extends Model
 
     protected $fillable = [
         'id', 'model_id', 'warehouse_id','district_id','manager_id','device_name', 'serial_number',
+        'screener_id'
     ];
 
     protected $casts = [
@@ -21,7 +22,8 @@ class WarehouseDevice extends Model
         'model_id' => 'string',
         'warehouse_id' => 'string',
         'district_id' => 'string',
-        'manager_id' => 'string'
+        'manager_id' => 'string',
+        'screener_id' => 'string'
     ];
 
     /**
