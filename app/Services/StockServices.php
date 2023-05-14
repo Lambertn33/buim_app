@@ -231,6 +231,7 @@ class StockServices
         $randomDevice = MainWarehouseDevice::whereHas('mainWarehouse', function($query) {
             $query->where('name', MainWarehouse::RUGANDOWAREHOUSE);
         })->where('device_name', $device->device_name)->first();
+
         $newWarehouseDevice = [
             'id' => Str::uuid()->toString(),
             'model_id' => $randomDevice->model->id,

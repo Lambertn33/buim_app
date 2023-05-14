@@ -3,8 +3,10 @@
 namespace App\Filament\Resources\WarehouseDeviceRequestResource\RelationManagers;
 
 use App\Models\Role;
+use App\Models\Warehouse;
 use App\Models\WarehouseDeviceRequest;
 use App\Models\WarehouseDeviceRequestedDevice;
+use App\Services\NotificationsServices;
 use App\Services\StockServices;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -17,6 +19,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
+use Filament\Notifications\Actions\Action as NotificationAction;
 
 class RequestedDevicesRelationManager extends RelationManager
 {
@@ -80,10 +83,26 @@ class RequestedDevicesRelationManager extends RelationManager
                                 fn (RelationManager $livewire) =>
                                 $livewire->ownerRecord->campaign->district->warehouses()->get()->pluck('name', 'id')->toArray()
                             )
-                    ])->successNotification(
+                    ])->after(function (array $data, RelationManager $livewire) {
+                        $warehouseToDistributeDevice = Warehouse::find($data['warehouse_id']);
+                        $requestId = $livewire->ownerRecord->request_id;
+                        $manager =  $warehouseToDistributeDevice->manager->user;
+                        $title = 'Campaign Device requests approvied';
+                        $message = 'the campaign stock requested of request id ' . sprintf("%08d", $requestId) . ' with ' . $livewire->ownerRecord->requestedDevices->count() . ' of campaign entitled ' . $livewire->ownerRecord->campaign->title . ' has been approved and sent to your warehouse
+                        named ' . $warehouseToDistributeDevice->name . '';
+                        $actions = [
+                            NotificationAction::make('Mark as Read')
+                                ->color('primary')
+                                ->button()
+                                ->close(),
+
+                        ];
+                        (new NotificationsServices)->sendNotificationToUser($manager, $title, $message, $actions);
+                    })
+                    ->successNotification(
                         Notification::make()
                             ->success()
-                            ->title('Stock updated')
+                            ->title('Stock transfered')
                             ->body('The stock has been successfully trasferred.'),
                     ),
             ]);
