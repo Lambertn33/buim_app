@@ -53,11 +53,6 @@ class ScreeningResource extends Resource
                             ->options(Campaign::where('status', Campaign::ONGOING)->whereHas('district', function($query) {
                                 $query->where('id', Auth::user()->leader->district_id);
                             })->get()->pluck('title', 'id')->toArray()),
-                        Select::make('payment_id')
-                            ->label('prospect payment plan')
-                            ->placeholder('select payment plan')
-                            ->required()
-                            ->options(PaymentPlan::get()->pluck('title', 'id')->toArray()),
                         TextInput::make('prospect_names')
                             ->label('prospect names')
                             ->required(),
