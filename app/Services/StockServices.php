@@ -183,25 +183,17 @@ class StockServices
 
         if (WarehouseDeviceRequest::where('campaign_id', $campaign->id)->exists()) {
             $campaignWarehouseRequest = $campaign->warehouseDeviceRequest;
-            $checkDeviceExistence = WarehouseDeviceRequestedDevice::where('warehouse_device_request_id', $campaignWarehouseRequest->id)
-                ->where('device_name', $screener['proposed_device_name']);
-            if ($checkDeviceExistence->exists()) {
-                $checkDeviceExistence->update([
-                    'quantity' => $checkDeviceExistence->value('quantity') + 1
-                ]);
-            } else {
-                $newWarehouseRequestedDevice = [
-                    'id' => Str::uuid()->toString(),
-                    'model_id' => $deviceModel->id,
-                    'warehouse_device_request_id' => $campaignWarehouseRequest->id,
-                    'screener_code' => $screener['prospect_code'],
-                    'device_name' => $screener['proposed_device_name'],
-                    'quantity' => 1,
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ];
-                WarehouseDeviceRequestedDevice::insert($newWarehouseRequestedDevice);
-            }
+            $newWarehouseRequestedDevice = [
+                'id' => Str::uuid()->toString(),
+                'model_id' => $deviceModel->id,
+                'warehouse_device_request_id' => $campaignWarehouseRequest->id,
+                'screener_code' => $screener['prospect_code'],
+                'device_name' => $screener['proposed_device_name'],
+                'quantity' => 1,
+                'created_at' => now(),
+                'updated_at' => now()
+            ];
+            WarehouseDeviceRequestedDevice::insert($newWarehouseRequestedDevice);
         } else {
             $newWarehouseDeviceRequest = [
                 'id' => Str::uuid()->toString(),
@@ -228,7 +220,7 @@ class StockServices
     public function approveCampaignRequestedDevices($device, $warehouseId, $request)
     {
         $warehouseToDistributeDevice = Warehouse::find($warehouseId);
-        $randomDevice = MainWarehouseDevice::whereHas('mainWarehouse', function($query) {
+        $randomDevice = MainWarehouseDevice::whereHas('mainWarehouse', function ($query) {
             $query->where('name', MainWarehouse::RUGANDOWAREHOUSE);
         })->where('device_name', $device->device_name)->first();
 
@@ -242,7 +234,7 @@ class StockServices
             'device_name' => $device->device_name,
             'serial_number' => $randomDevice->serial_number,
             'created_at' => now(),
-            'updated_at' => now()           
+            'updated_at' => now()
         ];
         WarehouseDevice::insert($newWarehouseDevice);
         $randomDevice->delete();
