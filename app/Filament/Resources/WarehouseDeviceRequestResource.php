@@ -67,19 +67,27 @@ class WarehouseDeviceRequestResource extends Resource
                     ->searchable(),
                 SelectColumn::make('request_status')
                     ->options([
-                        'INITIATED' => WarehouseDeviceRequest::INITIATED,
                         'REQUESTED' => WarehouseDeviceRequest::REQUESTED,
                         'VERIFIED' => WarehouseDeviceRequest::VERIFIED,
                         'CONTRACT_PRINTING' => WarehouseDeviceRequest::CONTRACT_PRINTING,
-                        'INITIATED' => WarehouseDeviceRequest::INITIATED,
                         'READY_FOR_LOADING' => WarehouseDeviceRequest::READY_FOR_LOADING,
                         'DELIVERED' => WarehouseDeviceRequest::DELIVERED,
-                    ])->disabled(Auth::user()->role->role === Role::DISTRICT_MANAGER_ROLE),
+                    ])->disabled(function (WarehouseDeviceRequest $record) {
+                        return Auth::user()->role->role === Role::DISTRICT_MANAGER_ROLE
+                            ? true
+                            : ($record->request_status === WarehouseDeviceRequest::DELIVERED ? true : false);
+                    }),
                 SelectColumn::make('confirmation_status')
                     ->options([
                         'PENDING' => WarehouseDeviceRequest::PENDING,
                         'RECEIVED' => WarehouseDeviceRequest::RECEIVED,
-                    ])->disabled(Auth::user()->role->role !== Role::DISTRICT_MANAGER_ROLE),
+                    ])->disabled(function (WarehouseDeviceRequest $record) {
+                        return Auth::user()->role->role !== Role::DISTRICT_MANAGER_ROLE
+                            ? true
+                            : ($record->confirmation_status === WarehouseDeviceRequest::RECEIVED ? true :
+
+                            ($record->request_status !== WarehouseDeviceRequest::DELIVERED ? true : false));
+                    }),
             ])
             ->filters([
                 //
