@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\WarehouseDeviceTransferResource\Pages;
 use App\Filament\Resources\WarehouseDeviceTransferResource\RelationManagers;
+use App\Models\Role;
 use App\Models\WarehouseDeviceTransfer;
 use App\Services\NavigationBadgesServices;
 use Filament\Forms;
@@ -15,6 +16,7 @@ use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class WarehouseDeviceTransferResource extends Resource
 {
@@ -33,6 +35,11 @@ class WarehouseDeviceTransferResource extends Resource
     protected static function getNavigationBadge(): ?string
     {
         return (new NavigationBadgesServices)->getTotalNumberOfWarehouseDeviceTransfers();
+    }
+
+    protected static function shouldRegisterNavigation(): bool
+    {
+        return Auth::user()->role->role !== Role::SECTOR_LEADER_ROLE;
     }
 
     public static function form(Form $form): Form
