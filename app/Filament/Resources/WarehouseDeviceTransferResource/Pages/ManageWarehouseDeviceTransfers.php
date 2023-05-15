@@ -30,4 +30,9 @@ class ManageWarehouseDeviceTransfers extends ManageRecords
             return parent::getTableQuery();
         }
     }
+
+    public function mount(): void
+    {
+        abort_unless(Auth::user()->role->role !== Role::SECTOR_LEADER_ROLE, 403);
+    }
 }

@@ -12,10 +12,12 @@ use App\Models\MainWarehouseDevice;
 use App\Models\Warehouse;
 use App\Models\WarehouseDevice;
 use App\Models\WarehouseDeviceRequest;
+use App\Models\WarehouseDeviceRequestDraft;
 use App\Models\WarehouseDeviceRequestedDevice;
 use App\Models\WarehouseDeviceTransfer;
 use Filament\Notifications\Actions\Action as NotificationAction;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Session;
 
 class StockServices
 {
@@ -183,25 +185,17 @@ class StockServices
 
         if (WarehouseDeviceRequest::where('campaign_id', $campaign->id)->exists()) {
             $campaignWarehouseRequest = $campaign->warehouseDeviceRequest;
-            $checkDeviceExistence = WarehouseDeviceRequestedDevice::where('warehouse_device_request_id', $campaignWarehouseRequest->id)
-                ->where('device_name', $screener['proposed_device_name']);
-            if ($checkDeviceExistence->exists()) {
-                $checkDeviceExistence->update([
-                    'quantity' => $checkDeviceExistence->value('quantity') + 1
-                ]);
-            } else {
-                $newWarehouseRequestedDevice = [
-                    'id' => Str::uuid()->toString(),
-                    'model_id' => $deviceModel->id,
-                    'warehouse_device_request_id' => $campaignWarehouseRequest->id,
-                    'screener_code' => $screener['prospect_code'],
-                    'device_name' => $screener['proposed_device_name'],
-                    'quantity' => 1,
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ];
-                WarehouseDeviceRequestedDevice::insert($newWarehouseRequestedDevice);
-            }
+            $newWarehouseRequestedDevice = [
+                'id' => Str::uuid()->toString(),
+                'model_id' => $deviceModel->id,
+                'warehouse_device_request_id' => $campaignWarehouseRequest->id,
+                'screener_code' => $screener['prospect_code'],
+                'device_name' => $screener['proposed_device_name'],
+                'quantity' => 1,
+                'created_at' => now(),
+                'updated_at' => now()
+            ];
+            WarehouseDeviceRequestedDevice::insert($newWarehouseRequestedDevice);
         } else {
             $newWarehouseDeviceRequest = [
                 'id' => Str::uuid()->toString(),
@@ -223,5 +217,28 @@ class StockServices
             WarehouseDeviceRequest::insert($newWarehouseDeviceRequest);
             WarehouseDeviceRequestedDevice::insert($newWarehouseRequestedDevice);
         }
+    }
+
+    public function approveCampaignRequestedDevices($device, $warehouseId, $request)
+    {
+        $randomDevice = MainWarehouseDevice::whereHas('mainWarehouse', function ($query) {
+            $query->where('name', MainWarehouse::RUGANDOWAREHOUSE);
+        })->where('device_name', $device->device_name)->first();
+
+        $newWarehouseDevice = [
+            'id' => Str::uuid()->toString(),
+            'model_id' => $randomDevice->model->id,
+            'warehouse_device_request_id' => $request->id,
+            'warehouse_id' => $warehouseId,
+            'screener_code' => $device->screener_code,
+            'device_id' => $randomDevice->id,
+            'quantity' => 1,
+            'created_at' => now(),
+            'updated_at' => now()
+        ];
+        WarehouseDeviceRequestDraft::insert($newWarehouseDevice);
+        WarehouseDeviceRequest::find($request->id)->update([
+            'request_status' => WarehouseDeviceRequest::DELIVERED
+        ]);
     }
 }

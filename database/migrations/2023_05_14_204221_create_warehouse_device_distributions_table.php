@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('leaders', function (Blueprint $table) {
+        Schema::create('warehouse_device_distributions', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('user_id');
-            $table->uuid('district_id')->nullable();
+            $table->uuid('screener_id');
+            $table->uuid('warehouse_device_id');
+            $table->string('contract_id');
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('leaders');
+        Schema::dropIfExists('warehouse_device_distributions');
     }
 };

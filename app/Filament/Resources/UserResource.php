@@ -86,7 +86,7 @@ class UserResource extends Resource
                                 $role = $get('role_id');
                                 if ($role) {
                                     $roleName = Role::find($role);
-                                    if ($roleName->role === Role::DISTRICT_MANAGER_ROLE) {
+                                    if ($roleName->role === Role::DISTRICT_MANAGER_ROLE || $roleName->role === Role::SECTOR_LEADER_ROLE) {
                                         return true;
                                     }
                                 }
@@ -110,9 +110,11 @@ class UserResource extends Resource
                 TextColumn::make('role.role')
                     ->sortable()
                     ->description(fn (User $record): string =>
-                    $record->role->role == Role::DISTRICT_MANAGER_ROLE ?
-                    $record->manager->district->district. ' District' : ''
-                ), 
+                    ($record->role->role == Role::DISTRICT_MANAGER_ROLE ?
+                    $record->manager->district->district. ' District' :
+                    ($record->role->role == Role::SECTOR_LEADER_ROLE ? 
+                    $record->leader->district->district. ' District' : '')
+                )), 
                 BadgeColumn::make('account_status')
                     ->label('account status')
                     ->sortable()

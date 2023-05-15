@@ -52,4 +52,24 @@ class District extends Model
     {
         return $this->hasMany(Campaign::class, 'district_id', 'id');
     }
+
+    /**
+     * Get all of the technicians for the District
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function technicians(): HasMany
+    {
+        return $this->hasMany(Technician::class, 'district_id', 'id');
+    }
+
+    /**
+     * Get all of the leaders for the District
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function leaders(): HasMany
+    {
+        return $this->hasMany(Leader::class, 'district_id', 'id');
+    }
 }

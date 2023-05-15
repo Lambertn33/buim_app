@@ -15,12 +15,13 @@ class Leader extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'id', 'user_id'
+        'id', 'user_id', 'district_id'
     ];
 
     protected $casts = [
         'id' => 'string',
-        'user_id' => 'string'
+        'user_id' => 'string',
+        'district_id' => 'string'
     ];
 
     /**
@@ -31,6 +32,16 @@ class Leader extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    /**
+     * Get the district that owns the Leader
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function district(): BelongsTo
+    {
+        return $this->belongsTo(District::class, 'district_id', 'id');
     }
 
     /**

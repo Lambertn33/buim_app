@@ -8,6 +8,7 @@ use App\Models\Campaign;
 use App\Models\MainWarehouse;
 use App\Models\MainWarehouseDevice;
 use App\Models\PaymentPlan;
+use App\Models\Role;
 use App\Models\Screening;
 use App\Services\NavigationBadgesServices;
 use Filament\Forms;
@@ -23,6 +24,7 @@ use Filament\Forms\Components\Card;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class ScreeningResource extends Resource
 {
@@ -49,12 +51,13 @@ class ScreeningResource extends Resource
                             ->placeholder('select campaign')
                             ->required()
                             ->reactive()
-                            ->options(Campaign::where('status', Campaign::ONGOING)->get()->pluck('title', 'id')->toArray()),
-                        Select::make('payment_id')
-                            ->label('prospect payment plan')
-                            ->placeholder('select payment plan')
-                            ->required()
-                            ->options(PaymentPlan::get()->pluck('title', 'id')->toArray()),
+                            ->options(Campaign::where('status', Campaign::ONGOING)->whereHas('district', function($query) {
+                                if (Auth::user()->role->role == Role::SECTOR_LEADER_ROLE) {
+                                    $query->where('id', Auth::user()->leader->district_id);
+                                } else if(Auth::user()->role->role == Role::DISTRICT_MANAGER_ROLE) {
+                                    $query->where('id', Auth::user()->manager->district->id);
+                                }
+                            })->get()->pluck('title', 'id')->toArray()),
                         TextInput::make('prospect_names')
                             ->label('prospect names')
                             ->required(),

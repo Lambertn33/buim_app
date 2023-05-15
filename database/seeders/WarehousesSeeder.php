@@ -16,7 +16,7 @@ class WarehousesSeeder extends Seeder
     public function run(): void
     {
         DB::table('warehouses')->delete();
-        $districts = District::get();
+        $districts = District::orderBy('district')->limit(5)->get();
         foreach ($districts as $district) {
             $district->warehouses()->create(
                 [

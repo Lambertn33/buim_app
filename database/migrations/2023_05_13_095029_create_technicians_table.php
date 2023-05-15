@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Technician;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,10 +12,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('leaders', function (Blueprint $table) {
+        Schema::create('technicians', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('user_id');
-            $table->uuid('district_id')->nullable();
+            $table->uuid('district_id');
+            $table->string('names');
+            $table->string('telephone');
+            $table->enum('status', Technician::STATUS)->default(Technician::ACTIVE);
             $table->timestamps();
         });
     }
@@ -24,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('leaders');
+        Schema::dropIfExists('technicians');
     }
 };

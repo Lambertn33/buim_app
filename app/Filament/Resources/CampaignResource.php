@@ -17,6 +17,7 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Closure;
+use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\SelectColumn;
@@ -43,42 +44,44 @@ class CampaignResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('title')
-                    ->required()
-                    ->label('Campaign title')
-                    ->placeholder('enter title')
-                    ->columnSpanFull(),
-                Textarea::make('description')
-                    ->required()
-                    ->label('campaign description')
-                    ->columnSpanFull(),
-                Select::make('status')
-                    ->required()
-                    ->hiddenOn('create')
-                    ->placeholder('Select campaign status')
-                    ->options([
-                        'CREATED' => 'CREATED',
-                        'ONGOING' => 'ONGOING',
-                        'FINISHED' => 'FINISHED',
-                        'STOPPED' => 'STOPPED',
+                Card::make([
+                    TextInput::make('title')
+                        ->required()
+                        ->label('Campaign title')
+                        ->placeholder('enter title')
+                        ->columnSpanFull(),
+                    Textarea::make('description')
+                        ->required()
+                        ->label('campaign description')
+                        ->columnSpanFull(),
+                    Select::make('status')
+                        ->required()
+                        ->hiddenOn('create')
+                        ->placeholder('Select campaign status')
+                        ->options([
+                            'CREATED' => 'CREATED',
+                            'ONGOING' => 'ONGOING',
+                            'FINISHED' => 'FINISHED',
+                            'STOPPED' => 'STOPPED',
 
-                    ]),
-                DatePicker::make('from')
-                    ->label('starting date')
-                    ->minDate(date('Y-m-d', strtotime('+1 day')))
-                    ->required()
-                    ->placeholder('select the starting date')
-                    ->reactive(),
-                DatePicker::make('to')
-                    ->label('ending date')
-                    ->required()
-                    ->placeholder('select the ending date')
-                    ->minDate(function (callable $get) {
-                        $from = $get('from');
-                        if ($from) {
-                            return $from;
-                        }
-                    }),
+                        ]),
+                    DatePicker::make('from')
+                        ->label('starting date')
+                        ->minDate(date('Y-m-d', strtotime('+1 day')))
+                        ->required()
+                        ->placeholder('select the starting date')
+                        ->reactive(),
+                    DatePicker::make('to')
+                        ->label('ending date')
+                        ->required()
+                        ->placeholder('select the ending date')
+                        ->minDate(function (callable $get) {
+                            $from = $get('from');
+                            if ($from) {
+                                return $from;
+                            }
+                        }),
+                ])->columns(2)
 
             ]);
     }
@@ -104,10 +107,11 @@ class CampaignResource extends Resource
                         'FINISHED' => 'FINISHED',
                         'STOPPED' => 'STOPPED',
 
-                    ])
+                    ])->disabled(function ($record) {
+                        return $record->status == Campaign::FINISHED;
+                    })
                     ->sortable()
-                    ->disablePlaceholderSelection()
-                    ->disabled(Auth::user()->role->role !== Role::ADMIN_ROLE),
+                    ->disablePlaceholderSelection(),
                 TextColumn::make('province.province')
                     ->sortable()
                     ->searchable(),
@@ -139,7 +143,10 @@ class CampaignResource extends Resource
 
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->hidden(function ($record) {
+                        return $record->status == Campaign::FINISHED;
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),

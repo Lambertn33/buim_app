@@ -128,7 +128,7 @@ class DPWorldMainWarehouseResource extends Resource
                             ]),
                         Select::make('warehouse_id')
                             ->required()
-                            ->label('District warehouse')
+                            ->label('Destination warehouse')
                             ->placeholder('select warehouse')
                             ->searchable()
                             ->options(function (callable $get, $record) {
@@ -189,7 +189,7 @@ class DPWorldMainWarehouseResource extends Resource
                             ]),
                         Select::make('warehouse_id')
                             ->required()
-                            ->label('District warehouse')
+                            ->label('Destination warehouse')
                             ->placeholder('select warehouse')
                             ->searchable()
                             ->options(function (callable $get) {
