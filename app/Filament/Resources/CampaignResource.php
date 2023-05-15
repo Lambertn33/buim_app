@@ -46,41 +46,41 @@ class CampaignResource extends Resource
             ->schema([
                 Card::make([
                     TextInput::make('title')
-                    ->required()
-                    ->label('Campaign title')
-                    ->placeholder('enter title')
-                    ->columnSpanFull(),
-                Textarea::make('description')
-                    ->required()
-                    ->label('campaign description')
-                    ->columnSpanFull(),
-                Select::make('status')
-                    ->required()
-                    ->hiddenOn('create')
-                    ->placeholder('Select campaign status')
-                    ->options([
-                        'CREATED' => 'CREATED',
-                        'ONGOING' => 'ONGOING',
-                        'FINISHED' => 'FINISHED',
-                        'STOPPED' => 'STOPPED',
+                        ->required()
+                        ->label('Campaign title')
+                        ->placeholder('enter title')
+                        ->columnSpanFull(),
+                    Textarea::make('description')
+                        ->required()
+                        ->label('campaign description')
+                        ->columnSpanFull(),
+                    Select::make('status')
+                        ->required()
+                        ->hiddenOn('create')
+                        ->placeholder('Select campaign status')
+                        ->options([
+                            'CREATED' => 'CREATED',
+                            'ONGOING' => 'ONGOING',
+                            'FINISHED' => 'FINISHED',
+                            'STOPPED' => 'STOPPED',
 
-                    ]),
-                DatePicker::make('from')
-                    ->label('starting date')
-                    ->minDate(date('Y-m-d', strtotime('+1 day')))
-                    ->required()
-                    ->placeholder('select the starting date')
-                    ->reactive(),
-                DatePicker::make('to')
-                    ->label('ending date')
-                    ->required()
-                    ->placeholder('select the ending date')
-                    ->minDate(function (callable $get) {
-                        $from = $get('from');
-                        if ($from) {
-                            return $from;
-                        }
-                    }),
+                        ]),
+                    DatePicker::make('from')
+                        ->label('starting date')
+                        ->minDate(date('Y-m-d', strtotime('+1 day')))
+                        ->required()
+                        ->placeholder('select the starting date')
+                        ->reactive(),
+                    DatePicker::make('to')
+                        ->label('ending date')
+                        ->required()
+                        ->placeholder('select the ending date')
+                        ->minDate(function (callable $get) {
+                            $from = $get('from');
+                            if ($from) {
+                                return $from;
+                            }
+                        }),
                 ])->columns(2)
 
             ]);
@@ -107,7 +107,9 @@ class CampaignResource extends Resource
                         'FINISHED' => 'FINISHED',
                         'STOPPED' => 'STOPPED',
 
-                    ])
+                    ])->disabled(function ($record) {
+                        return $record->status == Campaign::FINISHED;
+                    })
                     ->sortable()
                     ->disablePlaceholderSelection(),
                 TextColumn::make('province.province')
@@ -141,7 +143,10 @@ class CampaignResource extends Resource
 
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->hidden(function ($record) {
+                        return $record->status == Campaign::FINISHED;
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),

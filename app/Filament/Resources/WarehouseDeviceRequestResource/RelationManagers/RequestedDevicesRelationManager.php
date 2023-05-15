@@ -89,7 +89,7 @@ class RequestedDevicesRelationManager extends RelationManager
                         $manager =  $warehouseToDistributeDevice->manager->user;
                         $title = 'Campaign Device requests approvied';
                         $message = 'The campaign  '. $livewire->ownerRecord->campaign->title .' with request ID of '.sprintf("%08d", $requestId). '  which took place in your district and requested '. $livewire->ownerRecord->requestedDevices->count(). ' has been approved
-                        and the devices have been sent to '. $warehouseToDistributeDevice->name .' which is located in your district... Please confirm after receiving them';
+                        and the devices are being sent to '. $warehouseToDistributeDevice->name .' which is located in your district... Please confirm after receiving them';
                         $actions = [
                             NotificationAction::make('Mark as Read')
                                 ->color('primary')

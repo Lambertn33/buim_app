@@ -4,6 +4,7 @@ namespace App\Filament\Resources\CampaignResource\Pages;
 
 use App\Filament\Resources\CampaignResource;
 use App\Filament\Resources\CampaignResource\Widgets\CampaignsOverviewWidget;
+use App\Models\Campaign;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
@@ -17,7 +18,16 @@ class ListCampaigns extends ListRecords
     protected function getActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->visible(function() {
+                    $authenticatedManager = Auth::user()->manager;
+                    if (Campaign::where('manager_id', $authenticatedManager->id)
+                    ->where('status', Campaign::ONGOING)->exists()) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }),
         ];
     }
 

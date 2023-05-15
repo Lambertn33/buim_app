@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\CampaignResource\Pages;
 
 use App\Filament\Resources\CampaignResource;
+use App\Models\Campaign;
 use App\Models\Province;
 use Filament\Notifications\Notification;
 use Filament\Pages\Actions;
@@ -34,5 +35,12 @@ class CreateCampaign extends CreateRecord
         ->success()
         ->title('Campaign registered')
         ->body('The campaign has been created successfully.');
+    }
+
+    public function mount(): void
+    {
+        $check = Campaign::where('manager_id', Auth::user()->manager->id)
+        ->where('status', Campaign::ONGOING)->exists();
+        abort_unless( $check == false , 403);
     }
 }
