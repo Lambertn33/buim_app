@@ -11,6 +11,7 @@ use App\Models\Role;
 use App\Models\Screening;
 use App\Models\StockModel;
 use App\Models\SubStockRequest;
+use App\Models\Technician;
 use App\Models\User;
 use App\Models\Warehouse;
 use App\Models\WarehouseDevice;
@@ -135,6 +136,17 @@ class NavigationBadgesServices
             return WarehouseDeviceTransfer::where('manager_sender_id', Auth::user()->manager->id)->orWhere('manager_receiver_id', Auth::user()->manager->id)->count();
         } else {
             return WarehouseDeviceTransfer::count();
+        }
+    }
+
+    public function getTotalNumberOfTechnicians()
+    {
+        if (Auth::user()->role->role === Role::DISTRICT_MANAGER_ROLE) {
+            return Technician::where('district_id', Auth::user()->manager->district->id)->count();
+        } else if(Auth::user()->role->role === Role::SECTOR_LEADER_ROLE){
+            return Technician::where('district_id', Auth::user()->leader->district->id)->count(); 
+        } else {
+            return Technician::count();
         }
     }
 }

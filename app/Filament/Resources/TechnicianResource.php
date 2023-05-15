@@ -7,6 +7,7 @@ use App\Filament\Resources\TechnicianResource\RelationManagers;
 use App\Models\District;
 use App\Models\Role;
 use App\Models\Technician;
+use App\Services\NavigationBadgesServices;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
@@ -33,6 +34,11 @@ class TechnicianResource extends Resource
     protected static ?string $pluralModelLabel = 'District Technicians';
 
     protected static ?int $navigationSort = 5;
+
+    protected static function getNavigationBadge(): ?string
+    {
+        return (new NavigationBadgesServices)->getTotalNumberOfTechnicians();
+    }
 
     public static function form(Form $form): Form
     {
