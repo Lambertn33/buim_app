@@ -12,18 +12,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(rolesSeeder::class);
-        $this->call(usersSeeder::class);
-        $this->call(permissionsSeeder::class);
-        $this->call(userPermissionsSeeder::class);
-        $this->call(provincesSeeder::class);
-        $this->call(districtsSeeder::class);
-        $this->call(stockModelsSeeder::class);
-        $this->call(PaymentPlansSeeder::class);
-        $this->call(ManagerDistrictLinkSeeder::class);
-        $this->call(LeaderDistrictLinkSeeder::class);
-        $this->call(MainWarehousesSeeder::class);
-        $this->call(WarehousesSeeder::class);
-        $this->call(TechniciansSeeder::class);
+        $this->call([
+            rolesSeeder::class,
+            usersSeeder::class,
+            permissionsSeeder::class,
+            userPermissionsSeeder::class,
+            provincesSeeder::class,
+            districtsSeeder::class,
+            stockModelsSeeder::class,
+            PaymentPlansSeeder::class,
+            ManagerDistrictLinkSeeder::class,
+            LeaderDistrictLinkSeeder::class,
+            MainWarehousesSeeder::class,
+            WarehousesSeeder::class,
+            TechniciansSeeder::class
+        ]);
     }
 }
