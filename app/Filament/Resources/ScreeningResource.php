@@ -8,6 +8,7 @@ use App\Models\Campaign;
 use App\Models\MainWarehouse;
 use App\Models\MainWarehouseDevice;
 use App\Models\PaymentPlan;
+use App\Models\Role;
 use App\Models\Screening;
 use App\Services\NavigationBadgesServices;
 use Filament\Forms;
@@ -51,7 +52,11 @@ class ScreeningResource extends Resource
                             ->required()
                             ->reactive()
                             ->options(Campaign::where('status', Campaign::ONGOING)->whereHas('district', function($query) {
-                                $query->where('id', Auth::user()->leader->district_id);
+                                if (Auth::user()->role->role == Role::SECTOR_LEADER_ROLE) {
+                                    $query->where('id', Auth::user()->leader->district_id);
+                                } else if(Auth::user()->role->role == Role::DISTRICT_MANAGER_ROLE) {
+                                    $query->where('id', Auth::user()->manager->district->id);
+                                }
                             })->get()->pluck('title', 'id')->toArray()),
                         TextInput::make('prospect_names')
                             ->label('prospect names')

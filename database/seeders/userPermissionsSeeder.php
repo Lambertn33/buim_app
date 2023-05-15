@@ -52,6 +52,7 @@ class userPermissionsSeeder extends Seeder
             'technician_edit',
             'technician_create',
             'technician_delete',
+            'distribution_create',
         ])->get();
 
         $managerPermissions = Permission::whereIn('permission', [
@@ -62,6 +63,7 @@ class userPermissionsSeeder extends Seeder
             'campaign_delete',
             'stock_model_access',
             'screening_access',
+            'screening_show',
             'warehouse_access',
             'warehouse_show',
             'warehouse_edit',
@@ -82,6 +84,9 @@ class userPermissionsSeeder extends Seeder
             'technician_edit',
             'technician_create',
             'technician_delete',
+            'distribution_access',
+            'distribution_show',
+            'distribution_create',
         ])->get();
 
         $leaderPermissions = Permission::whereIn('permission', [
@@ -90,7 +95,11 @@ class userPermissionsSeeder extends Seeder
             'screening_show',
             'screening_edit',
             'screening_delete',
+            'warehouse_device_access',
             'technician_access',
+            'distribution_access',
+            'distribution_show',
+            'distribution_create',
         ])->get();
 
         $stockManagerPermissions = Permission::whereIn('permission', [

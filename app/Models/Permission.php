@@ -61,6 +61,10 @@ class Permission extends Model
         'technician_create',
         'technician_delete',
 
+        'distribution_access',
+        'distribution_show',
+        'distribution_create',
+
         'warehouse_access',
         'warehouse_show',
         'warehouse_edit',

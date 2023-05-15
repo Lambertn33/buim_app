@@ -88,7 +88,7 @@ class RequestedDevicesRelationManager extends RelationManager
                         $requestId = $livewire->ownerRecord->request_id;
                         $manager =  $warehouseToDistributeDevice->manager->user;
                         $title = 'Campaign Device requests approvied';
-                        $message = 'the campaign stock requested of request id ' . sprintf("%08d", $requestId) . ' with ' . $livewire->ownerRecord->requestedDevices->count() . ' of campaign entitled ' . $livewire->ownerRecord->campaign->title . ' has been approved and sent to your warehouse
+                        $message = 'the campaign stock requested of request id ' . sprintf("%08d", $requestId) . ' with ' . $livewire->ownerRecord->requestedDevices->count() . 'devices of campaign entitled ' . $livewire->ownerRecord->campaign->title . ' has been approved and sent to your warehouse
                         named ' . $warehouseToDistributeDevice->name . '';
                         $actions = [
                             NotificationAction::make('Mark as Read')
