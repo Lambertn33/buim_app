@@ -125,6 +125,8 @@ class NavigationBadgesServices
     {
         if (Auth::user()->role->role === Role::DISTRICT_MANAGER_ROLE) {
             return WarehouseDevice::where('manager_id', Auth::user()->manager->id)->count();
+        } else if (Auth::user()->role->role === Role::SECTOR_LEADER_ROLE) {
+            return WarehouseDevice::where('district_id', Auth::user()->leader->district->id)->count();
         } else {
             return WarehouseDevice::count();
         }
