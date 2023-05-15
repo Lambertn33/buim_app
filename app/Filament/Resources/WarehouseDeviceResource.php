@@ -19,6 +19,7 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Collection;
@@ -71,7 +72,14 @@ class WarehouseDeviceResource extends Resource
                 TextColumn::make('serial_number')
                     ->sortable()
                     ->searchable()
-                    ->label('Serial number')
+                    ->label('Serial number'),
+                TextColumn::make('Device Availability')
+                    ->sortable()
+                    ->formatStateUsing(function(WarehouseDevice $device): string {
+                        return is_null($device->screener_id) ? 'Available' : 'Distributed';
+                    })->color(function(WarehouseDevice $device): string {
+                        return is_null($device->screener_id) ? 'success' : 'danger';
+                    })
             ])
             ->filters([
                 SelectFilter::make('district_id')
