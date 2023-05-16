@@ -15,6 +15,7 @@ use App\Models\Technician;
 use App\Models\User;
 use App\Models\Warehouse;
 use App\Models\WarehouseDevice;
+use App\Models\WarehouseDeviceDistribution;
 use App\Models\WarehouseDeviceTransfer;
 use Illuminate\Support\Facades\Auth;
 
@@ -149,6 +150,22 @@ class NavigationBadgesServices
             return Technician::where('district_id', Auth::user()->leader->district->id)->count(); 
         } else {
             return Technician::count();
+        }
+    }
+
+    public function getTotalNumberOfDistributions()
+    {
+        if (Auth::user()->role->role === Role::DISTRICT_MANAGER_ROLE) 
+        {
+            return WarehouseDeviceDistribution::whereHas('warehouseDevice', function($query) {
+                return $query->where('manager_id', Auth::user()->manager->id);
+            })->count();
+        }else if(Auth::user()->role->role === Role::SECTOR_LEADER_ROLE) {
+            return WarehouseDeviceDistribution::whereHas('warehouseDevice', function($query) {
+                return $query->where('district_id', Auth::user()->leader->district->id);
+            })->count();
+        } else {
+            return WarehouseDeviceDistribution::count();
         }
     }
 }

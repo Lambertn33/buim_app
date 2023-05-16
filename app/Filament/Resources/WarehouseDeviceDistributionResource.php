@@ -5,9 +5,11 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\WarehouseDeviceDistributionResource\Pages;
 use App\Filament\Resources\WarehouseDeviceDistributionResource\RelationManagers;
 use App\Models\PaymentPlan;
+use App\Models\Role;
 use App\Models\Screening;
 use App\Models\WarehouseDevice;
 use App\Models\WarehouseDeviceDistribution;
+use App\Services\NavigationBadgesServices;
 use Filament\Forms;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Select;
@@ -30,11 +32,16 @@ class WarehouseDeviceDistributionResource extends Resource
 
     protected static ?string $navigationGroup = 'Customers';
 
-    protected static ?string $navigationLabel = 'Warehouse device distributions';
+    protected static ?string $navigationLabel = 'Device distributions';
 
     protected static ?string $pluralModelLabel = 'District Distributions';
 
     protected static ?int $navigationSort = 6;
+
+    protected static function getNavigationBadge(): ?string
+    {
+        return (new NavigationBadgesServices)->getTotalNumberOfDistributions();
+    }
 
     public static function form(Form $form): Form
     {
@@ -85,7 +92,9 @@ class WarehouseDeviceDistributionResource extends Resource
                 TextColumn::make('warehouseDevice.serial_number')
                     ->label('Device Serial number')
                     ->sortable()
-                    ->searchable()
+                    ->searchable(),
+                TextColumn::make('warehouseDevice.warehouse.district.district')
+                    ->visible(Auth::user()->role->role == Role::ADMIN_ROLE || Auth::user()->role->role == Role::STOCK_MANAGER_ROLE)
             ])
             ->filters([
                 //
