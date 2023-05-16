@@ -19,13 +19,16 @@ class ListCampaigns extends ListRecords
     {
         return [
             Actions\CreateAction::make()
-                ->visible(function() {
-                    $authenticatedManager = Auth::user()->manager;
-                    if (Campaign::where('manager_id', $authenticatedManager->id)
-                    ->where('status', Campaign::ONGOING)->exists()) {
-                        return false;
-                    } else {
-                        return true;
+                ->visible(function () {
+                    if (Auth::user()->role->role == Role::DISTRICT_MANAGER_ROLE) {
+                        $authenticatedManager = Auth::user()->manager;
+                        if (Campaign::where('manager_id', $authenticatedManager->id)
+                            ->where('status', Campaign::ONGOING)->exists()
+                        ) {
+                            return false;
+                        } else {
+                            return true;
+                        }
                     }
                 }),
         ];
@@ -37,11 +40,11 @@ class ListCampaigns extends ListRecords
             CampaignsOverviewWidget::class
         ];
     }
-    
+
     protected function getTableQuery(): Builder
     {
         return Auth::user()->role->role === Role::ADMIN_ROLE
-        ? parent::getTableQuery() 
-        : parent::getTableQuery()->where('manager_id', Auth::user()->manager->id);
+            ? parent::getTableQuery()
+            : parent::getTableQuery()->where('manager_id', Auth::user()->manager->id);
     }
 }
