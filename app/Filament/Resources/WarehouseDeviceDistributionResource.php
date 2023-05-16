@@ -17,6 +17,7 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\SelectColumn;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
@@ -42,16 +43,19 @@ class WarehouseDeviceDistributionResource extends Resource
                 Card::make([
                     Select::make('warehouse_device_id')
                         ->label('select device serial number')
+                        ->searchable()
                         ->required()
                         ->unique(ignoreRecord: true)
-                        ->options(WarehouseDevice::where('district_id', Auth::user()->leader->district->id)->get()->pluck('serial_number', 'id')->toArray()),
+                        ->options(WarehouseDevice::where('district_id', Auth::user()->leader->district->id)->whereNull('screener_id')->get()->pluck('serial_number', 'id')->toArray()),
                     Select::make('screener_id')
                         ->label('select screener')
+                        ->searchable()
                         ->required()
                         ->options(Screening::where('district', Auth::user()->leader->district->district)->where('confirmation_status', Screening::PROSPECT)
                             ->get()->pluck('prospect_names', 'id')->toArray()),
                     Select::make('payment_id')
                         ->label('select payment mode')
+                        ->searchable()
                         ->required()
                         ->options(PaymentPlan::get()->pluck('title', 'id')->toArray()),
                     TextInput::make('downpayment_amount')
@@ -67,17 +71,32 @@ class WarehouseDeviceDistributionResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('contract_id')
+                    ->searchable()
+                    ->sortable()
+                    ->label('Contract ID'),
+                TextColumn::make('screener.prospect_names')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('warehouseDevice.device_name')
+                    ->label('Device name')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('warehouseDevice.serial_number')
+                    ->label('Device Serial number')
+                    ->sortable()
+                    ->searchable()
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\Action::make('print contract')
+                    ->icon('heroicon-o-printer')
+                    ->action(fn(WarehouseDeviceDistribution $record) => null)
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                // Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 

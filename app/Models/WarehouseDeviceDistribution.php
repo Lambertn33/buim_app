@@ -29,7 +29,7 @@ class WarehouseDeviceDistribution extends Model
      */
     public function screener(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'screener_id', 'id');
+        return $this->belongsTo(Screening::class, 'screener_id', 'id');
     }
 
     /**

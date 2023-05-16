@@ -12,7 +12,7 @@ class ScreeningPayment extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id', 'screener_id', 'payment_plan_id', 'amount_paid', 'remaining_amount', 'next_payment_date'];
+    protected $fillable = ['id', 'screener_id', 'payment_plan_id', 'amount_paid','remaining_months_to_pay', 'remaining_amount', 'next_payment_date'];
 
     protected $casts = [
         'id' => 'string',

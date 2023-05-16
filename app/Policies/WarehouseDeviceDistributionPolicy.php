@@ -37,15 +37,22 @@ class WarehouseDeviceDistributionPolicy
      */
     public function update(User $user, WarehouseDeviceDistribution $warehouseDeviceDistribution): bool
     {
-        //
+        return $user->hasPermission('distribution_create');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
+    public function deleteAny(User $user): bool
+    {
+        return $user->hasPermission('distribution_access');
+    }
+    /**
+     * Determine whether the user can delete the model.
+     */
     public function delete(User $user, WarehouseDeviceDistribution $warehouseDeviceDistribution): bool
     {
-        //
+        return $user->hasPermission('distribution_access');
     }
 
     /**

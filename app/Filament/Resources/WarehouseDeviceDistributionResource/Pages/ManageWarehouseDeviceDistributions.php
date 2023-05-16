@@ -3,9 +3,10 @@
 namespace App\Filament\Resources\WarehouseDeviceDistributionResource\Pages;
 
 use App\Filament\Resources\WarehouseDeviceDistributionResource;
+use App\Services\ScreeningServices;
+use Filament\Notifications\Notification;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ManageRecords;
-use Illuminate\Support\Str;
 
 class ManageWarehouseDeviceDistributions extends ManageRecords
 {
@@ -15,10 +16,15 @@ class ManageWarehouseDeviceDistributions extends ManageRecords
     {
         return [
             Actions\CreateAction::make()
-                ->mutateFormDataUsing(function (array $data){
-                    $data['id'] = Str::uuid()->toString();
-                    dd ($data);
+                ->action(function (array $data){
+                    (new ScreeningServices)->createScreeningDistribution($data);
                 })
+                ->successNotification(
+                    Notification::make()
+                        ->success()
+                        ->title('Distribution registered')
+                        ->body('The distribution has been successfully created.'),
+                ),
         ];
     }
 }
