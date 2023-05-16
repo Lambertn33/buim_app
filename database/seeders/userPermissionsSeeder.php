@@ -86,7 +86,6 @@ class userPermissionsSeeder extends Seeder
             'technician_delete',
             'distribution_access',
             'distribution_show',
-            'distribution_create',
         ])->get();
 
         $leaderPermissions = Permission::whereIn('permission', [

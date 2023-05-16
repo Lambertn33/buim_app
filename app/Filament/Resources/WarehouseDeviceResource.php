@@ -19,6 +19,7 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Collection;
@@ -71,7 +72,15 @@ class WarehouseDeviceResource extends Resource
                 TextColumn::make('serial_number')
                     ->sortable()
                     ->searchable()
-                    ->label('Serial number')
+                    ->label('Serial number'),
+                TextColumn::make('Device Availability')
+                    ->sortable()
+                    ->weight('bold')
+                    ->formatStateUsing(function(WarehouseDevice $record): string {
+                        return (is_null($record->screener_id)) ? 'Available' : 'Distributed';
+                    })->color(function(WarehouseDevice $record): string {
+                        return (is_null($record->screener_id)) ? 'success' : 'danger';
+                    })
             ])
             ->filters([
                 SelectFilter::make('district_id')
@@ -128,7 +137,13 @@ class WarehouseDeviceResource extends Resource
                             ->title('Device transfered')
                             ->body('device has been successfully transfered.'),
                     )
-                    ->visible(Auth::user()->role->role == Role::DISTRICT_MANAGER_ROLE)
+                    ->visible(function (WarehouseDevice $record){
+                        if(Auth::user()->role->role == Role::DISTRICT_MANAGER_ROLE && is_null($record->screener_id)) {
+                            return true;
+                        }else {
+                            return false;
+                        }
+                    })
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
@@ -164,7 +179,7 @@ class WarehouseDeviceResource extends Resource
                             }),
                         Textarea::make('reason')
                             ->required()
-                    ])
+                    ])->visible(Auth::user()->role->role ===Role::DISTRICT_MANAGER_ROLE)
                     ->action(function (Collection $records, array $data) {
                         foreach ($records as $record) {
                             (new StockServices)->transferDistrictWarehouseDevice($record, $data);

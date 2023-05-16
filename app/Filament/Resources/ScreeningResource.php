@@ -4,6 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ScreeningResource\Pages;
 use App\Filament\Resources\ScreeningResource\RelationManagers;
+use App\Filament\Resources\ScreeningResource\RelationManagers\DeviceRelationManager;
+use App\Filament\Resources\ScreeningResource\RelationManagers\InstallationRelationManager;
+use App\Filament\Resources\ScreeningResource\RelationManagers\PaymentsRelationManager;
 use App\Models\Campaign;
 use App\Models\MainWarehouse;
 use App\Models\MainWarehouseDevice;
@@ -151,7 +154,9 @@ class ScreeningResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            DeviceRelationManager::class,
+            InstallationRelationManager::class,
+            PaymentsRelationManager::class
         ];
     }
 

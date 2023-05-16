@@ -33,14 +33,6 @@ class PaymentPlansSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now()
             ),
-            2 => array(
-                'id' => Str::uuid()->toString(),
-                'title' => 'Montly Payment',
-                'amount' => 15000,
-                'duration' => 360,
-                'created_at' => now(),
-                'updated_at' => now()
-            ),
         ));
     }
 }

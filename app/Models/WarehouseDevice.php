@@ -56,4 +56,14 @@ class WarehouseDevice extends Model
     {
         return $this->hasOne(WarehouseDeviceDistribution::class, 'warehouse_device_id', 'id');
     }
+
+    /**
+     * Get the screener that owns the WarehouseDevice
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function screener(): BelongsTo
+    {
+        return $this->belongsTo(Screening::class, 'screener_id', 'id');
+    }
 }
