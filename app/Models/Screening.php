@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Screening extends Model
@@ -68,5 +69,15 @@ class Screening extends Model
     public function distribution(): HasOne
     {
         return $this->hasOne(WarehouseDeviceDistribution::class, 'screener_id', 'id');
+    }
+
+    /**
+     * Get all of the payments for the Screening
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function payments(): HasMany
+    {
+        return $this->hasMany(ScreeningPayment::class, 'screener_id', 'id');
     }
 }

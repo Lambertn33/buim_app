@@ -10,7 +10,7 @@ class ViewScreening extends ViewRecord
 {
     protected static string $resource = ScreeningResource::class;
 
-    protected static string $view = 'vendor.filament.resources.pages.screenings.show';
+    // protected static string $view = 'vendor.filament.resources.pages.screenings.show';
 
     protected function getActions(): array
     {
