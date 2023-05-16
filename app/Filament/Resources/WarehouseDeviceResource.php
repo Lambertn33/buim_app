@@ -75,10 +75,11 @@ class WarehouseDeviceResource extends Resource
                     ->label('Serial number'),
                 TextColumn::make('Device Availability')
                     ->sortable()
-                    ->formatStateUsing(function(WarehouseDevice $device): string {
-                        return is_null($device->screener_id) ? 'Available' : 'Distributed';
-                    })->color(function(WarehouseDevice $device): string {
-                        return is_null($device->screener_id) ? 'success' : 'danger';
+                    ->weight('bold')
+                    ->formatStateUsing(function(WarehouseDevice $record): string {
+                        return (is_null($record->screener_id)) ? 'Available' : 'Distributed';
+                    })->color(function(WarehouseDevice $record): string {
+                        return (is_null($record->screener_id)) ? 'success' : 'danger';
                     })
             ])
             ->filters([
@@ -136,7 +137,13 @@ class WarehouseDeviceResource extends Resource
                             ->title('Device transfered')
                             ->body('device has been successfully transfered.'),
                     )
-                    ->visible(Auth::user()->role->role == Role::DISTRICT_MANAGER_ROLE)
+                    ->visible(function (WarehouseDevice $record){
+                        if(Auth::user()->role->role == Role::DISTRICT_MANAGER_ROLE && is_null($record->screener_id)) {
+                            return true;
+                        }else {
+                            return false;
+                        }
+                    })
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
@@ -172,7 +179,7 @@ class WarehouseDeviceResource extends Resource
                             }),
                         Textarea::make('reason')
                             ->required()
-                    ])
+                    ])->visible(Auth::user()->role->role ===Role::DISTRICT_MANAGER_ROLE)
                     ->action(function (Collection $records, array $data) {
                         foreach ($records as $record) {
                             (new StockServices)->transferDistrictWarehouseDevice($record, $data);
