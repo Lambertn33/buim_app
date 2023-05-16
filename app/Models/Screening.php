@@ -90,4 +90,14 @@ class Screening extends Model
     {
         return $this->hasOne(ScreeningInstallation::class, 'screener_id', 'id');
     }
+
+   /**
+    * Get the device associated with the Screening
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\HasOne
+    */
+   public function device(): HasOne
+   {
+       return $this->hasOne(WarehouseDevice::class, 'screener_id', 'id');
+   }
 }

@@ -78,4 +78,14 @@ class ScreeningServices
         ScreeningInstallation::insert($newInstallation);
     }
 
+    public function installScreeningDevice($installationData, $screeningInstallationId)
+    {
+        $screeningInstallation = ScreeningInstallation::find($screeningInstallationId);
+        dd ($screeningInstallation);
+    }
+
+    public function verifyScreeningDevice($screeningInstallationId)
+    {
+        dd($screeningInstallationId);
+    }
 }
