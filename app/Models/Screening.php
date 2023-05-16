@@ -80,4 +80,14 @@ class Screening extends Model
     {
         return $this->hasMany(ScreeningPayment::class, 'screener_id', 'id');
     }
+
+    /**
+     * Get the installation associated with the Screening
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function installation(): HasOne
+    {
+        return $this->hasOne(ScreeningInstallation::class, 'screener_id', 'id');
+    }
 }

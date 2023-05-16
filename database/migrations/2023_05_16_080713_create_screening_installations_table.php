@@ -15,6 +15,8 @@ return new class extends Migration
         Schema::create('screening_installations', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('screener_id');
+            $table->uuid('technician_id')->nullable();
+            $table->uuid('verified_by')->nullable();
             $table->string('latitude')->nullable();
             $table->string('longitude')->nullable();
             $table->enum('installation_status', ScreeningInstallation::INSTALLATION_STATUS)->default(ScreeningInstallation::INSTALLATION_PENDING);

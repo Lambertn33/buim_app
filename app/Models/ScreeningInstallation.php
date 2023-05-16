@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ScreeningInstallation extends Model
 {
@@ -20,11 +21,33 @@ class ScreeningInstallation extends Model
     const VERIFICATION_VERIFIED = self::VERIFICATION_STATUS[1];
 
     protected $fillable = [
-        'id', 'screener_id', 'latitude', 'longitude', 'installation_status', 'verification_status'
+        'id', 'screener_id', 'latitude', 'longitude', 'technician_id', 'verified_by', 'installation_status', 'verification_status'
     ];
 
     protected $casts = [
         'id' => 'string',
-        'screener_id' => 'string'
+        'screener_id' => 'string',
+        'installed_by' => 'string',
+        'verified_by' => 'string'
     ];
+
+    /**
+     * Get the screening that owns the ScreeningInstallation
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function screening(): BelongsTo
+    {
+        return $this->belongsTo(Screening::class, 'screener_id', 'id');
+    }
+
+    /**
+     * Get the technician that owns the ScreeningInstallation
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function technician(): BelongsTo
+    {
+        return $this->belongsTo(Technician::class, 'technician_id', 'id');
+    }
 }
