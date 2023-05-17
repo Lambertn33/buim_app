@@ -23,7 +23,7 @@ class CreateUser extends CreateRecord
         $userId = Str::uuid()->toString();
         $data['id'] = $userId;
         $data['password'] = Hash::make($data['password']);
-        if ($data['district_id']) {
+        if (array_key_exists('district_id', $data)) {
             Session::put('district_id', $data['district_id']);
         }
         return $data;
