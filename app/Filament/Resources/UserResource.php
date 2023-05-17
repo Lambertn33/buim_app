@@ -79,7 +79,17 @@ class UserResource extends Resource
                         Select::make('district_id')
                             ->label('District to Manage')
                             ->required()
-                            ->options(District::whereNull('manager_id')->orderBy('district', 'asc')->get()->pluck('district', 'id')->toArray())
+                            ->options(function (callable $get) {
+                                $role = $get('role_id');
+                                if ($role) {
+                                    $roleName = Role::find($role);
+                                        if ($roleName->role === Role::DISTRICT_MANAGER_ROLE) {
+                                            return District::whereNull('manager_id')->orderBy('district', 'asc')->get()->pluck('district', 'id')->toArray();
+                                        } else {
+                                            return District::whereNotNull('manager_id')->orderBy('district', 'asc')->get()->pluck('district', 'id')->toArray(); 
+                                        }
+                                    }
+                            })
                             ->searchable()
                             ->visibleOn('create')
                             ->visible(function (callable $get) {
