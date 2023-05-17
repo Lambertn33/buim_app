@@ -27,9 +27,6 @@ class CreateCampaign extends CreateRecord
         $data['manager_id'] = Auth::user()->manager->id;
         $data['district_id'] = Auth::user()->manager->district->id;
         $data['province_id'] = Province::where('id', Auth::user()->manager->district->province_id)->value('id');
-        //draft
-        $data['from'] = now()->format('Y-m-d');
-        $data['to'] = now()->format('Y-m-d');
         return $data;
     }
 
@@ -39,14 +36,5 @@ class CreateCampaign extends CreateRecord
             ->success()
             ->title('Campaign registered')
             ->body('The campaign has been created successfully.');
-    }
-
-    public function mount(): void
-    {
-        if (Auth::user()->role->role == Role::DISTRICT_MANAGER_ROLE) {
-            $check = Campaign::where('manager_id', Auth::user()->manager->id)
-                ->where('status', Campaign::ONGOING)->exists();
-            abort_unless($check == false, 403);
-        }
     }
 }

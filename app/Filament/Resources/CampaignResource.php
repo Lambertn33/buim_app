@@ -65,22 +65,22 @@ class CampaignResource extends Resource
                             'STOPPED' => 'STOPPED',
 
                         ]),
-                    // DatePicker::make('from')
-                    //     ->label('starting date')
-                    //     ->minDate(date('Y-m-d', strtotime('+1 day')))
-                    //     ->required()
-                    //     ->placeholder('select the starting date')
-                    //     ->reactive(),
-                    // DatePicker::make('to')
-                    //     ->label('ending date')
-                    //     ->required()
-                    //     ->placeholder('select the ending date')
-                    //     ->minDate(function (callable $get) {
-                    //         $from = $get('from');
-                    //         if ($from) {
-                    //             return $from;
-                    //         }
-                    //     }),
+                    DatePicker::make('from')
+                        ->label('starting date')
+                        ->minDate(date('Y-m-d', strtotime('+1 day')))
+                        ->required()
+                        ->placeholder('select the starting date')
+                        ->reactive(),
+                    DatePicker::make('to')
+                        ->label('ending date')
+                        ->required()
+                        ->placeholder('select the ending date')
+                        ->minDate(function (callable $get) {
+                            $from = $get('from');
+                            if ($from) {
+                                return $from;
+                            }
+                        }),
                 ])->columns(2)
 
             ]);

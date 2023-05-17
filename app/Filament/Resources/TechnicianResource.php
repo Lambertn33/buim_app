@@ -51,7 +51,7 @@ class TechnicianResource extends Resource
                     ->label('Technician telephone')
                     ->tel()
                     ->required()
-                    ->unique(ignoreRecord: true),
+                    ->unique(ignoreRecord: true),              
             ]);
     }
 
