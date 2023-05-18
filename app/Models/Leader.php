@@ -15,13 +15,14 @@ class Leader extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'id', 'user_id', 'district_id'
+        'id', 'user_id', 'district_id', 'warehouse_id'
     ];
 
     protected $casts = [
         'id' => 'string',
         'user_id' => 'string',
-        'district_id' => 'string'
+        'district_id' => 'string',
+        'warehouse_id' => 'string'
     ];
 
     /**
@@ -42,6 +43,16 @@ class Leader extends Model
     public function district(): BelongsTo
     {
         return $this->belongsTo(District::class, 'district_id', 'id');
+    }
+
+    /**
+     * Get the warehouse that owns the Leader
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function warehouse(): BelongsTo
+    {
+        return $this->belongsTo(Warehouse::class, 'warehouse_id', 'id');
     }
 
     /**

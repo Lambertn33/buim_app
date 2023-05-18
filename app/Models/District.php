@@ -14,13 +14,12 @@ class District extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'id', 'district', 'province_id', 'manager_id'
+        'id', 'district', 'province_id',
     ];
 
     protected $casts = [
         'id' => 'string',
         'province_id' => 'string',
-        'manager_id' => 'string'
     ];
 
     /**
@@ -34,13 +33,13 @@ class District extends Model
     }
 
     /**
-     * Get the manager that owns the District
+     * Get all of the managers for the District
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function manager(): BelongsTo
+    public function managers(): HasMany
     {
-        return $this->belongsTo(Manager::class, 'manager_id', 'id');
+        return $this->hasMany(Manager::class, 'district_id', 'id');
     }
 
     /**

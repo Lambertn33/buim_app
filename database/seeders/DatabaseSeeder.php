@@ -22,9 +22,7 @@ class DatabaseSeeder extends Seeder
             stockModelsSeeder::class,
             PaymentPlansSeeder::class,
             ManagerDistrictLinkSeeder::class,
-            LeaderDistrictLinkSeeder::class,
             MainWarehousesSeeder::class,
-            WarehousesSeeder::class,
             TechniciansSeeder::class
         ]);
     }

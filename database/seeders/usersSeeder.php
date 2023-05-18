@@ -45,31 +45,11 @@ class usersSeeder extends Seeder
             ],
             [
                 'id' => Str::uuid()->toString(),
-                'name' => 'sector leader',
-                'email' => 'leader@gmail.com',
-                'role_id' => Role::where('role', Role::SECTOR_LEADER_ROLE)->value('id'),
-                'password' => Hash::make('leader12345'),
-                'telephone' => '250788000022',
-                'created_at' => now(),
-                'updated_at' => now()
-            ],
-            [
-                'id' => Str::uuid()->toString(),
                 'name' => 'district manager 2',
                 'role_id' => Role::where('role', Role::DISTRICT_MANAGER_ROLE)->value('id'),
                 'email' => 'manager2@gmail.com',
                 'password' => Hash::make('manager12345'),
                 'telephone' => '250788000013',
-                'created_at' => now(),
-                'updated_at' => now()
-            ],
-            [
-                'id' => Str::uuid()->toString(),
-                'name' => 'sector leader 2',
-                'email' => 'leader2@gmail.com',
-                'role_id' => Role::where('role', Role::SECTOR_LEADER_ROLE)->value('id'),
-                'password' => Hash::make('leader12345'),
-                'telephone' => '250788000025',
                 'created_at' => now(),
                 'updated_at' => now()
             ],

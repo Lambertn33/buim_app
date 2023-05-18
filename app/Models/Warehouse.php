@@ -67,6 +67,16 @@ class Warehouse extends Model
     }
 
     /**
+     * Get all of the leaders for the Warehouse
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function leaders(): HasMany
+    {
+        return $this->hasMany(Leader::class, 'warehouse_id', 'id');
+    }
+
+    /**
      * Get all of the warehouseReceivedDevices for the WarehouseDevice
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

@@ -18,9 +18,9 @@ class ManagerDistrictLinkSeeder extends Seeder
         if (count($allManagers) > 0 && count($latestDistricts) > 0) {
             for ($i = 0; $i < $latestDistricts->count(); $i++) {
                 for ($j = 0; $j < $allManagers->count(); $j++) {
-                    if ($i == $j && $latestDistricts[$i]->manager_id === null) {
-                        $latestDistricts[$i]->update([
-                            'manager_id' => $allManagers[$i]->id
+                    if ($i == $j && $allManagers[$i]->district_id === null) {
+                        $allManagers[$i]->update([
+                            'district_id' => $latestDistricts[$i]->id
                         ]);
                     }
                 }
