@@ -9,6 +9,7 @@ use App\Models\Role;
 use App\Models\Technician;
 use App\Services\NavigationBadgesServices;
 use Filament\Forms;
+use Filament\Forms\Components\Card;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -44,14 +45,17 @@ class TechnicianResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('names')
-                    ->required()
-                    ->label('Technician names'),
-                TextInput::make('telephone')
-                    ->label('Technician telephone')
-                    ->tel()
-                    ->required()
-                    ->unique(ignoreRecord: true),              
+                Card::make()
+                    ->schema([
+                        TextInput::make('names')
+                            ->required()
+                            ->label('Technician names'),
+                        TextInput::make('telephone')
+                            ->label('Technician telephone')
+                            ->tel()
+                            ->required()
+                            ->unique(ignoreRecord: true),
+                    ])->columns(2)
             ]);
     }
 
@@ -87,7 +91,6 @@ class TechnicianResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
