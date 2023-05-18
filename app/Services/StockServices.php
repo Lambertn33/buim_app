@@ -93,6 +93,7 @@ class StockServices
         $reason = $data['reason'];
 
         $warehouseReceiver = Warehouse::find($data['warehouse_id']);
+        $district = $warehouseReceiver->district;
         $manager = $warehouseReceiver->manager->user;
         $pendingTitle = 'New device received';
         $pendingMessage = 'you received a new device with serial number ' . $device->serial_number . ' from ' . $device->warehouse->district->district . ' district ';
@@ -101,8 +102,6 @@ class StockServices
             'id' => Str::uuid()->toString(),
             'warehouse_sender_id' => $deviceSender->id,
             'warehouse_receiver_id' => $deviceReceiver,
-            'manager_sender_id' => $deviceSender->manager->id,
-            'manager_receiver_id' => $warehouseReceiver->manager->id,
             'serial_number' => $device->serial_number,
             'device_name' => $device->device_name,
             'description' => $reason,

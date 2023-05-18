@@ -21,14 +21,12 @@ class WarehouseDeviceTransfer extends Model
     const APPROVED = self::STATUS[1];
     const REJECTED = self::STATUS[2];
 
-    protected $fillable = ['id','warehouse_sender_id', 'manager_sender_id', 'warehouse_receiver_id','manager_receiver_id', 'device_name','serial_number', 'description', 'status'];
+    protected $fillable = ['id','warehouse_sender_id', 'warehouse_receiver_id', 'device_name','serial_number', 'description', 'status'];
 
     protected $casts = [
         'id' => 'string',
         'warehouse_sender_id' => 'string',
         'warehouse_receiver_id' => 'string',
-        'manager_sender_id' => 'string', 
-        'manager_receiver_id' => 'string'
     ];
 
     /**
@@ -49,31 +47,5 @@ class WarehouseDeviceTransfer extends Model
     public function receiver(): BelongsTo
     {
         return $this->belongsTo(Warehouse::class, 'warehouse_receiver_id', 'id');
-    }
-
-    public function sentBy()
-    {
-        if (Auth::user()->role->role === Role::DISTRICT_MANAGER_ROLE) {
-            if (Auth::user()->manager->id == $this->manager_sender_id) {
-                return 'Me';
-            } else {
-                return $this->sender->district->district.' District';
-            }
-        } else {
-            return $this->sender->district->district.' District';
-        }
-    }
-
-    public function receivedBy()
-    {
-        if (Auth::user()->role->role === Role::DISTRICT_MANAGER_ROLE) {
-            if (Auth::user()->manager->id == $this->manager_receiver_id) {
-                return 'Me';
-            } else {
-                return $this->receiver->district->district.' District';
-            }
-        } else {
-            return $this->receiver->district->district.' District';
-        }
     }
 }
