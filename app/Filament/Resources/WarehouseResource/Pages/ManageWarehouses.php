@@ -20,23 +20,22 @@ class ManageWarehouses extends ManageRecords
     {
         return [
             Actions\CreateAction::make()
-            ->visible(Auth::user()->role->role == Role::ADMIN_ROLE || Auth::user()->role->role == Role::STOCK_MANAGER_ROLE)
-            ->mutateFormDataUsing(function (array $data): array {
-                $data['id'] = Str::uuid()->toString();
-                $districtManagerId = null;
-                if (!is_null(District::where('id', $data['district_id'])->value('manager_id'))) {
-                    $districtManagerId = District::where('id', $data['district_id'])->value('manager_id');
-                }
-                $data['manager_id'] = $districtManagerId;
-                return $data;
-            })
+                ->visible(Auth::user()->role->role == Role::ADMIN_ROLE || Auth::user()->role->role == Role::STOCK_MANAGER_ROLE)
+                ->mutateFormDataUsing(function (array $data): array {
+                    $data['id'] = Str::uuid()->toString();
+                    return $data;
+                })
         ];
     }
 
     public function getTableQuery(): Builder
     {
         if (Auth::user()->role->role === Role::DISTRICT_MANAGER_ROLE) {
-            return parent::getTableQuery()->where('manager_id', Auth::user()->manager->id)->where('status', Warehouse::ACTIVE);
+            return parent::getTableQuery()->whereHas('district', function ($query) {
+                $query->where('id', Auth::user()->manager->district->id);
+            });
+        } else if (Auth::user()->role->role === Role::SECTOR_LEADER_ROLE) {
+            return parent::getTableQuery()->where('id', Auth::user()->leader->warehouse_id);
         } else {
             return parent::getTableQuery();
         }

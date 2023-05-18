@@ -26,6 +26,9 @@ class CreateUser extends CreateRecord
         if (array_key_exists('district_id', $data)) {
             Session::put('district_id', $data['district_id']);
         }
+        if (array_key_exists('warehouse_id', $data)) {
+            Session::put('warehouse_id', $data['warehouse_id']);
+        }
         return $data;
     }
 

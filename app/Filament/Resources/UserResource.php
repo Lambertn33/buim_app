@@ -8,6 +8,7 @@ use App\Filament\Resources\UserResource\RelationManagers\PermissionsRelationMana
 use App\Models\District;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Warehouse;
 use App\Services\NavigationBadgesServices;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -83,12 +84,12 @@ class UserResource extends Resource
                                 $role = $get('role_id');
                                 if ($role) {
                                     $roleName = Role::find($role);
-                                        if ($roleName->role === Role::DISTRICT_MANAGER_ROLE) {
-                                            return District::orderBy('district', 'asc')->get()->pluck('district', 'id')->toArray();
-                                        } else {
-                                            return District::has('managers', '>', 0)->orderBy('district', 'asc')->get()->pluck('district', 'id')->toArray();
-                                        }
+                                    if ($roleName->role === Role::DISTRICT_MANAGER_ROLE) {
+                                        return District::orderBy('district', 'asc')->get()->pluck('district', 'id')->toArray();
+                                    } else {
+                                        return District::has('managers', '>', 0)->orderBy('district', 'asc')->get()->pluck('district', 'id')->toArray();
                                     }
+                                }
                             })
                             ->searchable()
                             ->visibleOn('create')
@@ -97,6 +98,26 @@ class UserResource extends Resource
                                 if ($role) {
                                     $roleName = Role::find($role);
                                     if ($roleName->role === Role::DISTRICT_MANAGER_ROLE || $roleName->role === Role::SECTOR_LEADER_ROLE) {
+                                        return true;
+                                    }
+                                }
+                            }),
+                        Select::make('warehouse_id')
+                            ->label('Warehouse to Manage')
+                            ->required()
+                            ->options(function (callable $get) {
+                                $districtId = $get('district_id');
+                                if ($districtId) {
+                                    return Warehouse::where('district_id', $districtId)->get()->pluck('name', 'id')->toArray();
+                                }
+                            })
+                            ->searchable()
+                            ->visibleOn('create')
+                            ->visible(function (callable $get) {
+                                $role = $get('role_id');
+                                if ($role) {
+                                    $roleName = Role::find($role);
+                                    if ($roleName->role === Role::SECTOR_LEADER_ROLE) {
                                         return true;
                                     }
                                 }
@@ -117,15 +138,12 @@ class UserResource extends Resource
                     ->label('email')
                     ->sortable()
                     ->searchable(),
-                //TextColumn::make('role.role'),
                 TextColumn::make('role.role')
-                     ->sortable()
-                    ->description(fn (User $record): string =>
-                    ($record->role->role == Role::DISTRICT_MANAGER_ROLE ?
-                    $record->manager->district->district. ' District' :
-                    ($record->role->role == Role::SECTOR_LEADER_ROLE ? 
-                    $record->leader->district->district. ' District' : '')
-                )), 
+                    ->sortable()
+                    ->description(fn (User $record): string => ($record->role->role == Role::DISTRICT_MANAGER_ROLE ?
+                        $record->manager->district->district . ' District' : ($record->role->role == Role::SECTOR_LEADER_ROLE ?
+                            $record->leader->warehouse->district->district . ' District' : '')
+                    )),
                 BadgeColumn::make('account_status')
                     ->label('account status')
                     ->sortable()
@@ -141,7 +159,7 @@ class UserResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make()
-                    ->hidden(fn($record) => $record->role->role === Role::ADMIN_ROLE)
+                    ->hidden(fn ($record) => $record->role->role === Role::ADMIN_ROLE)
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
