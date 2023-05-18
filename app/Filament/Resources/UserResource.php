@@ -84,9 +84,10 @@ class UserResource extends Resource
                                 if ($role) {
                                     $roleName = Role::find($role);
                                         if ($roleName->role === Role::DISTRICT_MANAGER_ROLE) {
-                                            return District::whereNull('manager_id')->orderBy('district', 'asc')->get()->pluck('district', 'id')->toArray();
+                                            return District::orderBy('district', 'asc')->get()->pluck('district', 'id')->toArray();
                                         } else {
-                                            return District::whereNotNull('manager_id')->orderBy('district', 'asc')->get()->pluck('district', 'id')->toArray(); 
+                                            // return District::whereNotNull('manager_id')->orderBy('district', 'asc')->get()->pluck('district', 'id')->toArray(); 
+                                            return District::orderBy('district', 'asc')->get()->pluck('district', 'id')->toArray();
                                         }
                                     }
                             })
@@ -117,8 +118,9 @@ class UserResource extends Resource
                     ->label('email')
                     ->sortable()
                     ->searchable(),
+                //TextColumn::make('role.role'),
                 TextColumn::make('role.role')
-                    ->sortable()
+                     ->sortable()
                     ->description(fn (User $record): string =>
                     ($record->role->role == Role::DISTRICT_MANAGER_ROLE ?
                     $record->manager->district->district. ' District' :

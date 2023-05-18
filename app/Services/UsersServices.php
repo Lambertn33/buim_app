@@ -123,13 +123,16 @@ class UsersServices
             ];
             if ($user->role->role == Role::DISTRICT_MANAGER_ROLE) {
                 $user->permissions()->sync($managerPermissions);
-                Manager::insert($newNonAdmin);
                 if (Session::has('district_id')) {
                     $districtId = Session::get('district_id');
-                    $district = District::find($districtId);
-                    $district->update([
-                        'manager_id' => $newNonAdmin['id']
-                    ]);
+                    $newNonAdmin = [
+                        'id' => Str::uuid()->toString(),
+                        'user_id' => $user->id,
+                        'district_id' => $districtId,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ];
+                    Manager::insert($newNonAdmin);
                 }
             } elseif ($user->role->role == Role::SECTOR_LEADER_ROLE) {
                 if (Session::has('district_id')) {
