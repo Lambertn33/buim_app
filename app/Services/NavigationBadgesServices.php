@@ -116,7 +116,7 @@ class NavigationBadgesServices
     public function getTotalNumberOfWarehouses()
     {
         if (Auth::user()->role->role === Role::DISTRICT_MANAGER_ROLE) {
-            return Warehouse::where('manager_id', Auth::user()->manager->id)->count();
+            return Warehouse::where('district_id', Auth::user()->manager->district->id)->count();
         } else {
             return Warehouse::count();
         }

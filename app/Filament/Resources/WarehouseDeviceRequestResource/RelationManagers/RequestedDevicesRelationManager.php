@@ -64,8 +64,34 @@ class RequestedDevicesRelationManager extends RelationManager
                 Tables\Actions\Action::make('Approve and Transfer devices')
                     ->color('success')
                     ->action(function (array $data, RelationManager $livewire) {
-                        foreach ($livewire->ownerRecord->requestedDevices as $requestedDevice) {
-                            (new StockServices)->approveCampaignRequestedDevices($requestedDevice, $data['warehouse_id'], $livewire->ownerRecord);
+                        try {
+                            foreach ($livewire->ownerRecord->requestedDevices as $requestedDevice) {
+                                (new StockServices)->approveCampaignRequestedDevices($requestedDevice, $data['warehouse_id'], $livewire->ownerRecord);
+                            }
+                            $warehouseToDistributeDevice = Warehouse::find($data['warehouse_id']);
+                            $requestId = $livewire->ownerRecord->request_id;
+                            $districtToDistributeDevice = $warehouseToDistributeDevice->district;
+                            $managers = $districtToDistributeDevice->managers()->get();
+                            $title = 'Campaign Device requests approved';
+                            $message = 'The campaign  ' . $livewire->ownerRecord->campaign->title . ' with request ID of ' . sprintf("%08d", $requestId) . '  which took place in your district and requested ' . $livewire->ownerRecord->requestedDevices->count() . ' has been approved
+                            and the devices are being sent to ' . $warehouseToDistributeDevice->name . ' which is located in your district... Please confirm after receiving them';
+                            $actions = [
+                                NotificationAction::make('Mark as Read')
+                                    ->color('primary')
+                                    ->button()
+                                    ->close(),
+
+                            ];
+                            foreach ($managers as $manager) {
+                                (new NotificationsServices)->sendNotificationToUser($manager->user, $title, $message, $actions);
+                            }
+                        } catch (\Throwable $th) {
+                            Notification::make()
+                                ->title('Error')
+                                ->body('No enough devices in Transit to be sent')
+                                ->danger()
+                                ->send();
+                            return;
                         }
                     })
                     ->requiresConfirmation()
@@ -83,22 +109,7 @@ class RequestedDevicesRelationManager extends RelationManager
                                 fn (RelationManager $livewire) =>
                                 $livewire->ownerRecord->campaign->district->warehouses()->get()->pluck('name', 'id')->toArray()
                             )
-                    ])->after(function (array $data, RelationManager $livewire) {
-                        $warehouseToDistributeDevice = Warehouse::find($data['warehouse_id']);
-                        $requestId = $livewire->ownerRecord->request_id;
-                        $manager =  $warehouseToDistributeDevice->manager->user;
-                        $title = 'Campaign Device requests approvied';
-                        $message = 'The campaign  '. $livewire->ownerRecord->campaign->title .' with request ID of '.sprintf("%08d", $requestId). '  which took place in your district and requested '. $livewire->ownerRecord->requestedDevices->count(). ' has been approved
-                        and the devices are being sent to '. $warehouseToDistributeDevice->name .' which is located in your district... Please confirm after receiving them';
-                        $actions = [
-                            NotificationAction::make('Mark as Read')
-                                ->color('primary')
-                                ->button()
-                                ->close(),
-
-                        ];
-                        (new NotificationsServices)->sendNotificationToUser($manager, $title, $message, $actions);
-                    })
+                    ])
                     ->successNotification(
                         Notification::make()
                             ->success()

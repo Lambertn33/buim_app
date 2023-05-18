@@ -131,7 +131,7 @@ class RugandoMainWarehouseResource extends Resource
                                     if ($warehouseType == 'Main warehouse') {
                                         return MainWarehouse::whereNot('id', $record->main_warehouse_id)->get()->pluck('name', 'id')->toArray();
                                     } else {
-                                        return Warehouse::whereNotNull('manager_id')->get()->pluck('name', 'id')->toArray();
+                                        return Warehouse::get()->pluck('name', 'id')->toArray();
                                     }
                                 }
                             })
