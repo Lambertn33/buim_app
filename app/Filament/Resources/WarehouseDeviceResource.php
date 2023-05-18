@@ -8,6 +8,7 @@ use App\Models\District;
 use App\Models\Role;
 use App\Models\StockModel;
 use App\Models\WarehouseDevice;
+use App\Models\Warehouse;
 use App\Services\NavigationBadgesServices;
 use App\Services\StockServices;
 use Filament\Forms;
@@ -109,16 +110,16 @@ class WarehouseDeviceResource extends Resource
                             ->label('District')
                             ->reactive()
                             ->options(function ($record) {
-                                return District::whereNotNull('manager_id')->whereNot('id', $record->district_id)->get()->pluck('district', 'id')->toArray();
+                                return District::has('warehouses', '>', 0)->get()->pluck('district', 'id')->toArray();
                             }),
                         Select::make('warehouse_id')
                             ->required()
                             ->label('District warehouse')
                             ->placeholder('select warehouse')
                             ->searchable()
-                            ->options(function (callable $get) {
+                            ->options(function (callable $get, WarehouseDevice $record) {
                                 $district = District::find($get('district_id'));
-                                return $district->warehouses()->get()->pluck('name', 'id')->toArray();
+                                return Warehouse::where('district_id', $district->id)->whereNot('id', $record->warehouse_id)->get()->pluck('name', 'id')->toArray();
                             })
                             ->visible(function (callable $get) {
                                 $district = $get('district_id');
