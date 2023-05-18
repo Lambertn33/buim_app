@@ -125,7 +125,7 @@ class NavigationBadgesServices
     public function getTotalNumberOfWarehouseDevices()
     {
         if (Auth::user()->role->role === Role::DISTRICT_MANAGER_ROLE) {
-            return WarehouseDevice::where('manager_id', Auth::user()->manager->id)->count();
+            return WarehouseDevice::where('district_id', Auth::user()->manager->district->id)->count();
         } else if (Auth::user()->role->role === Role::SECTOR_LEADER_ROLE) {
             return WarehouseDevice::where('district_id', Auth::user()->leader->district->id)->count();
         } else {
@@ -158,7 +158,7 @@ class NavigationBadgesServices
         if (Auth::user()->role->role === Role::DISTRICT_MANAGER_ROLE) 
         {
             return WarehouseDeviceDistribution::whereHas('warehouseDevice', function($query) {
-                return $query->where('manager_id', Auth::user()->manager->id);
+                return $query->where('district_id', Auth::user()->manager->district->id);
             })->count();
         }else if(Auth::user()->role->role === Role::SECTOR_LEADER_ROLE) {
             return WarehouseDeviceDistribution::whereHas('warehouseDevice', function($query) {

@@ -109,7 +109,33 @@ class DPWorldMainWarehouseResource extends Resource
                 Action::make('transfer')
                     ->color('success')
                     ->action(function (MainWarehouseDevice $record, array $data) {
-                        (new StockServices)->transferMainWarehouseDevice($record, $data['warehouse_id'], $data['warehouse_type']);
+                        try {
+                            (new StockServices)->transferMainWarehouseDevice($record, $data['warehouse_id'], $data['warehouse_type']);
+                            if ($data['warehouse_type'] == 'District warehouse') {
+                                $districtWarehouse = Warehouse::with('district')->find($data['warehouse_id']);
+                                $managers = $districtWarehouse->district->managers()->get();
+                                $title = 'New Received device';
+                                $message = 'a new device with serial number ' . $record->serial_number . ' has been sent to your warehouse ';
+                                $actions = [
+                                    NotificationAction::make('Mark as Read')
+                                        ->color('primary')
+                                        ->button()
+                                        ->close(),
+
+                                ];
+                                foreach($managers as $manager) {
+                                    (new NotificationsServices)->sendNotificationToUser($manager->user, $title, $message, $actions);
+                                }
+                            }
+                        } catch (\Throwable $th) {
+                            throw $th;
+                            Notification::make()
+                                ->title('Error')
+                                ->body('an error occured... please try again')
+                                ->danger()
+                                ->send();
+                            return;
+                        }
                     })
                     ->requiresConfirmation()
                     ->modalSubheading('select other main warehouse to transfer this device')
@@ -137,7 +163,7 @@ class DPWorldMainWarehouseResource extends Resource
                                     if ($warehouseType == 'Main warehouse') {
                                         return MainWarehouse::whereNot('id', $record->main_warehouse_id)->get()->pluck('name', 'id')->toArray();
                                     } else {
-                                        return Warehouse::get()->pluck('name', 'id')->toArray();
+                                        return Warehouse::where('status', Warehouse::ACTIVE)->get()->pluck('name', 'id')->toArray();
                                     }
                                 }
                             })
@@ -148,21 +174,6 @@ class DPWorldMainWarehouseResource extends Resource
                                 }
                             })
                     ])
-                    ->after(function (MainWarehouseDevice $record, array $data) {
-                        if ($data['warehouse_type'] == 'District warehouse') {
-                            $districtWarehouse = Warehouse::with('manager')->find($data['warehouse_id']);
-                            $title = 'New Received device';
-                            $message = 'a new device with serial number ' . $record->serial_number . ' has been sent to your warehouse ';
-                            $actions = [
-                                NotificationAction::make('Mark as Read')
-                                    ->color('primary')
-                                    ->button()
-                                    ->close(),
-                    
-                            ];
-                            (new NotificationsServices)->sendNotificationToUser($districtWarehouse->manager->user, $title, $message, $actions);
-                        }
-                    })
                     ->successNotification(
                         Notification::make('success')
                             ->title('Device transfered')

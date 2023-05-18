@@ -75,7 +75,6 @@ class StockServices
                 'model_id' => $deviceToTransfer->model->id,
                 'warehouse_id' => $warehouseId,
                 'district_id' => $districtWarehouse->district->id,
-                'manager_id' => $districtWarehouse->manager == null ? null : $districtWarehouse->manager->id,
                 'device_name' => $device->device_name,
                 'serial_number' => $device->serial_number,
                 'created_at' => now(),
