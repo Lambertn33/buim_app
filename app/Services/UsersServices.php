@@ -135,12 +135,14 @@ class UsersServices
                     Manager::insert($newNonAdmin);
                 }
             } elseif ($user->role->role == Role::SECTOR_LEADER_ROLE) {
-                if (Session::has('warehouse_id')) {
+                if (Session::has('warehouse_id') && Session::has('district_id')) {
                     $warehouseId = Session::get('warehouse_id');
+                    $districtId = Session::get('district_id');
                     $newNonAdmin = [
                         'id' => Str::uuid()->toString(),
                         'user_id' => $user->id,
                         'warehouse_id' => $warehouseId,
+                        'district_id' => $districtId,
                         'created_at' => now(),
                         'updated_at' => now()
                     ];
