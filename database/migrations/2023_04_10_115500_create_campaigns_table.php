@@ -14,6 +14,7 @@ return new class extends Migration
     {
         Schema::create('campaigns', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->uuid('manager_id');
             $table->string('title');
             $table->uuid('province_id');
             $table->uuid('district_id');
