@@ -136,7 +136,11 @@ class NavigationBadgesServices
     public function getTotalNumberOfWarehouseDeviceTransfers()
     {
         if (Auth::user()->role->role === Role::DISTRICT_MANAGER_ROLE) {
-            return WarehouseDeviceTransfer::where('manager_sender_id', Auth::user()->manager->id)->orWhere('manager_receiver_id', Auth::user()->manager->id)->count();
+            return WarehouseDeviceTransfer::whereHas('sender', function($query) {
+                $query->where('district_id', Auth::user()->manager->district->id);
+            })->orWhereHas('receiver', function($query) {
+                $query->where('district_id', Auth::user()->manager->district->id);
+            })->count();
         } else {
             return WarehouseDeviceTransfer::count();
         }

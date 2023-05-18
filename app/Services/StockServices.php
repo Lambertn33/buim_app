@@ -94,7 +94,7 @@ class StockServices
 
         $warehouseReceiver = Warehouse::find($data['warehouse_id']);
         $district = $warehouseReceiver->district;
-        $manager = $warehouseReceiver->manager->user;
+        $districtManagers = $district->managers()->get();
         $pendingTitle = 'New device received';
         $pendingMessage = 'you received a new device with serial number ' . $device->serial_number . ' from ' . $device->warehouse->district->district . ' district ';
 
@@ -121,29 +121,30 @@ class StockServices
                 ->button()
                 ->close()
         ];
-        (new NotificationsServices)->sendNotificationToUser($manager, $pendingTitle, $pendingMessage, $actions);
+        foreach ($districtManagers as $manager) {
+            (new NotificationsServices)->sendNotificationToUser($manager->user, $pendingTitle, $pendingMessage, $actions);
+        }
     }
 
     public function approveDistrictIncomingDeviceListener($warehouse, $deviceReceiver, $device)
     {
         $device = WarehouseDevice::find($device['id']);
-        $warehouse = Warehouse::with('district')->with('manager')->find($deviceReceiver);
+        $warehouse = Warehouse::with('district')->find($deviceReceiver);
         WarehouseDeviceTransfer::where('serial_number', $device->serial_number)->where('warehouse_receiver_id', $deviceReceiver)->update([
             'status' => WarehouseDeviceTransfer::APPROVED
         ]);
         WarehouseDevice::find($device->id)->update([
             'district_id' => $warehouse->district->id,
             'warehouse_id' => $deviceReceiver,
-            'manager_id' => $warehouse->manager->id
         ]);
     }
 
     public function rejectDistrictIncomingDeviceListener($device, $deviceReceiver, $deviceSender)
     {
         $device = WarehouseDevice::find($device['id']);
-        $warehouseReceiver = Warehouse::with('district')->with('manager')->find($deviceReceiver);
-        $warehouseSender = Warehouse::with('district')->with('manager')->find($deviceSender['id']);
-        $managerSender = $warehouseSender->district->manager->user;
+        $warehouseReceiver = Warehouse::with('district')->find($deviceReceiver);
+        $warehouseSender = Warehouse::with('district')->find($deviceSender['id']);
+        $managers = $warehouseSender->district->managers()->get();
 
         WarehouseDeviceTransfer::where('serial_number', $device->serial_number)->where('warehouse_receiver_id', $deviceReceiver)->update([
             'status' => WarehouseDeviceTransfer::REJECTED
@@ -159,7 +160,9 @@ class StockServices
                 ->close(),
 
         ];
-        (new NotificationsServices)->sendNotificationToUser($managerSender, $title, $message, $actions);
+        foreach ($managers as $managerSender) {
+            (new NotificationsServices)->sendNotificationToUser($managerSender->user, $title, $message, $actions);
+        }
     }
 
     //WAREHOUSE DEVICES REQUESTS

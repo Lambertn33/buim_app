@@ -128,7 +128,6 @@ class DPWorldMainWarehouseResource extends Resource
                                 }
                             }
                         } catch (\Throwable $th) {
-                            throw $th;
                             Notification::make()
                                 ->title('Error')
                                 ->body('an error occured... please try again')
@@ -161,7 +160,8 @@ class DPWorldMainWarehouseResource extends Resource
                                 $warehouseType = $get('warehouse_type');
                                 if ($warehouseType) {
                                     if ($warehouseType == 'Main warehouse') {
-                                        return MainWarehouse::whereNot('id', $record->main_warehouse_id)->get()->pluck('name', 'id')->toArray();
+                                        $dpWarehouse = MainWarehouse::where('name', MainWarehouse::DPWORLDWAREHOUSE)->first();
+                                        return MainWarehouse::whereNot('id', $dpWarehouse->id)->get()->pluck('name', 'id')->toArray();
                                     } else {
                                         return Warehouse::where('status', Warehouse::ACTIVE)->get()->pluck('name', 'id')->toArray();
                                     }
@@ -210,7 +210,7 @@ class DPWorldMainWarehouseResource extends Resource
                                         $dpWarehouse = MainWarehouse::where('name', MainWarehouse::DPWORLDWAREHOUSE)->first();
                                         return MainWarehouse::whereNot('id', $dpWarehouse->id)->get()->pluck('name', 'id')->toArray();
                                     } else {
-                                        return Warehouse::whereNotNull('manager_id')->get()->pluck('name', 'id')->toArray();
+                                        return Warehouse::where('status', Warehouse::ACTIVE)->get()->pluck('name', 'id')->toArray();
                                     }
                                 }
                             })

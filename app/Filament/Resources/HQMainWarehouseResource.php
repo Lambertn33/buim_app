@@ -154,7 +154,8 @@ class HQMainWarehouseResource extends Resource
                                 $warehouseType = $get('warehouse_type');
                                 if ($warehouseType) {
                                     if ($warehouseType == 'Main warehouse') {
-                                        return MainWarehouse::whereNot('id', $record->main_warehouse_id)->get()->pluck('name', 'id')->toArray();
+                                        $dpWarehouse = MainWarehouse::where('name', MainWarehouse::DPWORLDWAREHOUSE)->first();
+                                        return MainWarehouse::whereNot('id', $dpWarehouse->id)->get()->pluck('name', 'id')->toArray();
                                     } else {
                                         return Warehouse::where('status', Warehouse::ACTIVE)->get()->pluck('name', 'id')->toArray();
                                     }

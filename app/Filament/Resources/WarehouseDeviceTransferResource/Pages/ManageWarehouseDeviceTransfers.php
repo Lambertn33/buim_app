@@ -23,9 +23,11 @@ class ManageWarehouseDeviceTransfers extends ManageRecords
     public function getTableQuery(): Builder
     {
         if (Auth::user()->role->role === Role::DISTRICT_MANAGER_ROLE) {
-            $authenticatedManager = Auth::user()->manager;
-            return parent::getTableQuery()->where('manager_sender_id', $authenticatedManager->id)
-                ->orWhere('manager_receiver_id', $authenticatedManager->id);
+            return parent::getTableQuery()->whereHas('sender', function($query) {
+                $query->where('district_id', Auth::user()->manager->district->id);
+            })->orWhereHas('receiver', function($query) {
+                $query->where('district_id', Auth::user()->manager->district->id);
+            });
         } else {
             return parent::getTableQuery();
         }

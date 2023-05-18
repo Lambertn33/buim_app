@@ -77,9 +77,9 @@ class WarehouseDeviceResource extends Resource
                 TextColumn::make('Device Availability')
                     ->sortable()
                     ->weight('bold')
-                    ->formatStateUsing(function(WarehouseDevice $record): string {
+                    ->formatStateUsing(function (WarehouseDevice $record): string {
                         return (is_null($record->screener_id)) ? 'Available' : 'Distributed';
-                    })->color(function(WarehouseDevice $record): string {
+                    })->color(function (WarehouseDevice $record): string {
                         return (is_null($record->screener_id)) ? 'success' : 'danger';
                     })
             ])
@@ -138,10 +138,10 @@ class WarehouseDeviceResource extends Resource
                             ->title('Device transfered')
                             ->body('device has been successfully transfered.'),
                     )
-                    ->visible(function (WarehouseDevice $record){
-                        if(Auth::user()->role->role == Role::DISTRICT_MANAGER_ROLE && is_null($record->screener_id)) {
+                    ->visible(function (WarehouseDevice $record) {
+                        if (Auth::user()->role->role == Role::DISTRICT_MANAGER_ROLE && is_null($record->screener_id)) {
                             return true;
-                        }else {
+                        } else {
                             return false;
                         }
                     })
@@ -161,7 +161,7 @@ class WarehouseDeviceResource extends Resource
                             ->label('District')
                             ->reactive()
                             ->options(function () {
-                                return District::whereNotNull('manager_id')->whereNot('id', Auth::user()->manager->district->id)->get()->pluck('district', 'id')->toArray();
+                                return District::has('warehouses', '>', 0)->get()->pluck('district', 'id')->toArray();
                             }),
                         Select::make('warehouse_id')
                             ->required()
@@ -180,7 +180,7 @@ class WarehouseDeviceResource extends Resource
                             }),
                         Textarea::make('reason')
                             ->required()
-                    ])->visible(Auth::user()->role->role ===Role::DISTRICT_MANAGER_ROLE)
+                    ])->visible(Auth::user()->role->role === Role::DISTRICT_MANAGER_ROLE)
                     ->action(function (Collection $records, array $data) {
                         foreach ($records as $record) {
                             (new StockServices)->transferDistrictWarehouseDevice($record, $data);

@@ -48,4 +48,14 @@ class WarehouseDeviceTransfer extends Model
     {
         return $this->belongsTo(Warehouse::class, 'warehouse_receiver_id', 'id');
     }
+
+    public function sentBy()
+    {
+        return $this->sender->district->district.' District';
+    }
+
+    public function receivedBy()
+    {
+        return $this->receiver->district->district.' District';
+    }
 }
