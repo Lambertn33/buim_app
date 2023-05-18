@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use App\Models\Leader;
 use App\Models\Manager;
 use App\Models\Manufacturer;
+use App\Models\SalesManager;
 use App\Models\StockManager;
 use Illuminate\Support\Facades\Session;
 
@@ -155,6 +156,10 @@ class UsersServices
             } elseif ($user->role->role == Role::MANUFACTURER_ROLE) {
                 $user->permissions()->sync($manufacturerPermissions);
                 Manufacturer::insert($newNonAdmin);
+                //sales manager and stock manager have same permissions
+            } elseif ($user->role->role == Role::SALES_MANAGER_ROLE) {
+                $user->permissions()->sync($stockManagerPermissions);
+                SalesManager::insert($newNonAdmin);
             }
         }
     }

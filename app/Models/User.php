@@ -125,6 +125,10 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasOne(Manufacturer::class, 'user_id', 'id');
     }
 
+    public function salesManager(): HasOne
+    {
+        return $this->hasOne(SalesManager::class, 'user_id', 'id');
+    }
     public function hasPermission(string $permission): bool
     {
         $permissionsArray = [];
