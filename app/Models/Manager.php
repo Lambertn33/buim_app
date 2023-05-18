@@ -54,14 +54,4 @@ class Manager extends Model
     {
         return $this->hasMany(Campaign::class, 'manager_id', 'id');
     }
-
-    /**
-     * Get all of the warehouses for the Manager
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function warehouses(): HasMany
-    {
-        return $this->hasMany(Warehouse::class, 'manager_id', 'id');
-    }
 }

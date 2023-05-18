@@ -86,8 +86,7 @@ class UserResource extends Resource
                                         if ($roleName->role === Role::DISTRICT_MANAGER_ROLE) {
                                             return District::orderBy('district', 'asc')->get()->pluck('district', 'id')->toArray();
                                         } else {
-                                            // return District::whereNotNull('manager_id')->orderBy('district', 'asc')->get()->pluck('district', 'id')->toArray(); 
-                                            return District::orderBy('district', 'asc')->get()->pluck('district', 'id')->toArray();
+                                            return District::has('managers', '>', 0)->orderBy('district', 'asc')->get()->pluck('district', 'id')->toArray();
                                         }
                                     }
                             })
