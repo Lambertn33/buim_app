@@ -25,14 +25,13 @@ class Screening extends Model
     const ACTIVE_CUSTOMER = self::CONFIRMATION_STATUS[2];
 
     protected $fillable = [
-        'id', 'campaign_id','manager_id','leader_id', 'screening_date', 'prospect_names','prospect_telephone', 'prospect_national_id',
+        'id', 'campaign_id','leader_id', 'screening_date', 'prospect_names','prospect_telephone', 'prospect_national_id',
         'prospect_code', 'district','sector','village','cell', 'eligibility_status', 'confirmation_status', 'proposed_device_name'
     ];
 
     protected $casts = [
         'id' => 'string',
         'campaign_id' => 'string',
-        'manager_id' => 'string',
         'leader_id' => 'string'
     ];
     

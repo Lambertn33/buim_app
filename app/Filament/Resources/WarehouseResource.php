@@ -82,10 +82,6 @@ class WarehouseResource extends Resource
                 //
             ])
             ->actions([
-                // Tables\Actions\ViewAction::make()
-                //     ->form(fn ($record) =>[
-                //        TextInput::make('manager_id')
-                //     ]),
                 Tables\Actions\EditAction::make()
                     ->visible(Auth::user()->role->role !== Role::DISTRICT_MANAGER_ROLE),
             ])

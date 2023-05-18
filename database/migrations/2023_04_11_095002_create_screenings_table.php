@@ -15,7 +15,6 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuid('campaign_id');
             $table->uuid('leader_id');
-            $table->string('manager_id');
             $table->date('screening_date');
             $table->string('prospect_names');
             $table->string('prospect_telephone');

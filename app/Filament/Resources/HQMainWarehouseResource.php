@@ -204,7 +204,7 @@ class HQMainWarehouseResource extends Resource
                                         $HQWarehouse = MainWarehouse::where('name', MainWarehouse::HQWAREHOUSE)->first();
                                         return MainWarehouse::whereNot('id', $HQWarehouse->id)->get()->pluck('name', 'id')->toArray();
                                     } else {
-                                        return Warehouse::whereNotNull('manager_id')->get()->pluck('name', 'id')->toArray();
+                                        return Warehouse::where('status', Warehouse::ACTIVE)->get()->pluck('name', 'id')->toArray();
                                     }
                                 }
                             })

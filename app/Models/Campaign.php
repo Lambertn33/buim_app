@@ -31,12 +31,11 @@ class Campaign extends Model
     const STOPPED = self::CAMPAIGN_STATUS[3];
 
     protected $fillable = [
-        'id', 'title', 'description','province_id','district_id', 'from', 'to', 'manager_id', 'status'
+        'id', 'title', 'description','province_id','district_id', 'from', 'to', 'status'
     ];
 
     protected $casts = [
         'id' => 'string',
-        'manager_id' => 'string'
     ];
 
     /**
@@ -57,16 +56,6 @@ class Campaign extends Model
     public function district(): BelongsTo
     {
         return $this->belongsTo(District::class, 'district_id', 'id');
-    }
-
-     /**
-     * Get the manager that owns the Campaign
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function manager(): BelongsTo
-    {
-        return $this->belongsTo(Manager::class, 'manager_id', 'id');
     }
 
     /**
