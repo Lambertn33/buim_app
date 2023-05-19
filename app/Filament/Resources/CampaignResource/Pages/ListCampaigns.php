@@ -10,6 +10,7 @@ use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Role;
+use Closure;
 
 class ListCampaigns extends ListRecords
 {
@@ -34,6 +35,13 @@ class ListCampaigns extends ListRecords
         ];
     }
 
+    protected function getTableRecordUrlUsing(): ?Closure
+    {
+        return fn (Campaign $record) => Auth::user()->role->role !== Role::DISTRICT_MANAGER_ROLE ? null : (
+            $record->manager_id == Auth::user()->manager->id ? route('filament.resources.campaigns.edit', ['record' => $record]) : null
+        );
+    }
+
     protected function getHeaderWidgets(): array
     {
         return [
@@ -45,6 +53,8 @@ class ListCampaigns extends ListRecords
     {
         return Auth::user()->role->role === Role::ADMIN_ROLE
             ? parent::getTableQuery()
-            : parent::getTableQuery()->where('manager_id', Auth::user()->manager->id);
+            : parent::getTableQuery()->whereHas('district', function ($query) {
+                $query->where('district', Auth::user()->manager->district->district);
+            });
     }
 }

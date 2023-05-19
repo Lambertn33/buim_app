@@ -108,9 +108,8 @@ class CampaignResource extends Resource
                         'FINISHED' => 'FINISHED',
                         'STOPPED' => 'STOPPED',
 
-                    ])->disabled(function ($record) {
-                        return $record->status == Campaign::FINISHED;
-                    })
+                    ])
+                    ->disabled(fn ($record) => Auth::user()->role->role != Role::DISTRICT_MANAGER_ROLE ? true : ($record->manager_id != Auth::user()->manager->id ? true : false))
                     ->sortable()
                     ->disablePlaceholderSelection(),
                 TextColumn::make('province.province')
@@ -124,7 +123,6 @@ class CampaignResource extends Resource
                     ->counts('screenings'),
                 TextColumn::make('manager.user.name')
                     ->label('campaign manager')
-                    ->visible(auth()->user()->role->role === Role::ADMIN_ROLE)
                     ->sortable()
                     ->searchable()
             ])
@@ -146,12 +144,11 @@ class CampaignResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->hidden(function ($record) {
-                        return $record->status == Campaign::FINISHED;
+                        return $record->status == Campaign::FINISHED || (Auth::user()->role->role == Role::DISTRICT_MANAGER_ROLE ? $record->manager_id != Auth::user()->manager->id : false
+                        );
                     }),
             ])
-            ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
-            ]);
+            ->bulkActions([]);
     }
 
     public static function getRelations(): array

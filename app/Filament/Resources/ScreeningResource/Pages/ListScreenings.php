@@ -43,7 +43,9 @@ class ListScreenings extends ListRecords
         if (Auth::user()->role->role === Role::ADMIN_ROLE) {
             return parent::getTableQuery();
         } elseif (Auth::user()->role->role === Role::DISTRICT_MANAGER_ROLE) {
-            return parent::getTableQuery()->where('manager_id', Auth::user()->manager->id);
+            return parent::getTableQuery()->whereHas('campaign', function($query){
+                $query->where('district_id', Auth::user()->manager->district->id);
+            });
         } elseif(Auth::user()->role->role === Role::SECTOR_LEADER_ROLE) {
             return parent::getTableQuery()->where('leader_id', Auth::user()->leader->id);
         }

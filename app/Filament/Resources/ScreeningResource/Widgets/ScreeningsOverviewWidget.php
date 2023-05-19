@@ -22,9 +22,15 @@ class ScreeningsOverviewWidget extends BaseWidget
             $authManagerDistrict = Auth::user()->manager->district->district;
             $authManagerId = Auth::user()->manager->id;
             return [
-                Card::make('Screenings in '.$authManagerDistrict.' District' , Screening::where('manager_id', $authManagerId)->count()),
-                Card::make('Eligible Screenings in '.$authManagerDistrict.' District', Screening::where('eligibility_status', Screening::ELIGIBLE)->where('manager_id', $authManagerId)->count()),
-                Card::make('Non-eligible Screenings in '.$authManagerDistrict.' District', Screening::where('eligibility_status', Screening::NOT_ELIGIBLE)->where('manager_id', $authManagerId)->count())
+                Card::make('Screenings in '.$authManagerDistrict.' District' , Screening::whereHas('campaign', function($query){
+                    $query->where('district_id', Auth::user()->manager->district->id);
+                })->count()),
+                Card::make('Eligible Screenings in '.$authManagerDistrict.' District', Screening::where('eligibility_status', Screening::ELIGIBLE)->whereHas('campaign', function($query){
+                    $query->where('district_id', Auth::user()->manager->district->id);
+                })->count()),
+                Card::make('Non-eligible Screenings in '.$authManagerDistrict.' District', Screening::where('eligibility_status', Screening::NOT_ELIGIBLE)->whereHas('campaign', function($query){
+                    $query->where('district_id', Auth::user()->manager->district->id);
+                })->count())
             ];
         } else {
             $authLeaderId = Auth::user()->leader->id;

@@ -46,7 +46,9 @@ class NavigationBadgesServices
         if (Auth::user()->role->role === Role::ADMIN_ROLE) {
             return Campaign::count();
         } else {
-            return Campaign::where('manager_id', Auth::user()->manager->id)->count();
+            return Campaign::whereHas('district', function($query) {
+                $query->where('district', Auth::user()->manager->district->district);
+            })->count();
         }
     }
 
@@ -55,7 +57,7 @@ class NavigationBadgesServices
         if (Auth::user()->role->role === Role::ADMIN_ROLE) {
             return Screening::count();
         } elseif (Auth::user()->role->role === Role::DISTRICT_MANAGER_ROLE) {
-            return Screening::where('manager_id', Auth::user()->manager->id)->count();
+            return Screening::where('district', Auth::user()->manager->district->district)->count();
         } else {
             return Screening::where('leader_id', Auth::user()->leader->id)->count();
         }

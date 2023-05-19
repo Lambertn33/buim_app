@@ -20,11 +20,10 @@ class CampaignsOverviewWidget extends BaseWidget
                 Card::make('Completed Campaigns', Campaign::where('status', Campaign::FINISHED)->count()),
             ];
         } else {
-            $authManagerDistrict = Auth::user()->manager->district->district;
-            $authManagerId = Auth::user()->manager->id;
+            $authManagerDistrict = Auth::user()->manager->district;
             return [
-                Card::make('On Going Campaigns in '.$authManagerDistrict.' District', Campaign::where('status', Campaign::ONGOING)->where('manager_id', $authManagerId)->count()),
-                Card::make('Completed Campaigns in '.$authManagerDistrict.' District', Campaign::where('status', Campaign::FINISHED)->where('manager_id', $authManagerId)->count())
+                Card::make('On Going Campaigns in '.$authManagerDistrict->district.' District', Campaign::where('status', Campaign::ONGOING)->where('district_id', $authManagerDistrict->id)->count()),
+                Card::make('Completed Campaigns in '.$authManagerDistrict->district.' District', Campaign::where('status', Campaign::FINISHED)->where('district_id', $authManagerDistrict->id)->count())
             ];
         }
     }
