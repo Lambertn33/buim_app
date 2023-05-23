@@ -10,6 +10,7 @@ use App\Models\Warehouse;
 use App\Models\WarehouseDevice;
 use App\Models\WarehouseDeviceRequest;
 use App\Models\WarehouseDeviceRequestDraft;
+use Illuminate\Support\Facades\Auth;
 
 class WarehouseServices
 {
@@ -38,7 +39,6 @@ class WarehouseServices
                     'model_id' => $device->model_id,
                     'warehouse_id' => $device->warehouse_id,
                     'district_id' => $warehouseDeviceRequest->campaign->district->id,
-                    'manager_id' => $warehouseDeviceRequest->campaign->manager->id,
                     'screener_id' => null,
                     'device_name' => $mainDevice->device_name,
                     'serial_number' => $mainDevice->serial_number,
@@ -52,7 +52,7 @@ class WarehouseServices
             }
             $title = 'Campaign request # ' . $formattedRequestId . ' updated';
             $message = 'The stock request for campaign request # ' . $formattedRequestId . ' has been confirmed and received by the district manager of ' .
-                $warehouseDeviceRequest->campaign->district->district . ' district';
+                $warehouseDeviceRequest->campaign->district->district . ' district and confirmed by' . Auth::user()->name. '';
             foreach ($otherUsers as $user) {
                 (new NotificationsServices)->sendNotificationToUser($user, $title, $message, []);
             }

@@ -20,6 +20,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -54,10 +55,10 @@ class ScreeningResource extends Resource
                             ->placeholder('select campaign')
                             ->required()
                             ->reactive()
-                            ->options(Campaign::where('status', Campaign::ONGOING)->whereHas('district', function($query) {
+                            ->options(Campaign::where('status', Campaign::ONGOING)->whereHas('district', function ($query) {
                                 if (Auth::user()->role->role == Role::SECTOR_LEADER_ROLE) {
                                     $query->where('id', Auth::user()->leader->district_id);
-                                } else if(Auth::user()->role->role == Role::DISTRICT_MANAGER_ROLE) {
+                                } else if (Auth::user()->role->role == Role::DISTRICT_MANAGER_ROLE) {
                                     $query->where('id', Auth::user()->manager->district->id);
                                 }
                             })->get()->pluck('title', 'id')->toArray()),
@@ -92,14 +93,14 @@ class ScreeningResource extends Resource
                             ->searchable()
                             ->options([
                                 'ELIGIBLE' => 'ELIGIBLE',
-                                'NOT ELIGIBLE' => 'NOT ELIGIBLE',                            
+                                'NOT ELIGIBLE' => 'NOT ELIGIBLE',
                             ]),
                         Select::make('proposed_device_name')
                             ->label('proposed device')
                             ->searchable()
                             ->required()
                             ->placeholder('select device')
-                            ->options(MainWarehouseDevice::whereHas('mainWarehouse', function($query){
+                            ->options(MainWarehouseDevice::whereHas('mainWarehouse', function ($query) {
                                 $query->where('name', MainWarehouse::DPWORLDWAREHOUSE)
                                     ->where('is_approved', true);
                             })->get()->pluck('device_name', 'device_name')->toArray())
@@ -135,16 +136,28 @@ class ScreeningResource extends Resource
                         'warning' => static fn ($state): bool => $state === self::$model::PRE_REGISTERED,
                         'success' => static fn ($state): bool => $state === self::$model::ACTIVE_CUSTOMER,
                     ]),
+                TextColumn::make('campaign.title')
+                    ->visible(Auth::user()->role->role !== Role::SECTOR_LEADER_ROLE),
             ])
             ->filters([
-                //
+                SelectFilter::make('campaign_id')
+                    ->label('Filter by campaign')
+                    ->options(function() {
+                        if (Auth::user()->role->role == Role::DISTRICT_MANAGER_ROLE) {
+                            return Campaign::whereHas('district', function ($query) {
+                                $query->where('id', Auth::user()->manager->district->id);
+                            })->get()->pluck('title', 'id')->toArray();
+                        } else {
+                            return Campaign::get()->pluck('title', 'id')->toArray();
+                        }
+                    })
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make()
-                    ->visible(fn($record) => $record->campaign->status == Campaign::ONGOING),
+                    ->visible(fn ($record) => $record->campaign->status == Campaign::ONGOING),
                 Tables\Actions\DeleteAction::make()
-                    ->visible(fn($record) => $record->campaign->status == Campaign::ONGOING),
+                    ->visible(fn ($record) => $record->campaign->status == Campaign::ONGOING),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),

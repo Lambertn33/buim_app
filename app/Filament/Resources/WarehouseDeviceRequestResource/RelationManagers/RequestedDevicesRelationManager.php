@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\WarehouseDeviceRequestResource\RelationManagers;
 
 use App\Models\Role;
+use App\Models\Screening;
 use App\Models\Warehouse;
 use App\Models\WarehouseDeviceRequest;
 use App\Models\WarehouseDeviceRequestedDevice;
@@ -66,15 +67,16 @@ class RequestedDevicesRelationManager extends RelationManager
                     ->action(function (array $data, RelationManager $livewire) {
                         try {
                             foreach ($livewire->ownerRecord->requestedDevices as $requestedDevice) {
-                                (new StockServices)->approveCampaignRequestedDevices($requestedDevice, $data['warehouse_id'], $livewire->ownerRecord);
+                                $screenedUser = Screening::where('prospect_code', $requestedDevice->screener_code)->first();
+                                $screenedUserWarehouse = $screenedUser->leader->warehouse;
+                                (new StockServices)->approveCampaignRequestedDevices($requestedDevice, $screenedUserWarehouse->id, $livewire->ownerRecord);
                             }
-                            $warehouseToDistributeDevice = Warehouse::find($data['warehouse_id']);
                             $requestId = $livewire->ownerRecord->request_id;
-                            $districtToDistributeDevice = $warehouseToDistributeDevice->district;
+                            $districtToDistributeDevice = $livewire->ownerRecord->campaign->district;
                             $managers = $districtToDistributeDevice->managers()->get();
                             $title = 'Campaign Device requests approved';
                             $message = 'The campaign  ' . $livewire->ownerRecord->campaign->title . ' with request ID of ' . sprintf("%08d", $requestId) . '  which took place in your district and requested ' . $livewire->ownerRecord->requestedDevices->count() . ' has been approved
-                            and the devices are being sent to ' . $warehouseToDistributeDevice->name . ' which is located in your district... Please confirm after receiving them';
+                            and the devices are being sent to respective warehouses in your district... Please confirm after receiving them';
                             $actions = [
                                 NotificationAction::make('Mark as Read')
                                     ->color('primary')
@@ -95,21 +97,13 @@ class RequestedDevicesRelationManager extends RelationManager
                         }
                     })
                     ->requiresConfirmation()
-                    ->modalSubheading('you are about to transfer all devices')
+                    ->modalHeading('Campaign devices transfers')
+                    ->modalSubheading('you are about to transfer all devices, not that all devices will be sent to the warehouses based on screening leaders')
                     ->modalButton('transfer device')
                     ->icon('heroicon-o-paper-airplane')
                     ->visible(function (RelationManager $livewire) {
                         return $livewire->ownerRecord->request_status !== WarehouseDeviceRequest::DELIVERED && (Auth::user()->role->role == Role::ADMIN_ROLE || Auth::user()->role->role == Role::STOCK_MANAGER_ROLE);
                     })
-                    ->form([
-                        Select::make('warehouse_id')
-                            ->label(fn (RelationManager $livewire) => 'select warehouse in ' . $livewire->ownerRecord->campaign->district->district . ' District')
-                            ->required()
-                            ->options(
-                                fn (RelationManager $livewire) =>
-                                $livewire->ownerRecord->campaign->district->warehouses()->get()->pluck('name', 'id')->toArray()
-                            )
-                    ])
                     ->successNotification(
                         Notification::make()
                             ->success()
