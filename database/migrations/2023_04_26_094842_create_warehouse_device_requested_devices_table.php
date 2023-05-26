@@ -17,6 +17,7 @@ return new class extends Migration
             $table->uuid('warehouse_device_request_id');
             $table->string('screener_code');
             $table->string('device_name');
+            $table->bigInteger('device_price')->nullable();
             $table->bigInteger('quantity');
             $table->timestamps();
         });

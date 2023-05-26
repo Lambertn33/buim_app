@@ -16,6 +16,7 @@ return new class extends Migration
             $table->uuid('model_id');
             $table->uuid('main_warehouse_id');
             $table->string('device_name');
+            $table->bigInteger('device_price')->nullable();
             $table->string('initialization_code');
             $table->boolean('is_approved');
             $table->uuid('initialized_by');

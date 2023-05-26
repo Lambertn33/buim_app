@@ -18,6 +18,7 @@ return new class extends Migration
             $table->uuid('district_id');
             $table->uuid('screener_id')->nullable();
             $table->string('device_name');
+            $table->bigInteger('device_price')->nullable();
             $table->string('serial_number')->unique();
             $table->timestamps();
         });
