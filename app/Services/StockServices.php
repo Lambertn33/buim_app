@@ -242,4 +242,13 @@ class StockServices
             'request_status' => WarehouseDeviceRequest::DELIVERED
         ]);
     }
+
+    public function setDevicePrice($deviceName, $devicePrice) {
+        $devices =  MainWarehouseDevice::where('device_name', $deviceName)->get();
+        foreach ($devices as $device) {
+            $device->update([
+                'device_price'=> $devicePrice
+            ]);
+        }
+    }
 }

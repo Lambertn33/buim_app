@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Campaign;
+use App\Models\DevicePrice;
 use App\Models\MainWarehouse;
 use App\Models\MainWarehouseDevice;
 use App\Models\PaymentPlan;
@@ -71,6 +72,11 @@ class NavigationBadgesServices
     public function getTotalNumberOfMainWarehouses()
     {
         return MainWarehouse::count();
+    }
+
+    public function getTotalNumberOfDevicePrices()
+    {
+        return DevicePrice::count();
     }
 
     public function getTotalNumberOfHQWarehouseDevices()
