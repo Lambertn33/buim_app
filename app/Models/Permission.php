@@ -19,6 +19,11 @@ class Permission extends Model
         'campaign_edit',
         'campaign_delete',
 
+        'device_price_create',
+        'device_price_access',
+        'device_price_show',
+        'device_price_edit',
+
         'screening_create',
         'screening_access',
         'screening_show',
