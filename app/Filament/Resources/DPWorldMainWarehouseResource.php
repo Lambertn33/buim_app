@@ -85,6 +85,11 @@ class DPWorldMainWarehouseResource extends Resource
                     ->sortable()
                     ->searchable()
                     ->label('device name'),
+                TextColumn::make('device_price')
+                    ->sortable()
+                    ->searchable()
+                    ->formatStateUsing(fn ($state): string => $state !== null ? ("{$state} FRWS") : '-')
+                    ->label('Device price'),
                 TextColumn::make('model.name')
                     ->sortable()
                     ->searchable()
@@ -107,6 +112,7 @@ class DPWorldMainWarehouseResource extends Resource
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
                 Action::make('transfer')
+                    ->visible(fn (MainWarehouseDevice $record): bool => !is_null($record->device_price))
                     ->color('success')
                     ->action(function (MainWarehouseDevice $record, array $data) {
                         try {
@@ -123,7 +129,7 @@ class DPWorldMainWarehouseResource extends Resource
                                         ->close(),
 
                                 ];
-                                foreach($managers as $manager) {
+                                foreach ($managers as $manager) {
                                     (new NotificationsServices)->sendNotificationToUser($manager->user, $title, $message, $actions);
                                 }
                             }
@@ -224,7 +230,16 @@ class DPWorldMainWarehouseResource extends Resource
                     ->action(
                         function (Collection $records, array $data) {
                             foreach ($records as $record) {
-                                (new StockServices)->transferMainWarehouseDevice($record, $data['warehouse_id'], $data['warehouse_type']);
+                                if (is_null($record->device_price)) {
+                                    Notification::make()
+                                        ->title('Error')
+                                        ->body('Please select only devices which have prices')
+                                        ->danger()
+                                        ->send();
+                                    return;
+                                } else {
+                                    (new StockServices)->transferMainWarehouseDevice($record, $data['warehouse_id'], $data['warehouse_type']);
+                                }
                             }
                         }
                     )->successNotification(

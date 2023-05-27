@@ -79,6 +79,7 @@ class DevicePriceResource extends Resource
             ->filters([
                 //
             ])
+            ->bulkActions([])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ]);

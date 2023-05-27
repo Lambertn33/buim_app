@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\DevicePriceResource\Pages;
 
 use App\Filament\Resources\DevicePriceResource;
+use App\Models\MainWarehouseDevice;
 use App\Services\StockServices;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ManageRecords;
@@ -16,12 +17,12 @@ class ManageDevicePrices extends ManageRecords
     {
         return [
             Actions\CreateAction::make()
-            ->label('Add Device price')
-            ->mutateFormDataUsing(function (array $data): array {
-                $data['id'] = Str::uuid()->toString();
-                (new StockServices)->setDevicePrice($data['device_name'], $data['device_price']);
-                return $data;
-            }),
+                ->label('Add Device price')
+                ->mutateFormDataUsing(function (array $data): array {
+                    $data['id'] = Str::uuid()->toString();
+                    (new StockServices)->setDevicePrice($data['device_name'], $data['device_price']);
+                    return $data;
+                }),
         ];
     }
 }

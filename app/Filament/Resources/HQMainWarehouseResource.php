@@ -83,6 +83,11 @@ class HQMainWarehouseResource extends Resource
                     ->sortable()
                     ->searchable()
                     ->label('device name'),
+                TextColumn::make('device_price')
+                    ->sortable()
+                    ->searchable()
+                    ->formatStateUsing(fn ($state): string => $state !== null ? ("{$state} FRWS") : '-')
+                    ->label('Device price'),
                 TextColumn::make('model.name')
                     ->sortable()
                     ->searchable()
