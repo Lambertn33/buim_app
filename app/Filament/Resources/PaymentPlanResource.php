@@ -38,10 +38,10 @@ class PaymentPlanResource extends Resource
                     ->unique(ignoreRecord: true)
                     ->maxLength(20)
                     ->required(),
-                TextInput::make('amount')
-                    ->label('amount to pay')
+                TextInput::make('percentage')
+                    ->label('percentage to pay')
                     ->numeric()
-                    ->minValue(100)
+                    ->maxValue(100)
                     ->required(),
                 TextInput::make('duration')
                     ->label('duration (In days)')
@@ -59,9 +59,9 @@ class PaymentPlanResource extends Resource
                     ->label('payment title')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('amount')
-                    ->label('amount')
-                    ->suffix(' FRWS')
+                TextColumn::make('percentage')
+                    ->label('percentage')
+                    ->suffix('%')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('duration')

@@ -61,6 +61,11 @@ class WarehouseDeviceResource extends Resource
                     ->label('Device name')
                     ->sortable()
                     ->searchable(),
+                TextColumn::make('device_price')
+                    ->label('Device price')
+                    ->sortable()
+                    ->suffix(' FRWS')
+                    ->searchable(),
                 TextColumn::make('model.name')
                     ->label('Device model')
                     ->sortable()

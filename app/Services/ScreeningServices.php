@@ -40,8 +40,9 @@ class ScreeningServices
     
     public function createScreeningPayment($payment)
     {
+        $device = WarehouseDevice::find($payment['warehouse_device_id']);
         $paymentPlanSelected = PaymentPlan::find($payment['payment_id']);
-        $totalAmountToPay = $paymentPlanSelected->amount;
+        $totalAmountToPay = $device->device_price;
         $initialPayment = $payment['downpayment_amount'];
         $remainingAmount = $totalAmountToPay - $initialPayment;
         $remainingPaymentMonths = ($paymentPlanSelected['duration'] / 30) - 1;

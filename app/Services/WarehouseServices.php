@@ -41,6 +41,7 @@ class WarehouseServices
                     'district_id' => $warehouseDeviceRequest->campaign->district->id,
                     'screener_id' => null,
                     'device_name' => $mainDevice->device_name,
+                    'device_price' => $mainDevice->device_price,
                     'serial_number' => $mainDevice->serial_number,
                     'created_at' => now(),
                     'updated_at' => now()
