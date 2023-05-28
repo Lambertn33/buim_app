@@ -13,6 +13,7 @@ use Konnco\FilamentImport\Actions\ImportAction;
 use Konnco\FilamentImport\Actions\ImportField;
 use App\Models\StockModel;
 use App\Services\StockServices;
+use Closure;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Filament\Resources\Pages\ManageRecords;
@@ -52,8 +53,10 @@ class ManageDPWorldMainWarehouses extends ManageRecords
                 ->modalButton('download sample'),
             ImportAction::make()
                 ->handleBlankRows(true)
+                ->uniqueField('serial_number')
                 ->label('Import initial stock')
-                ->modalSubheading('This is the initial stock before being transfered to different warehouses')
+                ->modalSubheading('This is the initial stock before being transfered to different warehouses. please note that the serial number provided should be unique.
+                once the excel provided has two or more identical serial numbers, it will consider the first one only')
                 ->fields([
                     ImportField::make('device_name')
                         ->required()

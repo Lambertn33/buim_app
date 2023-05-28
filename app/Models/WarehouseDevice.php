@@ -14,7 +14,7 @@ class WarehouseDevice extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'id', 'model_id', 'warehouse_id','district_id','device_name', 'serial_number',
+        'id', 'model_id', 'warehouse_id','district_id','device_name','device_price', 'serial_number',
         'screener_id'
     ];
 

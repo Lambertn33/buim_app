@@ -13,7 +13,7 @@ class WarehouseDeviceRequestedDevice extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'id', 'warehouse_device_request_id', 'screener_code', 'device_name', 'model_id', 'quantity'
+        'id', 'warehouse_device_request_id', 'screener_code', 'device_name','device_price', 'model_id', 'quantity'
     ];
 
     protected $casts = [

@@ -3,9 +3,12 @@
 namespace App\Providers;
 
 use App\Models\Campaign;
+use App\Models\DevicePrice;
+use App\Models\MainWarehouseDevice;
 use App\Models\User;
 use App\Models\WarehouseDeviceRequest;
 use App\Observers\CampaignObserver;
+use App\Observers\MainWarehouseDeviceObserver;
 use App\Observers\UserObserver;
 use App\Observers\WarehouseDeviceRequestObserver;
 use Illuminate\Auth\Events\Registered;
@@ -30,8 +33,9 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        User::observe(UserObserver::class);
         Campaign::observe(CampaignObserver::class);
+        MainWarehouseDevice::observe(MainWarehouseDeviceObserver::class);
+        User::observe(UserObserver::class);
         WarehouseDeviceRequest::observe(WarehouseDeviceRequestObserver::class);
     }
 

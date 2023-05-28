@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('payment_plans', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('title')->unique();
-            $table->bigInteger('amount');
+            $table->integer('percentage');
             $table->integer('duration');
             $table->timestamps();
         });

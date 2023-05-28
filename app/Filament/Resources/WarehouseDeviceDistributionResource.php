@@ -51,6 +51,7 @@ class WarehouseDeviceDistributionResource extends Resource
                     Select::make('warehouse_device_id')
                         ->label('select device serial number')
                         ->searchable()
+                        ->reactive()
                         ->required()
                         ->unique(ignoreRecord: true)
                         ->options(WarehouseDevice::where('district_id', Auth::user()->leader->district->id)->whereNull('screener_id')->get()->pluck('serial_number', 'id')->toArray()),
@@ -62,14 +63,27 @@ class WarehouseDeviceDistributionResource extends Resource
                             ->get()->pluck('prospect_names', 'id')->toArray()),
                     Select::make('payment_id')
                         ->label('select payment mode')
+                        ->reactive()
                         ->searchable()
                         ->required()
+                        ->afterStateUpdated(function($state, $set, $get){
+                            $device = WarehouseDevice::find($get('warehouse_device_id'));
+                            if ($device) {
+                                $devicePrice = $device->device_price;
+                                $paymentPlan = PaymentPlan::find($get('payment_id'));
+                                if ($paymentPlan) {
+                                    $percentage = $paymentPlan->percentage;
+                                    $amountToPay = ($devicePrice * $percentage) / 100;
+                                    $downpayment = $amountToPay / 10;
+                                    $set('downpayment_amount', $downpayment);
+                                }
+                            }
+                        })
                         ->options(PaymentPlan::get()->pluck('title', 'id')->toArray()),
                     TextInput::make('downpayment_amount')
-                        ->label('enter downpayment amount')
-                        ->required()
+                        ->label('calculated downpayment amount')
+                        ->disabled()
                         ->numeric()
-                        ->minValue(1)
                 ])->columns(2)
             ]);
     }

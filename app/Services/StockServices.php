@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Response;
 use App\Models\StockModel;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Campaign;
+use App\Models\DevicePrice;
 use App\Models\MainWarehouse;
 use App\Models\MainWarehouseDevice;
 use App\Models\Warehouse;
@@ -241,5 +242,23 @@ class StockServices
         WarehouseDeviceRequest::find($request->id)->update([
             'request_status' => WarehouseDeviceRequest::DELIVERED
         ]);
+    }
+
+    public function setDevicePrice($deviceName, $devicePrice) {
+        $devices =  MainWarehouseDevice::where('device_name', $deviceName)->get();
+        foreach ($devices as $device) {
+            $device->update([
+                'device_price'=> $devicePrice
+            ]);
+        }
+    }
+
+    public function updateDevicePriceOnImport($device) {
+        $devicePrice = DevicePrice::where('device_name', $device->device_name);
+        if ($devicePrice->exists()) {
+            $device->update([
+                'device_price' =>$devicePrice->value('device_price')
+            ]);
+        }
     }
 }

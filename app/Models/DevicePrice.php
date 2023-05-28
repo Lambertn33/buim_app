@@ -4,20 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class PaymentPlan extends Model
+class DevicePrice extends Model
 {
     use HasFactory;
 
-    public $incrementing = false;
-    
     protected $fillable = [
-        'id','title', 'percentage', 'duration'
+        'id', 'device_name', 'device_price'
     ];
-
+    
     protected $casts = [
         'id' => 'string'
     ];
-
 }

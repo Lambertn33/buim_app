@@ -28,9 +28,9 @@ class WarehouseDeviceRequestResource extends Resource
 
     protected static ?string $navigationGroup = 'Inventory - District warehouses';
 
-    protected static ?string $navigationLabel = 'Campaigns Requested devices';
+    protected static ?string $navigationLabel = 'Campaigns Requests';
 
-    protected static ?string $pluralModelLabel = 'Campaigns Requested Devices';
+    protected static ?string $pluralModelLabel = 'Campaigns Requests';
 
     protected static ?int $navigationSort = 2;
 

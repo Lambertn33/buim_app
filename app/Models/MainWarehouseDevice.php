@@ -13,7 +13,7 @@ class MainWarehouseDevice extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'id', 'model_id', 'main_warehouse_id' ,'device_name', 'serial_number', 'initialization_code', 'is_approved',
+        'id', 'model_id', 'main_warehouse_id' ,'device_name','device_price', 'serial_number', 'initialization_code', 'is_approved',
         'initialized_by', 'approved_by'
     ];
 

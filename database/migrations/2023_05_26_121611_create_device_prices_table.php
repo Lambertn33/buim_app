@@ -11,14 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('warehouse_device_requested_devices', function (Blueprint $table) {
+        Schema::create('device_prices', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('model_id');
-            $table->uuid('warehouse_device_request_id');
-            $table->string('screener_code');
             $table->string('device_name');
-            $table->bigInteger('device_price')->nullable();
-            $table->bigInteger('quantity');
+            $table->bigInteger('device_price');
             $table->timestamps();
         });
     }
@@ -28,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('warehouse_device_requested_devices');
+        Schema::dropIfExists('device_prices');
     }
 };
