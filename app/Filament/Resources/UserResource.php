@@ -17,7 +17,8 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
-use Filament\Tables\Columns\BadgeColumn;
+use Illuminate\Support\Facades\Auth;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\Card;
 use Illuminate\Database\Eloquent\Builder;
@@ -144,12 +145,11 @@ class UserResource extends Resource
                         $record->manager->district->district . ' District' : ($record->role->role == Role::SECTOR_LEADER_ROLE ?
                             $record->leader->warehouse->district->district . ' District' : '')
                     )),
-                BadgeColumn::make('account_status')
-                    ->label('account status')
-                    ->sortable()
-                    ->colors([
-                        'success' => static fn ($state): bool => $state === User::ACTIVE,
-                        'danger' => static fn ($state): bool => $state === User::CLOSED,
+                SelectColumn::make('account_status')
+                    ->disabled(fn (User $record) => $record->id === Auth::user()->id)
+                    ->options([
+                        'ACTIVE' => User::ACTIVE,
+                        'CLOSED' => User::CLOSED
                     ])
 
             ])
