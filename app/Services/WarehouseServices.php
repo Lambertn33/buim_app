@@ -24,7 +24,7 @@ class WarehouseServices
         // if admin/stock manager changes request status
         if ($warehouseDeviceRequest->request_status !== WarehouseDeviceRequest::REQUESTED && $warehouseDeviceRequest->request_status !== WarehouseDeviceRequest::DELIVERED) {
             $title = 'Campaign request # ' . $formattedRequestId . ' updated';
-            $message = 'The campaign request has been viewed and updated to ' . $warehouseDeviceRequest->request_status . '';
+            $message = 'Request Status: ' . $warehouseDeviceRequest->request_status . '';
             (new NotificationsServices)->sendNotificationToUser($districtManager, $title, $message, []);
 
             // if district manager changes confirmation status
@@ -52,7 +52,7 @@ class WarehouseServices
                 })->where('id', $device->device_id)->delete();
             }
             $title = 'Campaign request # ' . $formattedRequestId . ' updated';
-            $message = 'The stock request for campaign request # ' . $formattedRequestId . ' has been confirmed and received by the district manager of ' .
+            $message = 'The transfered stock with reference: ' . $formattedRequestId . ' has been confirmed and received. ' .
                 $warehouseDeviceRequest->campaign->district->district . ' district and confirmed by' . Auth::user()->name. '';
             foreach ($otherUsers as $user) {
                 (new NotificationsServices)->sendNotificationToUser($user, $title, $message, []);

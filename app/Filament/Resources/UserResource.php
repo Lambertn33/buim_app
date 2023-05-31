@@ -109,7 +109,7 @@ class UserResource extends Resource
                             ->options(function (callable $get) {
                                 $districtId = $get('district_id');
                                 if ($districtId) {
-                                    return Warehouse::where('district_id', $districtId)->get()->pluck('name', 'id')->toArray();
+                                    return Warehouse::where('district_id', $districtId)->where('status', Warehouse::ACTIVE)->get()->pluck('name', 'id')->toArray();
                                 }
                             })
                             ->searchable()

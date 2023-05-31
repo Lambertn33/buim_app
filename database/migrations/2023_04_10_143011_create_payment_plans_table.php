@@ -15,6 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('title')->unique();
             $table->integer('percentage');
+            $table->integer('downpayment');
             $table->integer('duration');
             $table->timestamps();
         });

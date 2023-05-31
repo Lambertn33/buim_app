@@ -34,6 +34,8 @@ class WarehouseResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
+    protected static ?string $pluralModelLabel = 'Warehouses list';
+
     protected static function getNavigationBadge(): ?string
     {
         return (new NavigationBadgesServices)->getTotalNumberOfWarehouses();

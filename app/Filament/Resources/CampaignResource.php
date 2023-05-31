@@ -36,6 +36,10 @@ class CampaignResource extends Resource
 
     protected static ?string $navigationGroup = 'activities';
 
+    protected static ?string $pluralModelLabel = 'Campaign List';
+
+    protected static ?string $navigationLabel = 'Campaigns';
+
     protected static function getNavigationBadge(): ?string
     {
         return (new NavigationBadgesServices)->getTotalNumberOfCampaigns();
@@ -109,7 +113,9 @@ class CampaignResource extends Resource
                         'STOPPED' => 'STOPPED',
 
                     ])
-                    ->disabled(fn ($record) => Auth::user()->role->role != Role::DISTRICT_MANAGER_ROLE ? true : ($record->manager_id != Auth::user()->manager->id ? true : false))
+                    ->disabled(fn ($record) => Auth::user()->role->role != Role::DISTRICT_MANAGER_ROLE ? true : ($record->manager_id != Auth::user()->manager->id ? true : (
+                        $record->status === Campaign::FINISHED ? true : false
+                    )))
                     ->sortable()
                     ->disablePlaceholderSelection(),
                 TextColumn::make('province.province')

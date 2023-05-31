@@ -32,9 +32,9 @@ class WarehouseDeviceDistributionResource extends Resource
 
     protected static ?string $navigationGroup = 'Customers';
 
-    protected static ?string $navigationLabel = 'Device distributions';
+    protected static ?string $navigationLabel = 'Device distribution';
 
-    protected static ?string $pluralModelLabel = 'District Distributions';
+    protected static ?string $pluralModelLabel = 'Distribution list';
 
     protected static ?int $navigationSort = 6;
 
@@ -49,14 +49,22 @@ class WarehouseDeviceDistributionResource extends Resource
             ->schema([
                 Card::make([
                     Select::make('warehouse_device_id')
-                        ->label('select device serial number')
+                        ->label('select serial number')
                         ->searchable()
                         ->reactive()
                         ->required()
                         ->unique(ignoreRecord: true)
+                        ->afterStateUpdated(function ($state, $set, $get) {
+                            $device = WarehouseDevice::find($get('warehouse_device_id'));
+                            if ($device) {
+                                $set('device_price', $device->device_price);
+                            }
+                        })
                         ->options(WarehouseDevice::where('district_id', Auth::user()->leader->district->id)->whereNull('screener_id')->get()->pluck('serial_number', 'id')->toArray()),
+                    TextInput::make('device_price')
+                        ->disabled(),
                     Select::make('screener_id')
-                        ->label('select screener')
+                        ->label('select client')
                         ->searchable()
                         ->required()
                         ->options(Screening::where('district', Auth::user()->leader->district->district)->where('confirmation_status', Screening::PROSPECT)
@@ -66,7 +74,7 @@ class WarehouseDeviceDistributionResource extends Resource
                         ->reactive()
                         ->searchable()
                         ->required()
-                        ->afterStateUpdated(function($state, $set, $get){
+                        ->afterStateUpdated(function ($state, $set, $get) {
                             $device = WarehouseDevice::find($get('warehouse_device_id'));
                             if ($device) {
                                 $devicePrice = $device->device_price;
@@ -74,16 +82,31 @@ class WarehouseDeviceDistributionResource extends Resource
                                 if ($paymentPlan) {
                                     $percentage = $paymentPlan->percentage;
                                     $amountToPay = ($devicePrice * $percentage) / 100;
-                                    $downpayment = $amountToPay / 10;
+                                    $downpayment = $amountToPay / $paymentPlan->downpayment;
+                                    $set('customer_contribution', $amountToPay);
                                     $set('downpayment_amount', $downpayment);
+                                    $set('downpayment_percentage', $paymentPlan->downpayment);
+                                    $set('duration', $paymentPlan->duration);
                                 }
                             }
                         })
                         ->options(PaymentPlan::get()->pluck('title', 'id')->toArray()),
-                    TextInput::make('downpayment_amount')
-                        ->label('calculated downpayment amount')
+                    TextInput::make('customer_contribution')
+                        ->label('Customer contribution')
                         ->disabled()
-                        ->numeric()
+                        ->numeric(),
+                    TextInput::make('downpayment_percentage')
+                        ->label('Downpayment percentage (%)')
+                        ->disabled()
+                        ->numeric(),
+                    TextInput::make('downpayment_amount')
+                        ->label('Downpayment amount')
+                        ->disabled()
+                        ->numeric(),
+                    TextInput::make('duration')
+                        ->label('Duration (days)')
+                        ->disabled()
+                        ->numeric(),
                 ])->columns(2)
             ]);
     }
@@ -116,7 +139,7 @@ class WarehouseDeviceDistributionResource extends Resource
             ->actions([
                 Tables\Actions\Action::make('print contract')
                     ->icon('heroicon-o-printer')
-                    ->action(fn(WarehouseDeviceDistribution $record) => null)
+                    ->action(fn (WarehouseDeviceDistribution $record) => null)
             ])
             ->bulkActions([
                 // Tables\Actions\DeleteBulkAction::make(),

@@ -28,9 +28,9 @@ class DevicePriceResource extends Resource
 
     protected static ?string $navigationGroup = 'inventory settings';
 
-    protected static ?string $navigationLabel = 'Device prices';
+    protected static ?string $navigationLabel = 'Price settings';
 
-    protected static ?string $pluralModelLabel = 'Device prices';
+    protected static ?string $pluralModelLabel = 'Price settings';
 
     protected static ?int $navigationSort = 2;
 
@@ -52,7 +52,7 @@ class DevicePriceResource extends Resource
                             ->unique(ignoreRecord: true)
                             ->options(MainWarehouseDevice::whereHas('mainWarehouse', function ($query) {
                                 $query->where('name', MainWarehouse::DPWORLDWAREHOUSE);
-                            })->distinct()->pluck('device_name', 'device_name')->toArray()),
+                            })->distinct()->orderBy('device_name', 'asc')->pluck('device_name', 'device_name')->toArray()),
                         TextInput::make('device_price')
                             ->required()
                             ->numeric()
@@ -73,7 +73,7 @@ class DevicePriceResource extends Resource
                 TextColumn::make('device_price')
                     ->sortable()
                     ->searchable()
-                    ->formatStateUsing(fn (string $state): string => ("{$state} FRWS"))
+                    ->formatStateUsing(fn (string $state): string => ("{$state} FRW"))
                     ->label('Device price'),
             ])
             ->filters([

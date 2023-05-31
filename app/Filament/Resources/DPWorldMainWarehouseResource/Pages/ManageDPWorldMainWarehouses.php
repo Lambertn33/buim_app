@@ -55,8 +55,7 @@ class ManageDPWorldMainWarehouses extends ManageRecords
                 ->handleBlankRows(true)
                 ->uniqueField('serial_number')
                 ->label('Import initial stock')
-                ->modalSubheading('This is the initial stock before being transfered to different warehouses. please note that the serial number provided should be unique.
-                once the excel provided has two or more identical serial numbers, it will consider the first one only')
+                ->modalSubheading('You are about to initialize/import the acquired stock into the system. Please ensure that each device has a unique serial number. If there are any duplicate serial numbers, the system will only recognize the first one.')
                 ->fields([
                     ImportField::make('device_name')
                         ->required()
