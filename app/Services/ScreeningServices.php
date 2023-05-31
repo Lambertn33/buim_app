@@ -30,22 +30,20 @@ class ScreeningServices
             'id' => Str::uuid()->toString(),
             'warehouse_device_id' => $distribution['warehouse_device_id'],
             'screener_id' => $distribution['screener_id'],
-            'contract_id' => $screenerCode. '-'. sprintf("%03d", $this->getLastDistributionIndex()),
+            'contract_id' => $screenerCode . '-' . sprintf("%03d", $this->getLastDistributionIndex()),
             'created_at' => now(),
             'updated_at' => now()
         ];
         WarehouseDeviceDistribution::insert($newDistribution);
         $this->createScreeningPayment($distribution);
-    }   
-    
+    }
+
     public function createScreeningPayment($payment)
     {
-        $device = WarehouseDevice::find($payment['warehouse_device_id']);
-        $paymentPlanSelected = PaymentPlan::find($payment['payment_id']);
-        $totalAmountToPay = $device->device_price;
+        $totalAmountToPay = $payment['customer_contribution'];
         $initialPayment = $payment['downpayment_amount'];
         $remainingAmount = $totalAmountToPay - $initialPayment;
-        $remainingPaymentMonths = ($paymentPlanSelected['duration'] / 30) - 1;
+        $remainingPaymentMonths = ($payment['duration'] / 30) - 1;
         $nextPaymentDate = date('Y-m-d', strtotime("+1 months", strtotime(date("y-m-d"))));
         $newPayment = [
             'id' => Str::uuid()->toString(),
@@ -82,7 +80,7 @@ class ScreeningServices
     public function installScreeningDevice($installationData, $screeningInstallationId)
     {
         $screeningInstallation = ScreeningInstallation::find($screeningInstallationId);
-        dd ($screeningInstallation);
+        dd($screeningInstallation);
     }
 
     public function verifyScreeningDevice($screeningInstallationId)
