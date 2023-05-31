@@ -32,9 +32,9 @@ class WarehouseDeviceDistributionResource extends Resource
 
     protected static ?string $navigationGroup = 'Customers';
 
-    protected static ?string $navigationLabel = 'Device distributions';
+    protected static ?string $navigationLabel = 'Device distribution';
 
-    protected static ?string $pluralModelLabel = 'District Distributions';
+    protected static ?string $pluralModelLabel = 'Distribution list';
 
     protected static ?int $navigationSort = 6;
 
@@ -49,14 +49,14 @@ class WarehouseDeviceDistributionResource extends Resource
             ->schema([
                 Card::make([
                     Select::make('warehouse_device_id')
-                        ->label('select device serial number')
+                        ->label('select serial number')
                         ->searchable()
                         ->reactive()
                         ->required()
                         ->unique(ignoreRecord: true)
                         ->options(WarehouseDevice::where('district_id', Auth::user()->leader->district->id)->whereNull('screener_id')->get()->pluck('serial_number', 'id')->toArray()),
                     Select::make('screener_id')
-                        ->label('select screener')
+                        ->label('select client')
                         ->searchable()
                         ->required()
                         ->options(Screening::where('district', Auth::user()->leader->district->district)->where('confirmation_status', Screening::PROSPECT)

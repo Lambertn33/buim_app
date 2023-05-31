@@ -17,7 +17,7 @@ class ManageDevicePrices extends ManageRecords
     {
         return [
             Actions\CreateAction::make()
-                ->label('Add Device price')
+                ->label('Set price')
                 ->mutateFormDataUsing(function (array $data): array {
                     $data['id'] = Str::uuid()->toString();
                     (new StockServices)->setDevicePrice($data['device_name'], $data['device_price']);

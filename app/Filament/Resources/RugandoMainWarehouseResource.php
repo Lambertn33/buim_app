@@ -63,11 +63,11 @@ class RugandoMainWarehouseResource extends Resource
             ->schema([
                 TextInput::make('device_name')
                     ->required()
-                    ->label('device name'),
+                    ->label('Device name'),
                 Select::make('model_id')
                     ->required()
                     ->placeholder('select model')
-                    ->label('device model')
+                    ->label('Device model')
                     ->relationship('model', 'name'),
                 TextInput::make('serial_number')
                     ->required()

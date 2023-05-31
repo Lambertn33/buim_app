@@ -36,7 +36,7 @@ class WarehouseDeviceResource extends Resource
 
     protected static ?string $navigationLabel = 'Warehouse devices';
 
-    protected static ?string $pluralModelLabel = 'District Warehouse Devices';
+    protected static ?string $pluralModelLabel = 'Device List / Status';
 
     protected static ?int $navigationSort = 3;
 

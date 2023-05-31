@@ -82,7 +82,7 @@ class HQMainWarehouseResource extends Resource
                 TextColumn::make('device_name')
                     ->sortable()
                     ->searchable()
-                    ->label('device name'),
+                    ->label('Device name'),
                 TextColumn::make('device_price')
                     ->sortable()
                     ->searchable()
@@ -91,11 +91,11 @@ class HQMainWarehouseResource extends Resource
                 TextColumn::make('model.name')
                     ->sortable()
                     ->searchable()
-                    ->label('device model'),
+                    ->label('Device model'),
                 TextColumn::make('serial_number')
                     ->sortable()
                     ->searchable()
-                    ->label('serial Number'),
+                    ->label('Serial Number'),
             ])
             ->filters([
                 SelectFilter::make('device_name')

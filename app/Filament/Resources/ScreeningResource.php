@@ -38,6 +38,10 @@ class ScreeningResource extends Resource
 
     protected static ?string $navigationGroup = 'activities';
 
+    protected static ?string $navigationLabel = 'screenings';
+
+    protected static ?string $pluralModelLabel = 'Screening list';
+
     protected static function getNavigationBadge(): ?string
     {
         return (new NavigationBadgesServices)->getTotalNumberOfScreenings();
@@ -51,7 +55,7 @@ class ScreeningResource extends Resource
                     ->columns(2)
                     ->schema([
                         Select::make('campaign_id')
-                            ->label('prospect campaign')
+                            ->label('Prospect campaign')
                             ->placeholder('select campaign')
                             ->required()
                             ->reactive()
@@ -63,28 +67,27 @@ class ScreeningResource extends Resource
                                 }
                             })->get()->pluck('title', 'id')->toArray()),
                         TextInput::make('prospect_names')
-                            ->label('prospect names')
+                            ->label('Prospect names')
                             ->required(),
                         TextInput::make('prospect_telephone')
                             ->label('prospect telephone')
                             ->tel()
-                            ->required()
-                            ->unique(ignoreRecord: true),
+                            ->required(),
                         TextInput::make('prospect_national_id')
-                            ->label('prospect national ID')
+                            ->label('Prospect national ID')
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->numeric()
                             ->minLength(16)
                             ->maxLength(16),
                         TextInput::make('sector')
-                            ->label('prospect sector')
+                            ->label('Prospect sector')
                             ->required(),
                         TextInput::make('cell')
-                            ->label('prospect cell')
+                            ->label('Prospect cell')
                             ->required(),
                         TextInput::make('village')
-                            ->label('prospect village')
+                            ->label('Prospect village')
                             ->required(),
                         Select::make('eligibility_status')
                             ->required()
@@ -96,7 +99,7 @@ class ScreeningResource extends Resource
                                 'NOT ELIGIBLE' => 'NOT ELIGIBLE',
                             ]),
                         Select::make('proposed_device_name')
-                            ->label('proposed device')
+                            ->label('Proposed device')
                             ->searchable()
                             ->required()
                             ->placeholder('select device')

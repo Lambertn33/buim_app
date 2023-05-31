@@ -84,16 +84,16 @@ class DPWorldMainWarehouseResource extends Resource
                 TextColumn::make('device_name')
                     ->sortable()
                     ->searchable()
-                    ->label('device name'),
+                    ->label('Device name'),
                 TextColumn::make('device_price')
                     ->sortable()
                     ->searchable()
-                    ->formatStateUsing(fn ($state): string => $state !== null ? ("{$state} FRWS") : '-')
+                    ->formatStateUsing(fn ($state): string => $state !== null ? ("{$state} FRW") : '-')
                     ->label('Device price'),
                 TextColumn::make('model.name')
                     ->sortable()
                     ->searchable()
-                    ->label('device model'),
+                    ->label('Device model'),
                 TextColumn::make('initialization_code')
                     ->sortable()
                     ->searchable()
@@ -101,7 +101,7 @@ class DPWorldMainWarehouseResource extends Resource
                 TextColumn::make('serial_number')
                     ->sortable()
                     ->searchable()
-                    ->label('serial Number'),
+                    ->label('Serial number'),
             ])
             ->filters([
                 SelectFilter::make('device_name')

@@ -16,14 +16,15 @@ class ManageWarehouseDeviceDistributions extends ManageRecords
     {
         return [
             Actions\CreateAction::make()
+                ->label('New distribution')
                 ->action(function (array $data){
                     (new ScreeningServices)->createScreeningDistribution($data);
                 })
                 ->successNotification(
                     Notification::make()
                         ->success()
-                        ->title('Distribution registered')
-                        ->body('The distribution has been successfully created.'),
+                        ->title('Distribution completed')
+                        ->body('The distribution has been successfully completed.'),
                 ),
         ];
     }

@@ -65,7 +65,7 @@ class InstallationRelationManager extends RelationManager
                         fn (array $data, ScreeningInstallation $record) => (new ScreeningServices)->installScreeningDevice($data, $record->id)
                     )
                     ->modalHeading('Install Device')
-                    ->modalSubheading('select technician who installed this device')
+                    ->modalSubheading('select technician')
                     ->form([
                         Select::make('technician_id')
                             ->required()

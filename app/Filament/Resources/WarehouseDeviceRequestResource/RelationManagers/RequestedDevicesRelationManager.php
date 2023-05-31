@@ -46,12 +46,13 @@ class RequestedDevicesRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('device_name'),
                 Tables\Columns\TextColumn::make('model.name'),
-                Tables\Columns\TextColumn::make('screener_code'),
+                Tables\Columns\TextColumn::make('screener_code')
+                    ->label('Reference number'),
                 Tables\Columns\TextColumn::make('names')
-                    ->label('screener names')
+                    ->label('Screener names')
                     ->formatStateUsing(fn (WarehouseDeviceRequestedDevice $record): string => $record->getScreenedPerson()->value('prospect_names')),
                 Tables\Columns\TextColumn::make('date')
-                    ->label('screening date')
+                    ->label('Screening date')
                     ->formatStateUsing(fn (WarehouseDeviceRequestedDevice $record): string => $record->getScreenedPerson()->value('screening_date')),
                 Tables\Columns\TextColumn::make('warehouseDeviceRequest.campaign.title')
                     ->visible(Auth::user()->role->role !== Role::DISTRICT_MANAGER_ROLE),
@@ -90,7 +91,7 @@ class RequestedDevicesRelationManager extends RelationManager
                         } catch (\Throwable $th) {
                             Notification::make()
                                 ->title('Error')
-                                ->body('No enough devices in Transit to be sent')
+                                ->body('There is no enough stock in transit warehouse!')
                                 ->danger()
                                 ->send();
                             return;
@@ -98,7 +99,7 @@ class RequestedDevicesRelationManager extends RelationManager
                     })
                     ->requiresConfirmation()
                     ->modalHeading('Campaign devices transfers')
-                    ->modalSubheading('you are about to transfer all devices, not that all devices will be sent to the warehouses based on screening leaders')
+                    ->modalSubheading('You are about to transfer the selected devices to the requesting warehouses.')
                     ->modalButton('transfer device')
                     ->icon('heroicon-o-paper-airplane')
                     ->visible(function (RelationManager $livewire) {

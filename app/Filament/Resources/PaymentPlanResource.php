@@ -34,17 +34,17 @@ class PaymentPlanResource extends Resource
         return $form
             ->schema([
                 TextInput::make('title')
-                    ->label('payment title')
+                    ->label('Payment plan')
                     ->unique(ignoreRecord: true)
                     ->maxLength(20)
                     ->required(),
                 TextInput::make('percentage')
-                    ->label('percentage to pay')
+                    ->label('Customer contribution (%)')
                     ->numeric()
                     ->maxValue(100)
                     ->required(),
                 TextInput::make('duration')
-                    ->label('duration (In days)')
+                    ->label('Duration (In days)')
                     ->numeric()
                     ->required()
                     ->minValue(1)
@@ -56,16 +56,16 @@ class PaymentPlanResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('title')
-                    ->label('payment title')
+                    ->label('Payment category')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('percentage')
-                    ->label('percentage')
+                    ->label('Customer contribution (%)')
                     ->suffix('%')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('duration')
-                    ->label('duration')
+                    ->label('Duration')
                     ->sortable()
                     ->suffix(' days')
                     ->searchable()
