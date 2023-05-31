@@ -11,13 +11,12 @@ class PaymentPlan extends Model
     use HasFactory;
 
     public $incrementing = false;
-    
+
     protected $fillable = [
-        'id','title', 'percentage', 'duration'
+        'id', 'title', 'percentage', 'downpayment', 'duration'
     ];
 
     protected $casts = [
         'id' => 'string'
     ];
-
 }

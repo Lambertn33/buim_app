@@ -74,14 +74,14 @@ class WarehouseDeviceDistributionResource extends Resource
                                 if ($paymentPlan) {
                                     $percentage = $paymentPlan->percentage;
                                     $amountToPay = ($devicePrice * $percentage) / 100;
-                                    $downpayment = $amountToPay / 10;
+                                    $downpayment = $amountToPay / $paymentPlan->downpayment;
                                     $set('downpayment_amount', $downpayment);
                                 }
                             }
                         })
                         ->options(PaymentPlan::get()->pluck('title', 'id')->toArray()),
                     TextInput::make('downpayment_amount')
-                        ->label('calculated downpayment amount')
+                        ->label('downpayment amount')
                         ->disabled()
                         ->numeric()
                 ])->columns(2)

@@ -43,6 +43,11 @@ class PaymentPlanResource extends Resource
                     ->numeric()
                     ->maxValue(100)
                     ->required(),
+                TextInput::make('downpayment')
+                    ->label('Downpayment (%)')
+                    ->numeric()
+                    ->maxValue(100)
+                    ->required(),
                 TextInput::make('duration')
                     ->label('Duration (In days)')
                     ->numeric()
@@ -61,6 +66,11 @@ class PaymentPlanResource extends Resource
                     ->searchable(),
                 TextColumn::make('percentage')
                     ->label('Customer contribution (%)')
+                    ->suffix('%')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('downpayment')
+                    ->label('Downpayment (%)')
                     ->suffix('%')
                     ->sortable()
                     ->searchable(),

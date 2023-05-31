@@ -52,7 +52,7 @@ class DevicePriceResource extends Resource
                             ->unique(ignoreRecord: true)
                             ->options(MainWarehouseDevice::whereHas('mainWarehouse', function ($query) {
                                 $query->where('name', MainWarehouse::DPWORLDWAREHOUSE);
-                            })->distinct()->pluck('device_name', 'device_name')->toArray()),
+                            })->distinct()->orderBy('device_name', 'asc')->pluck('device_name', 'device_name')->toArray()),
                         TextInput::make('device_price')
                             ->required()
                             ->numeric()
