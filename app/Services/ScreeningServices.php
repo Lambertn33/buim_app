@@ -101,4 +101,21 @@ class ScreeningServices
             'confirmation_status' => Screening::ACTIVE_CUSTOMER
         ]);
     }
+
+    public function addNewScreeningPayment($screener, $amount)
+    {
+        $lastPayment = $screener->payments()->orderBy('created_at', 'desc')->first();
+        $newPayment = [
+            'id' => Str::uuid()->toString(),
+            'screener_id' => $screener->id,
+            'payment_plan_id' => $lastPayment->payment_plan_id,
+            'amount_paid' => $amount,
+            'remaining_amount' => $lastPayment->remaining_amount - $amount,
+            'next_payment_date' => date('Y-m-d', strtotime("+1 months", strtotime(date("y-m-d")))),
+            'remaining_months_to_pay' => $lastPayment->remaining_months_to_pay - 1,
+            'created_at' => now(),
+            'updated_at' => now()
+        ];
+        ScreeningPayment::insert($newPayment);
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ScreeningResource\RelationManagers;
 
+use App\Services\ScreeningServices;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -50,7 +51,7 @@ class PaymentsRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
-                    ->action(fn() => dd('to be done'))
+                    ->action(fn(RelationManager $livewire, array $data) => (new ScreeningServices)->addNewScreeningPayment($livewire->ownerRecord, $data['amount_paid']))
                     ->visible(function (RelationManager $livewire) {
                         return $livewire->ownerRecord->payments->count() > 0 ? true : false;
                     }),
