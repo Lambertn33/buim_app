@@ -92,9 +92,13 @@ class ScreeningServices
     public function verifyScreeningDevice($screeningInstallationId)
     {
         $screeningInstallation = ScreeningInstallation::find($screeningInstallationId);
+        $screener = $screeningInstallation->screening;
         $screeningInstallation->update([
             'verified_by' => Auth::user()->leader->id,
             'verification_status' => ScreeningInstallation::VERIFICATION_VERIFIED
+        ]);
+        $screener->update([
+            'confirmation_status' => Screening::ACTIVE_CUSTOMER
         ]);
     }
 }

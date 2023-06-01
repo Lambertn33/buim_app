@@ -96,7 +96,8 @@ class InstallationRelationManager extends RelationManager
                     ->modalHeading('Verify installation')
                     ->modalSubheading('After checking the installation, I confirm that the data are true')
                     ->action(fn (ScreeningInstallation $record) => (new ScreeningServices)->verifyScreeningDevice($record->id))
-                    ->visible(fn ($record) => Auth::user()->role->role == Role::SECTOR_LEADER_ROLE && $record->verification_status == ScreeningInstallation::VERIFICATION_PENDING)
+                    ->visible(fn ($record) => Auth::user()->role->role == Role::SECTOR_LEADER_ROLE && $record->verification_status == ScreeningInstallation::VERIFICATION_PENDING && 
+                        $record->installation_status == ScreeningInstallation::INSTALLATION_INSTALLED)
                     ->color('success')
                     ->modalButton('verify installation')
                     ->icon('heroicon-o-check-circle'),

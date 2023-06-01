@@ -53,7 +53,11 @@ class ScreeningInstallation extends Model
 
     public function verifiedBy(): string
     {
+        $leaderNames = '';
         $leader = Leader::find($this->verified_by);
-        return $leader->user->name;
+        if ($leader) {
+            $leaderNames = $leader->user->name;
+        }
+        return $leaderNames;
     }
 }
