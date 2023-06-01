@@ -8,6 +8,7 @@ use App\Models\ScreeningInstallation;
 use App\Models\ScreeningPayment;
 use App\Models\WarehouseDevice;
 use App\Models\WarehouseDeviceDistribution;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class ScreeningServices
@@ -80,11 +81,20 @@ class ScreeningServices
     public function installScreeningDevice($installationData, $screeningInstallationId)
     {
         $screeningInstallation = ScreeningInstallation::find($screeningInstallationId);
-        dd($screeningInstallation);
+        $screeningInstallation->update([
+            'latitude' => $installationData['latitude'],
+            'longitude' => $installationData['longitude'],
+            'technician_id' => $installationData['technician_id'],
+            'installation_status' => ScreeningInstallation::INSTALLATION_INSTALLED
+        ]);
     }
 
     public function verifyScreeningDevice($screeningInstallationId)
     {
-        dd($screeningInstallationId);
+        $screeningInstallation = ScreeningInstallation::find($screeningInstallationId);
+        $screeningInstallation->update([
+            'verified_by' => Auth::user()->leader->id,
+            'verification_status' => ScreeningInstallation::VERIFICATION_VERIFIED
+        ]);
     }
 }

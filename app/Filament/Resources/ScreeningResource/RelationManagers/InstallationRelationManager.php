@@ -51,7 +51,10 @@ class InstallationRelationManager extends RelationManager
                     ]),
                 TextColumn::make('technician.names')
                     ->label('Installed by'),
+                TextColumn::make('latitude'),
+                TextColumn::make('longitude'),
                 TextColumn::make('verified_by')
+                    ->formatStateUsing(fn ($record) => $record->verifiedBy())
                     ->label('Verified by')
             ])
             ->filters([
@@ -89,9 +92,13 @@ class InstallationRelationManager extends RelationManager
                     ->visible(fn ($record) => Auth::user()->role->role == Role::SECTOR_LEADER_ROLE && $record->installation_status == ScreeningInstallation::INSTALLATION_PENDING)
                     ->icon('heroicon-o-tag'),
                 Tables\Actions\Action::make('verify')
+                    ->requiresConfirmation()
+                    ->modalHeading('Verify installation')
+                    ->modalSubheading('After checking the installation, I confirm that the data are true')
                     ->action(fn (ScreeningInstallation $record) => (new ScreeningServices)->verifyScreeningDevice($record->id))
                     ->visible(fn ($record) => Auth::user()->role->role == Role::SECTOR_LEADER_ROLE && $record->verification_status == ScreeningInstallation::VERIFICATION_PENDING)
                     ->color('success')
+                    ->modalButton('verify installation')
                     ->icon('heroicon-o-check-circle'),
             ])
             ->bulkActions([]);

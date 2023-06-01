@@ -50,4 +50,10 @@ class ScreeningInstallation extends Model
     {
         return $this->belongsTo(Technician::class, 'technician_id', 'id');
     }
+
+    public function verifiedBy(): string
+    {
+        $leader = Leader::find($this->verified_by);
+        return $leader->user->name;
+    }
 }
