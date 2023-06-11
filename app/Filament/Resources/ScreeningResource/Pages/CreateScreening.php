@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ScreeningResource\Pages;
 
 use App\Filament\Resources\ScreeningResource;
+use App\Jobs\ScreeningCreated;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Str;
@@ -35,7 +36,10 @@ class CreateScreening extends CreateRecord
         $data['screening_date'] = now()->format('Y-m-d');
         $data['confirmation_status'] = Screening::PROSPECT;
         $data['prospect_code'] = $codeGenerator;
+        $message = 'Dear '.$data['prospect_names'].' thank you for choosing BUIM... you have been screened by '.Auth::user()->name. '';
         (new StockServices)->createWarehouseDeviceRequest($data);
+        //send SMS to screener
+        ScreeningCreated::dispatch($data['prospect_telephone'], $message);
         return $data;
     }
 
