@@ -27,4 +27,9 @@ class ScreeningPartner extends Model
     {
         return $this->hasMany(Screening::class, 'screening_partner_id', 'id');
     }
+
+    public function getNumberOfCustomers(): int
+    {
+        return Screening::where('confirmation_status', Screening::ACTIVE_CUSTOMER)->where('screening_partner_id', $this->id)->count();
+    } 
 }
