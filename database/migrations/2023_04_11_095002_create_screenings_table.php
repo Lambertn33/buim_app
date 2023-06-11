@@ -15,6 +15,8 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuid('campaign_id');
             $table->uuid('leader_id');
+            $table->uuid('payment_plan_id');
+            $table->uuid('screening_partner_id');
             $table->date('screening_date');
             $table->string('prospect_names');
             $table->string('prospect_telephone');
@@ -25,6 +27,7 @@ return new class extends Migration
             $table->string('cell');
             $table->string('village');
             $table->string('proposed_device_name');
+            $table->bigInteger('total_amount_paid')->default(0);
             $table->enum('eligibility_status', \App\Models\Screening::ELIGIBILITY_STATUS);
             $table->enum('confirmation_status', \App\Models\Screening::CONFIRMATION_STATUS);
             $table->timestamps();

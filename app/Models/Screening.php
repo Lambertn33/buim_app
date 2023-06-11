@@ -25,16 +25,19 @@ class Screening extends Model
     const ACTIVE_CUSTOMER = self::CONFIRMATION_STATUS[2];
 
     protected $fillable = [
-        'id', 'campaign_id','leader_id', 'screening_date', 'prospect_names','prospect_telephone', 'prospect_national_id',
-        'prospect_code', 'district','sector','village','cell', 'eligibility_status', 'confirmation_status', 'proposed_device_name'
+        'id', 'campaign_id', 'leader_id', 'screening_date', 'prospect_names', 'prospect_telephone', 'prospect_national_id',
+        'prospect_code','payment_plan_id', 'district', 'sector', 'village', 'cell', 'eligibility_status', 'confirmation_status', 'proposed_device_name',
+        'total_amount_paid', 'screening_partner_id'
     ];
 
     protected $casts = [
         'id' => 'string',
         'campaign_id' => 'string',
-        'leader_id' => 'string'
+        'leader_id' => 'string',
+        'payment_plan_id' => 'string',
+        'screening_partner_id' => 'string'
     ];
-    
+
     /**
      * Get the campaign that owns the Screening
      *
@@ -58,6 +61,16 @@ class Screening extends Model
     public function getScreeningProvince()
     {
         return $this->campaign->province;
+    }
+
+    /**
+     * Get the paymentPlan that owns the Screening
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function paymentPlan(): BelongsTo
+    {
+        return $this->belongsTo(PaymentPlan::class, 'payment_plan_id', 'id');
     }
 
     /**
@@ -90,13 +103,23 @@ class Screening extends Model
         return $this->hasOne(ScreeningInstallation::class, 'screener_id', 'id');
     }
 
-   /**
-    * Get the device associated with the Screening
-    *
-    * @return \Illuminate\Database\Eloquent\Relations\HasOne
-    */
-   public function device(): HasOne
-   {
-       return $this->hasOne(WarehouseDevice::class, 'screener_id', 'id');
-   }
+    /**
+     * Get the device associated with the Screening
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function device(): HasOne
+    {
+        return $this->hasOne(WarehouseDevice::class, 'screener_id', 'id');
+    }
+
+    /**
+     * Get the partner that owns the Screening
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function partner(): BelongsTo
+    {
+        return $this->belongsTo(ScreeningPartner::class, 'screener_partner_id', 'id');
+    }
 }

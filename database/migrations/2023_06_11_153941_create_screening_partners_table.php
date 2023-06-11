@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('payment_plans', function (Blueprint $table) {
+        Schema::create('screening_partners', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('title')->unique();
-            $table->integer('customer_percentage');
-            $table->integer('partner_percentage');
-            $table->integer('downpayment');
-            $table->integer('duration');
+            $table->string('name')->unique();
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('payment_plans');
+        Schema::dropIfExists('screening_partners');
     }
 };

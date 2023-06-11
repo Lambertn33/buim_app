@@ -20,7 +20,8 @@ class PaymentPlansSeeder extends Seeder
             0 => array(
                 'id' => Str::uuid()->toString(),
                 'title' => 'Category 1 (10%)',
-                'percentage' => 10,
+                'customer_percentage' => 10,
+                'partner_percentage' => 90,
                 'downpayment' => 25,
                 'duration' => 90,
                 'created_at' => now(),
@@ -29,7 +30,8 @@ class PaymentPlansSeeder extends Seeder
             1 => array(
                 'id' => Str::uuid()->toString(),
                 'title' => 'Category 1 (20%)',
-                'percentage' => 20,
+                'customer_percentage' => 20,
+                'partner_percentage' => 80,
                 'downpayment' => 20,
                 'duration' => 180,
                 'created_at' => now(),
@@ -38,7 +40,8 @@ class PaymentPlansSeeder extends Seeder
             2 => array(
                 'id' => Str::uuid()->toString(),
                 'title' => 'Category 1 (30%)',
-                'percentage' => 30,
+                'customer_percentage' => 30,
+                'partner_percentage' => 70,
                 'downpayment' => 15,
                 'duration' => 360,
                 'created_at' => now(),

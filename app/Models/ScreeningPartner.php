@@ -6,14 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class PaymentPlan extends Model
+class ScreeningPartner extends Model
 {
     use HasFactory;
 
-    public $incrementing = false;
-
     protected $fillable = [
-        'id', 'title', 'customer_percentage','partner_percentage', 'downpayment', 'duration'
+        'id', 'name', 'description'
     ];
 
     protected $casts = [
@@ -21,12 +19,12 @@ class PaymentPlan extends Model
     ];
 
     /**
-     * Get all of the screenings for the PaymentPlan
+     * Get all of the screenings for the ScreeningPartner
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function screenings(): HasMany
     {
-        return $this->hasMany(Screening::class, 'payment_plan_id', 'id');
+        return $this->hasMany(Screening::class, 'screening_partner_id', 'id');
     }
 }
