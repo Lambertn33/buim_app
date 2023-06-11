@@ -10,6 +10,7 @@ use App\Models\PaymentPlan;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\Screening;
+use App\Models\ScreeningPartner;
 use App\Models\StockModel;
 use App\Models\SubStockRequest;
 use App\Models\Technician;
@@ -72,6 +73,10 @@ class NavigationBadgesServices
     public function getTotalNumberOfMainWarehouses()
     {
         return MainWarehouse::count();
+    }
+    public function getTotalNumberOfScreeningPartners()
+    {
+        return ScreeningPartner::count();
     }
 
     public function getTotalNumberOfDevicePrices()

@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ScreeningPartnerResource\Pages;
 use App\Filament\Resources\ScreeningPartnerResource\RelationManagers;
 use App\Models\ScreeningPartner;
+use App\Services\NavigationBadgesServices;
 use Filament\Forms;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Textarea;
@@ -24,6 +25,11 @@ class ScreeningPartnerResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
     protected static ?string $navigationGroup = 'Access control';
+
+    protected static function getNavigationBadge(): ?string
+    {
+        return (new NavigationBadgesServices)->getTotalNumberOfScreeningPartners();
+    }
 
     public static function form(Form $form): Form
     {
@@ -51,7 +57,7 @@ class ScreeningPartnerResource extends Resource
                     ->description(fn (ScreeningPartner $record): string => $record->description ? $record->description : ''),
                 TextColumn::make('customers')
                     ->label('number of customers')
-                    ->formatStateUsing(fn($record) => $record->getNumberOfCustomers())
+                    ->formatStateUsing(fn ($record) => $record->getNumberOfCustomers())
             ])
             ->filters([
                 //
