@@ -55,6 +55,7 @@ class WarehouseResource extends Resource
                         Select::make('district_id')
                             ->required()
                             ->label('Select district')
+                            ->visibleOn('create')
                             ->searchable()
                             ->options(District::orderBy('district', 'asc')->get()->pluck('district', 'id')->toArray())
                     ])
