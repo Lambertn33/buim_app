@@ -29,6 +29,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
+use App\Models\ScreeningPartner;
 
 class ScreeningResource extends Resource
 {
@@ -89,6 +90,18 @@ class ScreeningResource extends Resource
                         TextInput::make('village')
                             ->label('Prospect village')
                             ->required(),
+                        Select::make('payment_plan_id')
+                            ->placeholder('select payment plan')
+                            ->label('Payment plan')
+                            ->required()
+                            ->searchable()
+                            ->options(PaymentPlan::get()->pluck('title', 'id')->toArray()),
+                        Select::make('screening_partner_id')
+                            ->placeholder('select partner')
+                            ->label('Partner')
+                            ->required()
+                            ->searchable()
+                            ->options(ScreeningPartner::get()->pluck('name', 'id')->toArray()),
                         Select::make('eligibility_status')
                             ->required()
                             ->placeholder('select eligibility')
@@ -145,7 +158,7 @@ class ScreeningResource extends Resource
             ->filters([
                 SelectFilter::make('campaign_id')
                     ->label('Filter by campaign')
-                    ->options(function() {
+                    ->options(function () {
                         if (Auth::user()->role->role == Role::DISTRICT_MANAGER_ROLE) {
                             return Campaign::whereHas('district', function ($query) {
                                 $query->where('id', Auth::user()->manager->district->id);

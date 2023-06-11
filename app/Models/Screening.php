@@ -120,6 +120,6 @@ class Screening extends Model
      */
     public function partner(): BelongsTo
     {
-        return $this->belongsTo(ScreeningPartner::class, 'screener_partner_id', 'id');
+        return $this->belongsTo(ScreeningPartner::class, 'screening_partner_id', 'id');
     }
 }

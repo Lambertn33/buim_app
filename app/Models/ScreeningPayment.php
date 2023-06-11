@@ -20,11 +20,11 @@ class ScreeningPayment extends Model
 
     const PAYMENT_MODE = ['MANUAL', 'MTN', 'AIRTEL'];
 
-    const MANUAL_PAYMENT = self::PAYMENT_TYPE[0];
+    const MANUAL_PAYMENT = self::PAYMENT_MODE[0];
 
-    const MOMO_PAYMENT = self::PAYMENT_TYPE[1];
+    const MOMO_PAYMENT = self::PAYMENT_MODE[1];
 
-    const AIRTEL_PAYMENT = self::PAYMENT_TYPE[2];
+    const AIRTEL_PAYMENT = self::PAYMENT_MODE[2];
 
     protected $fillable = ['id', 'screener_id', 'amount', 'payment_type','payment_mode', 'token'];
 

@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\ScreeningResource\RelationManagers;
 
-use App\Services\ScreeningServices;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -15,17 +14,15 @@ class PaymentsRelationManager extends RelationManager
 {
     protected static string $relationship = 'payments';
 
-    protected static ?string $recordTitleAttribute = 'amount_paid';
+    protected static ?string $recordTitleAttribute = 'amount';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('amount_paid')
-                    ->label('paid amount')
+                Forms\Components\TextInput::make('amount')
                     ->required()
-                    ->maxLength(255)
-                    ->columnSpanFull(),
+                    ->maxLength(255),
             ]);
     }
 
@@ -33,35 +30,20 @@ class PaymentsRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('amount_paid')
-                    ->label('amount paid')
-                    ->formatStateUsing(fn ($record): string => $record->amount_paid . ' FRWS'),
-                Tables\Columns\TextColumn::make('remaining_amount')
-                    ->label('remaining amount')
-                    ->formatStateUsing(fn ($record): string => $record->remaining_amount . ' FRWS'),
-                Tables\Columns\TextColumn::make('remaining_months_to_pay')
-                    ->label('pending months')
-                    ->formatStateUsing(fn ($record): string => $record->remaining_months_to_pay . ' months'),
-                Tables\Columns\TextColumn::make('next_payment_date')
-                    ->label('next payment date')
-
+                Tables\Columns\TextColumn::make('amount'),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()
-                    ->action(fn(RelationManager $livewire, array $data) => (new ScreeningServices)->addNewScreeningPayment($livewire->ownerRecord, $data['amount_paid']))
-                    ->visible(function (RelationManager $livewire) {
-                        return $livewire->ownerRecord->payments->count() > 0 ? true : false;
-                    }),
+                Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-                // Tables\Actions\EditAction::make(),
-                // Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                // Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\DeleteBulkAction::make(),
             ]);
-    }
+    }    
 }
