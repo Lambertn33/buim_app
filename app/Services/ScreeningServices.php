@@ -42,13 +42,14 @@ class ScreeningServices
     public function createScreeningPayment($payment, $screener)
     {
         $initialPayment = $payment['downpayment_amount'];
-        $remainingPaymentDays = ($payment['duration'] - 30);
+        $remainingPaymentDays = ($payment['duration']);
         $newPayment = [
             'id' => Str::uuid()->toString(),
             'screener_id' => $payment['screener_id'],
             'amount' => $initialPayment,
             'payment_type' => ScreeningPayment::ADVANCED_PAYMENT,
             'payment_mode' => ScreeningPayment::MANUAL_PAYMENT,
+            // token generation
             'token' => '1234',
             'remaining_days' => $remainingPaymentDays,
             'created_at' => now(),

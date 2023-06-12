@@ -8,6 +8,7 @@ use Filament\Pages\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Str;
 use App\Models\Campaign;
+use App\Models\PaymentPlan;
 use App\Models\Screening;
 use App\Services\StockServices;
 use Filament\Notifications\Notification;
@@ -28,7 +29,7 @@ class CreateScreening extends CreateRecord
         $campaignProvince = $campaign->province->province;
         $campaignDistrict = $campaign->district->district;
         $codeGenerator = 'C' . $campaignProvince[0] . rand(100000000, 999999999) . '';
-
+        $paymentPlanSelected = PaymentPlan::find($data['payment_plan_id']);
         $data['id'] = Str::uuid()->toString();
         $data['leader_id'] = Auth::user()->leader->id;
         $data['district'] = $campaignDistrict;
@@ -36,6 +37,7 @@ class CreateScreening extends CreateRecord
         $data['screening_date'] = now()->format('Y-m-d');
         $data['confirmation_status'] = Screening::PROSPECT;
         $data['prospect_code'] = $codeGenerator;
+        $data['total_days_to_pay'] = $paymentPlanSelected->duration;
         $message = 'Dear '.$data['prospect_names'].' thank you for choosing BUIM... you have been screened by '.Auth::user()->name. '';
         (new StockServices)->createWarehouseDeviceRequest($data);
         //send SMS to screener

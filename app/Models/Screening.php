@@ -27,7 +27,7 @@ class Screening extends Model
     protected $fillable = [
         'id', 'campaign_id', 'leader_id', 'screening_date', 'prospect_names', 'prospect_telephone', 'prospect_national_id',
         'prospect_code','payment_plan_id', 'district', 'sector', 'village', 'cell', 'eligibility_status', 'confirmation_status', 'proposed_device_name',
-        'total_amount_paid','remaining_days_to_pay', 'screening_partner_id'
+        'total_amount_paid','total_days_to_pay', 'screening_partner_id'
     ];
 
     protected $casts = [
