@@ -12,6 +12,7 @@ use App\Models\WarehouseDeviceDistribution;
 use App\Services\NavigationBadgesServices;
 use Filament\Forms;
 use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
@@ -62,37 +63,47 @@ class WarehouseDeviceDistributionResource extends Resource
                         })
                         ->options(WarehouseDevice::where('district_id', Auth::user()->leader->district->id)->whereNull('screener_id')->get()->pluck('serial_number', 'id')->toArray()),
                     TextInput::make('device_price')
+                        ->reactive()
                         ->disabled(),
                     Select::make('screener_id')
                         ->label('select client')
+                        ->reactive()
+                        ->afterStateUpdated(function ($state, $set, $get) {
+                            $screener = Screening::with('paymentPlan')->with('partner')->find($get('screener_id'));
+                            if ($screener) {
+                                $devicePrice = $get('device_price');
+                                $set('payment_plan_id', $screener->paymentPlan->id);
+                                $set('payment_category', $screener->paymentPlan->title);
+                                $set('partner', $screener->partner->name);
+                                if ($get('device_price')) {
+                                    $customerContribution = ($devicePrice * $screener->paymentPlan->customer_percentage) / 100;
+                                    $partnerContribution = $devicePrice - $customerContribution;
+                                    $downpaymentAmount = ($customerContribution *$screener->paymentPlan->downpayment) / 100;
+                                    $set('customer_contribution', $customerContribution);
+                                    $set('partner_contribution', $partnerContribution);
+                                    $set('downpayment_percentage', $screener->paymentPlan->downpayment);
+                                    $set('downpayment_amount', $downpaymentAmount);
+                                    $set('duration', $screener->paymentPlan->duration);
+                                }
+                            }
+                        })
                         ->searchable()
                         ->required()
                         ->options(Screening::where('district', Auth::user()->leader->district->district)->where('confirmation_status', Screening::PROSPECT)
                             ->get()->pluck('prospect_names', 'id')->toArray()),
-                    Select::make('payment_id')
-                        ->label('select payment mode')
-                        ->reactive()
-                        ->searchable()
-                        ->required()
-                        ->afterStateUpdated(function ($state, $set, $get) {
-                            $device = WarehouseDevice::find($get('warehouse_device_id'));
-                            if ($device) {
-                                $devicePrice = $device->device_price;
-                                $paymentPlan = PaymentPlan::find($get('payment_id'));
-                                if ($paymentPlan) {
-                                    $percentage = $paymentPlan->percentage;
-                                    $amountToPay = ($devicePrice * $percentage) / 100;
-                                    $downpayment = $amountToPay / $paymentPlan->downpayment;
-                                    $set('customer_contribution', $amountToPay);
-                                    $set('downpayment_amount', $downpayment);
-                                    $set('downpayment_percentage', $paymentPlan->downpayment);
-                                    $set('duration', $paymentPlan->duration);
-                                }
-                            }
-                        })
-                        ->options(PaymentPlan::get()->pluck('title', 'id')->toArray()),
+                    Hidden::make('payment_plan_id'),
+                    TextInput::make('payment_category')
+                        ->label('Client payment category')
+                        ->disabled(),
                     TextInput::make('customer_contribution')
-                        ->label('Customer contribution')
+                        ->label('Customer contribution (FRWS)')
+                        ->disabled()
+                        ->numeric(),
+                    TextInput::make('partner')
+                        ->label('Client partner')
+                        ->disabled(),
+                    TextInput::make('partner_contribution')
+                        ->label('Partner contribution (FRWS)')
                         ->disabled()
                         ->numeric(),
                     TextInput::make('downpayment_percentage')
@@ -100,7 +111,7 @@ class WarehouseDeviceDistributionResource extends Resource
                         ->disabled()
                         ->numeric(),
                     TextInput::make('downpayment_amount')
-                        ->label('Downpayment amount')
+                        ->label('Advanced payment amount')
                         ->disabled()
                         ->numeric(),
                     TextInput::make('duration')

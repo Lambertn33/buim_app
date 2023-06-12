@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\ScreeningResource\RelationManagers;
 
+use App\Models\Screening;
+use App\Models\ScreeningPayment;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -9,6 +11,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Columns\TextColumn;
 
 class PaymentsRelationManager extends RelationManager
 {
@@ -30,7 +33,31 @@ class PaymentsRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('amount'),
+                TextColumn::make('amount')
+                    ->label('Paid amount')
+                    ->sortable()
+                    ->searchable()
+                    ->suffix('FRWS'),
+                TextColumn::make('payment_type')
+                    ->sortable()
+                    ->searchable()
+                    ->formatStateUsing(fn (string $state) => $state === ScreeningPayment::ADVANCED_PAYMENT ? 'ADVANCED PAYMENT' : 'DOWNPAYMENT'),
+                TextColumn::make('payment_mode')
+                    ->sortable()
+                    ->searchable()
+                    ->formatStateUsing(fn (string $state) => $state === ScreeningPayment::MANUAL_PAYMENT ? 'MANUAL PAYMENT / CASH' : ($state === ScreeningPayment::MOMO_PAYMENT ? 'Mobile money' : 'Airtel money'
+                    )),
+                TextColumn::make('payment_date')
+                    ->sortable()
+                    ->searchable()
+                    ->formatStateUsing(fn (ScreeningPayment $record) => $record->created_at->format('Y-m-d')),
+                TextColumn::make('token')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('remaining_days')
+                    ->sortable()
+                    ->searchable()
+                    ->formatStateUsing(fn (string $state) => '' . $state . ' days')
             ])
             ->filters([
                 //
@@ -39,11 +66,11 @@ class PaymentsRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                // Tables\Actions\EditAction::make(),
+                // Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                // Tables\Actions\DeleteBulkAction::make(),
             ]);
-    }    
+    }
 }

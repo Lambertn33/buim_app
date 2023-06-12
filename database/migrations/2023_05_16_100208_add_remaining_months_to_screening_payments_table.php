@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('screening_payments', function (Blueprint $table) {
-            $table->bigInteger('remaining_months_to_pay');
+            $table->bigInteger('remaining_days');
         });
     }
 
