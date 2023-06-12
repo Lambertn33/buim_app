@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class ScreeningPayment extends Model
 {
@@ -26,7 +27,7 @@ class ScreeningPayment extends Model
 
     const AIRTEL_PAYMENT = self::PAYMENT_MODE[2];
 
-    protected $fillable = ['id', 'screener_id', 'amount', 'payment_type','payment_mode', 'token'];
+    protected $fillable = ['id', 'screener_id', 'amount', 'payment_type','payment_mode'];
 
     protected $casts = [
         'id' => 'string',
@@ -41,5 +42,15 @@ class ScreeningPayment extends Model
     public function screener(): BelongsTo
     {
         return $this->belongsTo(Screening::class, 'screener_id', 'id');
+    }
+
+    /**
+     * Get the token associated with the ScreeningPayment
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function token(): HasOne
+    {
+        return $this->hasOne(ScreeningToken::class, 'screening_payment_id', 'id');
     }
 }
