@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('screening_payments', function (Blueprint $table) {
-            $table->bigInteger('remaining_days');
+        Schema::create('screening_partners', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('name')->unique();
+            $table->string('description')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -21,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('screening_payments', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('screening_partners');
     }
 };

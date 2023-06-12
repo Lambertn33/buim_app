@@ -38,13 +38,27 @@ class PaymentPlanResource extends Resource
                     ->unique(ignoreRecord: true)
                     ->maxLength(20)
                     ->required(),
-                TextInput::make('percentage')
+                TextInput::make('customer_percentage')
                     ->label('Customer contribution (%)')
+                    ->reactive()
                     ->numeric()
                     ->maxValue(100)
+                    ->afterStateUpdated(function($set, $get){
+                        $customerContribution = $get('customer_percentage');
+                        if ($customerContribution) {
+                            $partnerContribution = 100 - intval($customerContribution);
+                            $set('partner_percentage', $partnerContribution);
+                        }
+                    })
+                    ->required(),
+                TextInput::make('partner_percentage')
+                    ->label('Partner contribution (%)')
+                    ->numeric()
+                    ->maxValue(100)
+                    ->disabled()
                     ->required(),
                 TextInput::make('downpayment')
-                    ->label('Downpayment (%)')
+                    ->label('Customer advanced payment (%)')
                     ->numeric()
                     ->maxValue(100)
                     ->required(),
@@ -64,8 +78,13 @@ class PaymentPlanResource extends Resource
                     ->label('Payment category')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('percentage')
+                TextColumn::make('customer_percentage')
                     ->label('Customer contribution (%)')
+                    ->suffix('%')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('partner_percentage')
+                    ->label('Partner contribution (%)')
                     ->suffix('%')
                     ->sortable()
                     ->searchable(),

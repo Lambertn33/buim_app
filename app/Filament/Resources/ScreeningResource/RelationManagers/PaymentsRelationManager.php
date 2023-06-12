@@ -2,30 +2,31 @@
 
 namespace App\Filament\Resources\ScreeningResource\RelationManagers;
 
-use App\Services\ScreeningServices;
+use App\Models\Screening;
+use App\Models\ScreeningPayment;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Columns\TextColumn;
 
 class PaymentsRelationManager extends RelationManager
 {
     protected static string $relationship = 'payments';
 
-    protected static ?string $recordTitleAttribute = 'amount_paid';
+    protected static ?string $recordTitleAttribute = 'amount';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('amount_paid')
-                    ->label('paid amount')
+                Forms\Components\TextInput::make('amount')
                     ->required()
-                    ->maxLength(255)
-                    ->columnSpanFull(),
+                    ->maxLength(255),
             ]);
     }
 
@@ -33,28 +34,40 @@ class PaymentsRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('amount_paid')
-                    ->label('amount paid')
-                    ->formatStateUsing(fn ($record): string => $record->amount_paid . ' FRWS'),
-                Tables\Columns\TextColumn::make('remaining_amount')
-                    ->label('remaining amount')
-                    ->formatStateUsing(fn ($record): string => $record->remaining_amount . ' FRWS'),
-                Tables\Columns\TextColumn::make('remaining_months_to_pay')
-                    ->label('pending months')
-                    ->formatStateUsing(fn ($record): string => $record->remaining_months_to_pay . ' months'),
-                Tables\Columns\TextColumn::make('next_payment_date')
-                    ->label('next payment date')
-
+                TextColumn::make('amount')
+                    ->label('Paid amount')
+                    ->sortable()
+                    ->searchable()
+                    ->suffix('FRWS'),
+                TextColumn::make('payment_type')
+                    ->sortable()
+                    ->searchable()
+                    ->formatStateUsing(fn (string $state) => $state === ScreeningPayment::ADVANCED_PAYMENT ? 'ADVANCED PAYMENT' : 'DOWNPAYMENT'),
+                TextColumn::make('payment_mode')
+                    ->sortable()
+                    ->searchable()
+                    ->formatStateUsing(fn (string $state) => $state === ScreeningPayment::MANUAL_PAYMENT ? 'MANUAL PAYMENT / CASH' : ($state === ScreeningPayment::MOMO_PAYMENT ? 'Mobile money' : 'Airtel money'
+                    )),
+                TextColumn::make('payment_date')
+                    ->sortable()
+                    ->searchable()
+                    ->formatStateUsing(fn (ScreeningPayment $record) => $record->created_at->format('Y-m-d')),
+                TextColumn::make('token')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('remaining_days')
+                    ->sortable()
+                    ->searchable()
+                    ->formatStateUsing(fn (string $state) => '' . $state . ' days')
             ])
             ->filters([
                 //
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
-                    ->action(fn(RelationManager $livewire, array $data) => (new ScreeningServices)->addNewScreeningPayment($livewire->ownerRecord, $data['amount_paid']))
-                    ->visible(function (RelationManager $livewire) {
-                        return $livewire->ownerRecord->payments->count() > 0 ? true : false;
-                    }),
+                    ->label('New payment record'),
+                Action::make('New token generation')
+                    ->color('success')
             ])
             ->actions([
                 // Tables\Actions\EditAction::make(),

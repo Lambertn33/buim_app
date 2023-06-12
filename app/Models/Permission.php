@@ -30,6 +30,12 @@ class Permission extends Model
         'screening_edit',
         'screening_delete',
 
+        'screening_partner_create',
+        'screening_partner_access',
+        'screening_partner_show',
+        'screening_partner_edit',
+        'screening_partner_delete',
+
         'permission_create',
         'permission_access',
         'permission_show',

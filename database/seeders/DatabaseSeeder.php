@@ -23,7 +23,8 @@ class DatabaseSeeder extends Seeder
             PaymentPlansSeeder::class,
             ManagerDistrictLinkSeeder::class,
             MainWarehousesSeeder::class,
-            TechniciansSeeder::class
+            TechniciansSeeder::class,
+            PartnersSeeder::class
         ]);
     }
 }

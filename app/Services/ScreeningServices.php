@@ -36,28 +36,29 @@ class ScreeningServices
             'updated_at' => now()
         ];
         WarehouseDeviceDistribution::insert($newDistribution);
-        $this->createScreeningPayment($distribution);
+        $this->createScreeningPayment($distribution, $screener);
     }
 
-    public function createScreeningPayment($payment)
+    public function createScreeningPayment($payment, $screener)
     {
-        $totalAmountToPay = $payment['customer_contribution'];
         $initialPayment = $payment['downpayment_amount'];
-        $remainingAmount = $totalAmountToPay - $initialPayment;
-        $remainingPaymentMonths = ($payment['duration'] / 30) - 1;
-        $nextPaymentDate = date('Y-m-d', strtotime("+1 months", strtotime(date("y-m-d"))));
+        $remainingPaymentDays = ($payment['duration']);
         $newPayment = [
             'id' => Str::uuid()->toString(),
-            'payment_plan_id' => $payment['payment_id'],
             'screener_id' => $payment['screener_id'],
-            'amount_paid' => $initialPayment,
-            'remaining_amount' => $remainingAmount,
-            'next_payment_date' => $nextPaymentDate,
-            'remaining_months_to_pay' => $remainingPaymentMonths,
+            'amount' => $initialPayment,
+            'payment_type' => ScreeningPayment::ADVANCED_PAYMENT,
+            'payment_mode' => ScreeningPayment::MANUAL_PAYMENT,
+            // token generation
+            'token' => '1234',
+            'remaining_days' => $remainingPaymentDays,
             'created_at' => now(),
             'updated_at' => now()
         ];
         ScreeningPayment::insert($newPayment);
+        $screener->update([
+            'total_amount_paid' => $screener->total_amount_paid + $initialPayment
+        ]);
         $this->createScreeningInstallation($payment);
     }
 
@@ -104,18 +105,17 @@ class ScreeningServices
 
     public function addNewScreeningPayment($screener, $amount)
     {
-        $lastPayment = $screener->payments()->orderBy('created_at', 'desc')->first();
-        $newPayment = [
-            'id' => Str::uuid()->toString(),
-            'screener_id' => $screener->id,
-            'payment_plan_id' => $lastPayment->payment_plan_id,
-            'amount_paid' => $amount,
-            'remaining_amount' => $lastPayment->remaining_amount - $amount,
-            'next_payment_date' => date('Y-m-d', strtotime("+1 months", strtotime(date("y-m-d")))),
-            'remaining_months_to_pay' => $lastPayment->remaining_months_to_pay - 1,
-            'created_at' => now(),
-            'updated_at' => now()
-        ];
-        ScreeningPayment::insert($newPayment);
+        // $newPayment = [
+        //     'id' => Str::uuid()->toString(),
+        //     'screener_id' => $screener->id,
+        //     'amount' => $amount,
+        //     'payment_type' => ScreeningPayment::DOWNPAYMENT,
+        //     'payment_mode' => ScreeningPayment::MANUAL_PAYMENT,
+        //     'token' => '1234',
+        //     'remaining_days' => $remainingPaymentDays,
+        //     'created_at' => now(),
+        //     'updated_at' => now()
+        // ];
+        // ScreeningPayment::insert($newPayment);
     }
 }
