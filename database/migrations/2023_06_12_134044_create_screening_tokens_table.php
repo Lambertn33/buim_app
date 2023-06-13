@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\ScreeningPayment;
+use App\Models\ScreeningToken;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,12 +12,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('screening_payments', function (Blueprint $table) {
+        Schema::create('screening_tokens', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('screener_id');
-            $table->bigInteger('amount');
-            $table->enum('payment_type', ScreeningPayment::PAYMENT_TYPE);
-            $table->enum('payment_mode', ScreeningPayment::PAYMENT_MODE);
+            $table->uuid('screening_payment_id');
+            $table->string('token');
+            $table->integer('validity_days');
+            $table->string('key');
+            $table->enum('status', ScreeningToken::STATUS);
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('screening_payments');
+        Schema::dropIfExists('screening_tokens');
     }
 };

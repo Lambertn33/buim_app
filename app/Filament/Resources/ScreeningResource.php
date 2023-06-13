@@ -154,6 +154,7 @@ class ScreeningResource extends Resource
                     ]),
                 TextColumn::make('campaign.title')
                     ->visible(Auth::user()->role->role !== Role::SECTOR_LEADER_ROLE),
+                TextColumn::make('partner.name')
             ])
             ->filters([
                 SelectFilter::make('campaign_id')

@@ -6,6 +6,7 @@ use App\Models\PaymentPlan;
 use App\Models\Screening;
 use App\Models\ScreeningInstallation;
 use App\Models\ScreeningPayment;
+use App\Models\ScreeningToken;
 use App\Models\WarehouseDevice;
 use App\Models\WarehouseDeviceDistribution;
 use Illuminate\Support\Facades\Auth;
@@ -49,8 +50,6 @@ class ScreeningServices
             'amount' => $initialPayment,
             'payment_type' => ScreeningPayment::ADVANCED_PAYMENT,
             'payment_mode' => ScreeningPayment::MANUAL_PAYMENT,
-            // token generation
-            'token' => '1234',
             'remaining_days' => $remainingPaymentDays,
             'created_at' => now(),
             'updated_at' => now()
@@ -60,6 +59,15 @@ class ScreeningServices
             'total_amount_paid' => $screener->total_amount_paid + $initialPayment
         ]);
         $this->createScreeningInstallation($payment);
+    }
+
+    public function getLastGeneratedTokenCount()
+    {
+        $index = 1;
+        if (count(ScreeningToken::get()) > 0) {
+            $index = count(ScreeningToken::get()) + 1;
+        }
+        return $index;
     }
 
     public function createScreeningInstallation($screener)
@@ -103,19 +111,29 @@ class ScreeningServices
         ]);
     }
 
-    public function addNewScreeningPayment($screener, $amount)
+    public function addNewScreeningPayment($screener, $payment)
     {
-        // $newPayment = [
-        //     'id' => Str::uuid()->toString(),
-        //     'screener_id' => $screener->id,
-        //     'amount' => $amount,
-        //     'payment_type' => ScreeningPayment::DOWNPAYMENT,
-        //     'payment_mode' => ScreeningPayment::MANUAL_PAYMENT,
-        //     'token' => '1234',
-        //     'remaining_days' => $remainingPaymentDays,
-        //     'created_at' => now(),
-        //     'updated_at' => now()
-        // ];
-        // ScreeningPayment::insert($newPayment);
+        $devicePrice = $screener->device->device_price;
+        $duration = $screener->paymentPlan->duration;
+        $dailyPayment = (int) ceil($devicePrice / $duration);
+        $numberOfPaidDays = (int) round($payment['amount'] / $dailyPayment);
+        $remainingPaymentDays = $screener->total_days_to_pay - $numberOfPaidDays; 
+
+        $newPayment = [
+            'id' => Str::uuid()->toString(),
+            'screener_id' => $screener->id,
+            'amount' => $payment['amount'],
+            'payment_type' => ScreeningPayment::DOWNPAYMENT,
+            'payment_mode' => ScreeningPayment::MANUAL_PAYMENT,
+            'remaining_days' => $remainingPaymentDays,
+            'created_at' => now(),
+            'updated_at' => now()
+        ];
+        ScreeningPayment::insert($newPayment);
+        Screening::find($screener->id)->update([
+            'total_amount_paid' => $screener->total_amount_paid + $payment['amount'],
+            'remaining_days_to_pay' => $screener->remaining_days_to_pay - $numberOfPaidDays
+        ]);
+        return;
     }
 }
