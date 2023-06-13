@@ -49,6 +49,24 @@ class WarehouseDeviceDistributionResource extends Resource
         return $form
             ->schema([
                 Card::make([
+                    Select::make('screener_id')
+                        ->label('select client')
+                        ->reactive()
+                        ->afterStateUpdated(function ($state, $set, $get) {
+                            $screener = Screening::with('paymentPlan')->with('partner')->find($get('screener_id'));
+                            if ($screener) {
+                                $set('proposed_device', $screener->proposed_device_name);
+                                $set('payment_plan_id', $screener->paymentPlan->id);
+                                $set('payment_category', $screener->paymentPlan->title);
+                                $set('partner', $screener->partner->name);
+                            }
+                        })
+                        ->searchable()
+                        ->required()
+                        ->options(Screening::where('district', Auth::user()->leader->district->district)->where('confirmation_status', Screening::PROSPECT)
+                            ->get()->pluck('prospect_names', 'id')->toArray()),
+                    TextInput::make('proposed_device')
+                        ->disabled(),
                     Select::make('warehouse_device_id')
                         ->label('select serial number')
                         ->searchable()
@@ -57,28 +75,18 @@ class WarehouseDeviceDistributionResource extends Resource
                         ->unique(ignoreRecord: true)
                         ->afterStateUpdated(function ($state, $set, $get) {
                             $device = WarehouseDevice::find($get('warehouse_device_id'));
-                            if ($device) {
-                                $set('device_price', $device->device_price);
-                            }
-                        })
-                        ->options(WarehouseDevice::where('district_id', Auth::user()->leader->district->id)->whereNull('screener_id')->get()->pluck('serial_number', 'id')->toArray()),
-                    TextInput::make('device_price')
-                        ->reactive()
-                        ->disabled(),
-                    Select::make('screener_id')
-                        ->label('select client')
-                        ->reactive()
-                        ->afterStateUpdated(function ($state, $set, $get) {
                             $screener = Screening::with('paymentPlan')->with('partner')->find($get('screener_id'));
-                            if ($screener) {
+                            if ($device) {
                                 $devicePrice = $get('device_price');
+                                $set('device_price', $device->device_price);
+                                $set('proposed_device', $screener->proposed_device_name);
                                 $set('payment_plan_id', $screener->paymentPlan->id);
                                 $set('payment_category', $screener->paymentPlan->title);
                                 $set('partner', $screener->partner->name);
                                 if ($get('device_price')) {
                                     $customerContribution = ($devicePrice * $screener->paymentPlan->customer_percentage) / 100;
                                     $partnerContribution = $devicePrice - $customerContribution;
-                                    $downpaymentAmount = ($customerContribution *$screener->paymentPlan->downpayment) / 100;
+                                    $downpaymentAmount = ($customerContribution * $screener->paymentPlan->downpayment) / 100;
                                     $set('customer_contribution', $customerContribution);
                                     $set('partner_contribution', $partnerContribution);
                                     $set('downpayment_percentage', $screener->paymentPlan->downpayment);
@@ -87,10 +95,18 @@ class WarehouseDeviceDistributionResource extends Resource
                                 }
                             }
                         })
-                        ->searchable()
-                        ->required()
-                        ->options(Screening::where('district', Auth::user()->leader->district->district)->where('confirmation_status', Screening::PROSPECT)
-                            ->get()->pluck('prospect_names', 'id')->toArray()),
+                        ->options(function ($get) {
+                            $deviceName = $get('proposed_device');
+                            if ($deviceName) {
+                                return WarehouseDevice::where('district_id', Auth::user()->leader->district->id)
+                                    ->where('device_name', $deviceName)
+                                    ->whereNull('screener_id')->get()->pluck('serial_number', 'id')->toArray();
+                            }
+                        }),
+
+                    TextInput::make('device_price')
+                        ->reactive()
+                        ->disabled(),
                     Hidden::make('payment_plan_id'),
                     TextInput::make('payment_category')
                         ->label('Client payment category')

@@ -38,6 +38,7 @@ class CreateScreening extends CreateRecord
         $data['confirmation_status'] = Screening::PROSPECT;
         $data['prospect_code'] = $codeGenerator;
         $data['total_days_to_pay'] = $paymentPlanSelected->duration;
+        $data['remaining_days_to_pay'] = $paymentPlanSelected->duration;
         $message = 'Dear '.$data['prospect_names'].' thank you for choosing BUIM... you have been screened by '.Auth::user()->name. '';
         (new StockServices)->createWarehouseDeviceRequest($data);
         //send SMS to screener

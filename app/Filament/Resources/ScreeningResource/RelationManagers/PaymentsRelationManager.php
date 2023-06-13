@@ -9,6 +9,8 @@ use App\Models\ScreeningToken;
 use App\Services\ScreeningServices;
 use App\Services\TokensServices;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -30,9 +32,21 @@ class PaymentsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('amount')
+                TextInput::make('amount')
                     ->required()
                     ->maxLength(255),
+                Select::make('payment_mode')
+                    ->required()
+                    ->searchable()
+                    ->placeholder('Select payment method')
+                    ->options([
+                        'MANUAL' => 'MANUAL',
+                        'MTN' => 'MTN',
+                        'AIRTEL' => 'AIRTEL'
+                    ]),
+                TextInput::make('payment_type')
+                    ->disabled()
+                    ->default(ScreeningPayment::DOWNPAYMENT)
             ]);
     }
 
@@ -62,66 +76,72 @@ class PaymentsRelationManager extends RelationManager
                     ->sortable()
                     ->formatStateUsing(fn (ScreeningPayment $record) => $record->paymentToken?->token)
                     ->searchable(),
+                TextColumn::make('token_validity')
+                    ->sortable()
+                    ->formatStateUsing(fn (ScreeningPayment $record) => $record->paymentToken ?  $record->paymentToken->validity_days. ' days' : '')
+                    ->searchable(),
                 TextColumn::make('remaining_days')
+                    ->label('Remaining days to pay')
                     ->sortable()
                     ->searchable()
-                    ->formatStateUsing(fn (string $state) => '' . $state . ' days')
+                    ->formatStateUsing(fn (RelationManager $livewire) => '' . $livewire->ownerRecord->remaining_days_to_pay . ' days')
             ])
             ->filters([
                 //
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
-                    ->label('New payment record'),
+                    ->label('New payment record')
+                    ->action(fn (RelationManager $livewire, array $data) => (new ScreeningServices)->addNewScreeningPayment($livewire->ownerRecord, $data))
+                    ->visible(fn (RelationManager $livewire) => $livewire->ownerRecord->confirmation_status === Screening::ACTIVE_CUSTOMER),
             ])
             ->actions([
                 Action::make('Generate token')
                     ->color('success')
                     ->visible(fn ($record) => !$record->paymentToken()->exists())
                     ->action(function ($record) {
+
                         $paymentType = $record->payment_type;
                         $devicePrice = $record->screener->device->device_price;
                         $key = '';
                         $characters = '0123456789ABCDEF';
+                        $duration = $paymentType === ScreeningPayment::ADVANCED_PAYMENT ? 30 : $record->screener->paymentPlan->duration;
+                        $dailyPayment = (int) ceil($devicePrice / $duration);
+                        $numberOfPaidDays = $paymentType === ScreeningPayment::ADVANCED_PAYMENT ? 30 : (int) round($record->amount / $dailyPayment);
 
                         for ($i = 0; $i < 20; $i++) {
                             $index = rand(0, strlen($characters) - 1);
                             $key .= $characters[$index];
                         }
-                        if ($record->payment_type === ScreeningPayment::ADVANCED_PAYMENT) {
-                            // on advanced payment, the first token has 30 days
-                            $duration = 30;
-                            $data = [
-                                'command' => 1,
-                                'data' => $duration,
-                                'count' => (new ScreeningServices)->getLastGeneratedTokenCount(),
-                                'key' => $key
+                        $data = [
+                            'command' => 1,
+                            'data' => $numberOfPaidDays,
+                            'count' => (new ScreeningServices)->getLastGeneratedTokenCount(),
+                            'key' => $key
+                        ];
+                        try {
+                            $tokenResponse = (new TokensServices)->generateToken($data);
+                            // API returned success
+                            $token = $tokenResponse['token'];
+                            $newScreeningToken = [
+                                'id' => Str::uuid()->toString(),
+                                'screening_payment_id' => $record->id,
+                                'token' => $token,
+                                'validity_days' => $numberOfPaidDays,
+                                'key' => $key,
+                                'created_at' => now(),
+                                'updated_at' => now()
                             ];
-                            try {
-                                $tokenResponse = (new TokensServices)->generateToken($data);
-                                if (!is_null($tokenResponse) && array_key_exists("token", $tokenResponse)) {
-                                    // API returned success
-                                    $token = $tokenResponse['token'];
-                                    $newScreeningToken = [
-                                        'id' => Str::uuid()->toString(),
-                                        'screening_payment_id' => $record->id,
-                                        'token' => $token,
-                                        'validity_days' => $duration,
-                                        'key' => $key,
-                                        'created_at' => now(),
-                                        'updated_at' => now()
-                                    ];
-                                    ScreeningToken::insert($newScreeningToken);
-                                    TokenGenerated::dispatch($record->screener, $token, $duration);
-                                    // after token generated send SMS to user
-                                } else {
-                                    dd('there is an error');
-                                }
-                            } catch (\Throwable $th) {
-                                //throw $th;
-                            }
-                        } else {
-                            dd ('hey');
+                            ScreeningToken::insert($newScreeningToken);
+                            // after token generated send SMS to user
+                            TokenGenerated::dispatch($record->screener, $token, $numberOfPaidDays);
+                        } catch (\Throwable $th) {
+                            Notification::make()
+                                ->title('Error')
+                                ->body('an error occured on generating the token.. please try again')
+                                ->danger()
+                                ->send();
+                            return;
                         }
                     })->successNotification(
                         Notification::make()
