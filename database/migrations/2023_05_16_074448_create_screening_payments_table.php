@@ -18,7 +18,6 @@ return new class extends Migration
             $table->bigInteger('amount');
             $table->enum('payment_type', ScreeningPayment::PAYMENT_TYPE);
             $table->enum('payment_mode', ScreeningPayment::PAYMENT_MODE);
-            $table->string('token');
             $table->timestamps();
         });
     }

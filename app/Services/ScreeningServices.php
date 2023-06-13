@@ -6,6 +6,7 @@ use App\Models\PaymentPlan;
 use App\Models\Screening;
 use App\Models\ScreeningInstallation;
 use App\Models\ScreeningPayment;
+use App\Models\ScreeningToken;
 use App\Models\WarehouseDevice;
 use App\Models\WarehouseDeviceDistribution;
 use Illuminate\Support\Facades\Auth;
@@ -50,7 +51,6 @@ class ScreeningServices
             'payment_type' => ScreeningPayment::ADVANCED_PAYMENT,
             'payment_mode' => ScreeningPayment::MANUAL_PAYMENT,
             // token generation
-            'token' => '1234',
             'remaining_days' => $remainingPaymentDays,
             'created_at' => now(),
             'updated_at' => now()
@@ -60,6 +60,15 @@ class ScreeningServices
             'total_amount_paid' => $screener->total_amount_paid + $initialPayment
         ]);
         $this->createScreeningInstallation($payment);
+    }
+
+    public function getLastGeneratedTokenCount()
+    {
+        $index = 1;
+        if (count(ScreeningToken::get()) > 0) {
+            $index = count(ScreeningToken::get()) + 1;
+        }
+        return $index;
     }
 
     public function createScreeningInstallation($screener)

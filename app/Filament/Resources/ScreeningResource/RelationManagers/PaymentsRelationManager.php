@@ -2,9 +2,14 @@
 
 namespace App\Filament\Resources\ScreeningResource\RelationManagers;
 
+use App\Jobs\TokenGenerated;
 use App\Models\Screening;
 use App\Models\ScreeningPayment;
+use App\Models\ScreeningToken;
+use App\Services\ScreeningServices;
+use App\Services\TokensServices;
 use Filament\Forms;
+use Filament\Notifications\Notification;
 use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Table;
@@ -13,6 +18,7 @@ use Filament\Tables\Actions\Action;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Support\Str;
 
 class PaymentsRelationManager extends RelationManager
 {
@@ -54,6 +60,7 @@ class PaymentsRelationManager extends RelationManager
                     ->formatStateUsing(fn (ScreeningPayment $record) => $record->created_at->format('Y-m-d')),
                 TextColumn::make('token')
                     ->sortable()
+                    ->formatStateUsing(fn (ScreeningPayment $record) => $record->paymentToken?->token)
                     ->searchable(),
                 TextColumn::make('remaining_days')
                     ->sortable()
@@ -66,10 +73,62 @@ class PaymentsRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\CreateAction::make()
                     ->label('New payment record'),
-                Action::make('New token generation')
-                    ->color('success')
             ])
             ->actions([
+                Action::make('Generate token')
+                    ->color('success')
+                    ->visible(fn ($record) => !$record->paymentToken()->exists())
+                    ->action(function ($record) {
+                        $paymentType = $record->payment_type;
+                        $devicePrice = $record->screener->device->device_price;
+                        $key = '';
+                        $characters = '0123456789ABCDEF';
+
+                        for ($i = 0; $i < 20; $i++) {
+                            $index = rand(0, strlen($characters) - 1);
+                            $key .= $characters[$index];
+                        }
+                        if ($record->payment_type === ScreeningPayment::ADVANCED_PAYMENT) {
+                            // on advanced payment, the first token has 30 days
+                            $duration = 30;
+                            $data = [
+                                'command' => 1,
+                                'data' => $duration,
+                                'count' => (new ScreeningServices)->getLastGeneratedTokenCount(),
+                                'key' => $key
+                            ];
+                            try {
+                                $tokenResponse = (new TokensServices)->generateToken($data);
+                                if (!is_null($tokenResponse) && array_key_exists("token", $tokenResponse)) {
+                                    // API returned success
+                                    $token = $tokenResponse['token'];
+                                    $newScreeningToken = [
+                                        'id' => Str::uuid()->toString(),
+                                        'screening_payment_id' => $record->id,
+                                        'token' => $token,
+                                        'validity_days' => $duration,
+                                        'key' => $key,
+                                        'created_at' => now(),
+                                        'updated_at' => now()
+                                    ];
+                                    ScreeningToken::insert($newScreeningToken);
+                                    TokenGenerated::dispatch($record->screener, $token, $duration);
+                                    // after token generated send SMS to user
+                                } else {
+                                    dd('there is an error');
+                                }
+                            } catch (\Throwable $th) {
+                                //throw $th;
+                            }
+                        } else {
+                            dd ('hey');
+                        }
+                    })->successNotification(
+                        Notification::make()
+                            ->success()
+                            ->title('Token generated')
+                            ->body('The token has been successfully generated.'),
+                    ),
                 // Tables\Actions\EditAction::make(),
                 // Tables\Actions\DeleteAction::make(),
             ])

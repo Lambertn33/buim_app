@@ -49,7 +49,7 @@ class ScreeningPayment extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function token(): HasOne
+    public function paymentToken(): HasOne
     {
         return $this->hasOne(ScreeningToken::class, 'screening_payment_id', 'id');
     }
