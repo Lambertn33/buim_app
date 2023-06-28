@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('village');
             $table->string('proposed_device_name');
             $table->bigInteger('total_amount_paid')->default(0);
+            $table->bigInteger('total_amount_to_pay')->nullable();
             $table->bigInteger('total_days_to_pay');
             $table->bigInteger('remaining_days_to_pay');
             $table->enum('eligibility_status', \App\Models\Screening::ELIGIBILITY_STATUS);

@@ -26,7 +26,7 @@ class Screening extends Model
 
     protected $fillable = [
         'id', 'campaign_id', 'leader_id', 'screening_date', 'prospect_names', 'prospect_telephone', 'prospect_national_id',
-        'prospect_code', 'payment_plan_id', 'district', 'sector', 'village', 'cell', 'eligibility_status', 'confirmation_status', 'proposed_device_name',
+        'prospect_code', 'payment_plan_id', 'district', 'sector', 'village', 'cell', 'eligibility_status','total_amount_to_pay', 'confirmation_status', 'proposed_device_name',
         'total_amount_paid', 'total_days_to_pay', 'remaining_days_to_pay', 'screening_partner_id'
     ];
 
@@ -121,5 +121,28 @@ class Screening extends Model
     public function partner(): BelongsTo
     {
         return $this->belongsTo(ScreeningPartner::class, 'screening_partner_id', 'id');
+    }
+
+    public function getCustomerContributionPercentage(): int
+    {
+        return $this->paymentPlan->customer_percentage;
+    }
+
+    public function getPartnerContributionPercentage(): int
+    {
+        return 100 - ($this->getCustomerContributionPercentage());
+    }
+
+    public function getCustomerRemainingAmountToPay(): int
+    {
+        return $this->total_amount_to_pay - $this->total_amount_paid;
+    }
+
+    public function getPartnerContribution(): int
+    {
+        $customerContribution = $this->total_amount_to_pay;
+        $devicePrice = $this->device->device_price;
+        $partnerContribution = $devicePrice - $customerContribution;
+        return $partnerContribution;
     }
 }

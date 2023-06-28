@@ -12,6 +12,8 @@ class ManageWarehouseDeviceDistributions extends ManageRecords
 {
     protected static string $resource = WarehouseDeviceDistributionResource::class;
 
+    protected static bool $canCreateAnother = false;
+
     protected function getActions(): array
     {
         return [

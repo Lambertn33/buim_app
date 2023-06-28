@@ -37,6 +37,9 @@ class ScreeningServices
             'updated_at' => now()
         ];
         WarehouseDeviceDistribution::insert($newDistribution);
+        $screener->update([
+            'total_amount_to_pay' => $distribution['customer_contribution']
+        ]);
         $this->createScreeningPayment($distribution, $screener);
     }
 
@@ -113,11 +116,11 @@ class ScreeningServices
 
     public function addNewScreeningPayment($screener, $payment)
     {
-        $devicePrice = $screener->device->device_price;
+        $devicePrice = $payment['customer_contribution'];
         $duration = $screener->paymentPlan->duration;
         $dailyPayment = (int) ceil($devicePrice / $duration);
         $numberOfPaidDays = (int) round($payment['amount'] / $dailyPayment);
-        $remainingPaymentDays = $screener->total_days_to_pay - $numberOfPaidDays; 
+        $remainingPaymentDays = $screener->total_days_to_pay - $numberOfPaidDays;
 
         $newPayment = [
             'id' => Str::uuid()->toString(),

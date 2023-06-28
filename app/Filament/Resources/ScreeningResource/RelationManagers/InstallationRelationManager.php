@@ -25,6 +25,8 @@ class InstallationRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'installation_status';
 
+    protected static ?string $pluralModelLabel = 'Installation Management';
+
     public static function form(Form $form): Form
     {
         return $form
