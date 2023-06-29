@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Filament\Widgets\Dashboard;
+namespace App\Filament\Widgets\Dashboard\Leader;
 
 use App\Models\Role;
 use App\Models\Screening;
-use App\Services\Dashboard\ScreeningsDashboardServices;
-use Closure;
+use App\Services\Dashboard\Leader\ScreeningsDashboardServices;
 use Filament\Tables;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
@@ -24,15 +23,15 @@ class LatestScreenings extends BaseWidget
     protected function getTableColumns(): array
     {
         return [
-            Tables\Columns\TextColumn::make('prospect_names')->sortable(),
+            Tables\Columns\TextColumn::make('prospect_names')
+                ->label('Customer names')
+                ->sortable(),
             Tables\Columns\TextColumn::make('prospect_telephone')
-                ->label('telephone')
-                ->sortable()
-                ->searchable(),
+                ->label('Customer telephone')
+                ->sortable(),
             Tables\Columns\TextColumn::make('prospect_code')
-                ->label('code')
-                ->sortable()
-                ->searchable(),
+                ->label('Customer code')
+                ->sortable(),
             Tables\Columns\BadgeColumn::make('confirmation_status')
                 ->sortable()
                 ->colors([
@@ -45,9 +44,7 @@ class LatestScreenings extends BaseWidget
 
     public static function canView(): bool
     {
-        return auth()->user()->role->role === Role::ADMIN_ROLE
-            || auth()->user()->role->role === Role::DISTRICT_MANAGER_ROLE
-            || auth()->user()->role->role === Role::SECTOR_LEADER_ROLE;
+        return auth()->user()->role->role === Role::SECTOR_LEADER_ROLE;
     }
 
     protected function isTablePaginationEnabled(): bool

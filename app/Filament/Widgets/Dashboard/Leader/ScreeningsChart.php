@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Widgets\Dashboard;
+namespace App\Filament\Widgets\Dashboard\Leader;
 
 use App\Models\Role;
-use App\Services\Dashboard\ScreeningsDashboardServices;
+use App\Services\Dashboard\Leader\ScreeningsDashboardServices;
 use Filament\Widgets\BarChartWidget;
 
 class ScreeningsChart extends BarChartWidget
@@ -56,6 +56,6 @@ class ScreeningsChart extends BarChartWidget
 
     public static function canView(): bool
     {
-        return auth()->user()->role->role === Role::ADMIN_ROLE || auth()->user()->role->role === Role::DISTRICT_MANAGER_ROLE || auth()->user()->role->role === Role::SECTOR_LEADER_ROLE;
+        return auth()->user()->role->role === Role::SECTOR_LEADER_ROLE;
     }
 }
